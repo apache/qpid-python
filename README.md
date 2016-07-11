@@ -3,13 +3,7 @@
 This distribution contains a Python client implementation and AMQP
 conformance tests for Apache Qpid.
 
-Apache Qpid is a high speed, language independent, platform
-independent enterprise messaging system. It currently provides two
-messaging brokers (one implemented in C++, one implemented in Java),
-and messaging client libraries for Java JMS, C++, C# .NET, Python,
-Ruby, and WCF. The messaging protocol for Apache Qpid is AMQP
-(Advanced Message Queuing Protocol). You can read more about Qpid
-here:
+You can read more about Qpid here:
 
     http://qpid.apache.org/
 
