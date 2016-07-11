@@ -28,7 +28,7 @@ Documentation can be found here:
 
 2. Make sure a broker is running.
 
-3. Run the 'hello' example from qpid-0.8/python/examples/api:
+3. Run the 'hello' example from examples/api:
 
         $ cd examples/api
         $ ./hello
