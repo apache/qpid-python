@@ -36,7 +36,7 @@ The `examples` directory contains sample programs.  See
 ## Running the tests
 
 The `tests` directory contains a collection of unit tests for the
-Python client. The `tests\_0-10`, `tests\_0-9`, and `tests\_0-8`
+Python client. The `tests_0-10`, `tests_0-9`, and `tests_0-8`
 directories contain protocol-level conformance tests for brokers that
 speak the specified AMQP version.
 
