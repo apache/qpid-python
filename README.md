@@ -5,11 +5,11 @@ conformance tests for Apache Qpid.
 
 You can read more about Qpid here:
 
-    http://qpid.apache.org/
+> <http://qpid.apache.org>
 
 Documentation can be found here:
 
-    http://qpid.apache.org/documentation.html
+> <http://qpid.apache.org/documentation.html>
 
 ## Getting started
 
@@ -30,19 +30,18 @@ Documentation can be found here:
 
 ## Examples
 
-The examples/api directory contains several examples.
-
-Read examples/README.txt for further details on these examples.
+The `examples` directory contains sample programs.  See
+`examples/README.txt` for more information.
 
 ## Running the tests
 
-The "tests" directory contains a collection of unit tests for the
-python client. The "tests\_0-10", "tests\_0-9", and "tests\_0-8"
-directories contain protocol level conformance tests for AMQP brokers
-of the specified version.
+The `tests` directory contains a collection of unit tests for the
+Python client. The `tests\_0-10`, `tests\_0-9`, and `tests\_0-8`
+directories contain protocol-level conformance tests for brokers that
+speak the specified AMQP version.
 
-The qpid-python-test script may be used to run these tests. It will by
-default run the python unit tests and the 0-10 conformance tests:
+The `qpid-python-test` script may be used to run these tests. It will
+by default run the Python unit tests and the 0-10 conformance tests:
 
 1. Run a broker on the default port.
 
@@ -63,14 +62,15 @@ selected as follows:
 
         $ ./qpid-python-test tests_0-9.*
 
-See the qpid-python-test usage for for additional options:
+See the `qpid-python-test` command-line help for for additional
+options:
 
     $ ./qpid-python-test -h
 
 ## Installation
 
 Other Qpid components depend on Qpid Python for testing.  You can use
-setup.py to install Qpid Python to a standard location:
+`setup.py` to install Qpid Python to a standard location:
 
     # User-local install
 
