@@ -31,7 +31,7 @@ from queue import Queue, Closed as QueueClosed
 from content import Content
 from cStringIO import StringIO
 from time import time
-from exceptions import Closed, Timeout
+from exceptions import Closed, Timeout, ContentError
 from logging import getLogger
 
 log = getLogger("qpid.peer")
@@ -264,9 +264,20 @@ class Channel:
     self.write(header)
     for child in content.children:
       self.write_content(klass, child)
-    # should split up if content.body exceeds max frame size
     if content.body:
-      self.write(Body(content.body))
+      if not isinstance(content.body, (basestring, buffer)):
+        # The 0-8..0-91 client does not support the messages bodies apart from string/buffer - fail early
+        # if other type
+        raise ContentError("Content body must be string or buffer, not a %s" % type(content.body))
+      frame_max = self.client.tune_params['frame_max'] - self.client.conn.AMQP_HEADER_SIZE
+      start = 0
+      remaining_size = len(content.body)
+      while remaining_size > 0:
+        chunk_size = min(frame_max, remaining_size)
+        chunk = content.body[start:start + chunk_size]
+        self.write(Body(chunk))
+        start += chunk_size
+        remaining_size -= chunk_size
 
   def receive(self, frame, work):
     if isinstance(frame, Method):

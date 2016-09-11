@@ -157,10 +157,13 @@ class FramingError(Exception):
 
 class Connection:
 
+  AMQP_HEADER_SIZE = 8
+
   def __init__(self, io, spec):
     self.codec = codec.Codec(io, spec)
     self.spec = spec
     self.FRAME_END = self.spec.constants.byname["frame_end"].id
+    self.FRAME_MIN_SIZE = spec.constants.byname['frame_min_size'].id
     self.write = getattr(self, "write_%s_%s" % (self.spec.major, self.spec.minor))
     self.read = getattr(self, "read_%s_%s" % (self.spec.major, self.spec.minor))
     self.io = io

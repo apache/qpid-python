@@ -20,3 +20,4 @@
 class Closed(Exception): pass
 class Timeout(Exception): pass
 class VersionError(Exception): pass
+class ContentError(Exception): pass

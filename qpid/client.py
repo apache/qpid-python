@@ -184,12 +184,11 @@ class ClientDelegate(Delegate):
     msg.secure_ok(response=self.client.sasl.response(msg.challenge))
 
   def connection_tune(self, ch, msg):
+    tune_params = dict(zip(('channel_max', 'frame_max', 'heartbeat'), (msg.frame.args)))
     if self.client.tune_params:
-      #todo: just override the params, i.e. don't require them
-      #      all to be included in tune_params
-      msg.tune_ok(**self.client.tune_params)
-    else:
-      msg.tune_ok(*msg.frame.args)
+      tune_params.update(self.client.tune_params)
+    msg.tune_ok(**tune_params)
+    self.client.tune_params = tune_params
     self.client.started.set()
 
   def message_transfer(self, ch, msg):

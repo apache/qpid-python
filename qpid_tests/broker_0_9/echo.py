@@ -19,58 +19,55 @@
 
 from qpid.testlib import TestBase
 from qpid.content import Content
+from qpid.harness import Skipped
+
 import qpid.client
 
-
-
 class EchoTests(TestBase):
-    """Verify that messages can be sent and received retaining fidelity"""
+  """Verify that messages can be sent and received retaining fidelity"""
 
-    def test_small_message(self):
+  def setUp(self):
+    super(EchoTests, self).setUp()
+    self.frame_max_size = self.client.tune_params['frame_max']
+    self.assertTrue(self.frame_max_size >= self.client.conn.FRAME_MIN_SIZE)
 
-      channel = self.channel
+  def test_empty_message(self):
+    body = ''
+    self.echo_message(body)
 
-      self.queue_declare(queue="q")
+  def test_small_message(self):
+    body = self.uniqueString()
+    self.echo_message(body)
 
-      channel.tx_select()
-      consumer = self.consume("q", no_ack=False)
+  def test_largest_single_frame_message(self):
+    max_size_within_single_frame = self.frame_max_size - self.client.conn.AMQP_HEADER_SIZE
+    body = self.randomLongString(max_size_within_single_frame)
+    self.echo_message(body)
 
-      body = self.uniqueString()
-      channel.basic_publish(
-          content=Content(body),
-          routing_key="q")
-      channel.tx_commit()
+  def test_multiple_frame_message(self):
+    size = self.frame_max_size * 2 - (self.client.conn.FRAME_MIN_SIZE / 2)
+    body = self.randomLongString(size)
+    self.echo_message(body)
 
-      msg = consumer.get(timeout=1)
-      channel.basic_ack(delivery_tag=msg.delivery_tag)
-      channel.tx_commit()
-      self.assertEqual(body, msg.content.body)
-
-    def test_large_message(self):
-
-      channel = self.channel
-
-      self.queue_declare(queue="q")
-
-      channel.tx_select()
-      consumer = self.consume("q", no_ack=False)
-
-      # This is default maximum frame size supported by the Java Broker.  Python
-      # currently does not support framing of oversized messages in multiple frames.
-      body = self.randomLongString()
-      channel.basic_publish(
-        content=Content(body),
-        routing_key="q")
-      channel.tx_commit()
-
-      msg = consumer.get(timeout=1)
-      channel.basic_ack(delivery_tag=msg.delivery_tag)
-      channel.tx_commit()
-      self.assertEqual(len(body), len(msg.content.body))
-      self.assertEqual(body, msg.content.body)
-
+  def echo_message(self, body):
+    channel = self.channel
+    self.queue_declare(queue="q")
+    channel.tx_select()
+    consumer = self.consume("q", no_ack=False)
+    channel.basic_publish(
+            content=Content(body),
+            routing_key="q")
+    channel.tx_commit()
+    msg = consumer.get(timeout=1)
+    channel.basic_ack(delivery_tag=msg.delivery_tag)
+    channel.tx_commit()
+    self.assertEqual(len(body), len(msg.content.body))
+    self.assertEqual(body, msg.content.body)
 
     def test_large_message_received_in_many_content_frames(self):
+      if self.client.conn.FRAME_MIN_SIZE == self.frame_max_size:
+        raise Skipped("Test requires that frame_max_size (%d) exceeds frame_min_size (%d)" % (self.frame_max_size, self.frame_max_size))
+
       channel = self.channel
 
       queue_name = "q"
@@ -89,7 +86,7 @@ class EchoTests(TestBase):
         # Create a second connection with minimum framesize.  The Broker will then be forced to chunk
         # the content in order to send it to us.
         consuming_client = qpid.client.Client(self.config.broker.host, self.config.broker.port)
-        tune_params = { "channel_max" : 256, "frame_max" : 4096 }
+        tune_params = { "frame_max" : self.client.conn.FRAME_MIN_SIZE }
         consuming_client.start(username = self.config.broker.user, password = self.config.broker.password, tune_params = tune_params)
 
         consuming_channel = consuming_client.channel(1)
@@ -109,7 +106,7 @@ class EchoTests(TestBase):
           consuming_client.close()
 
     def test_commit_ok_possibly_interleaved_with_message_delivery(self):
-      """This test exposes an defect on the Java Broker (QPID-6094).  The Java Client
+      """This test exposes an defect on the Java Broker (QPID-6094).  The Java Broker (0.32 and below)
          can contravene the AMQP spec by sending other frames between the message header/frames.
          As this is a long standing defect in the Java Broker, QPID-6082 changed
          the Python client to allow it to tolerate such illegal interleaving.
