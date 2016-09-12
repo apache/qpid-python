@@ -64,46 +64,46 @@ class EchoTests(TestBase):
     self.assertEqual(len(body), len(msg.content.body))
     self.assertEqual(body, msg.content.body)
 
-    def test_large_message_received_in_many_content_frames(self):
-      if self.client.conn.FRAME_MIN_SIZE == self.frame_max_size:
-        raise Skipped("Test requires that frame_max_size (%d) exceeds frame_min_size (%d)" % (self.frame_max_size, self.frame_max_size))
+  def test_large_message_received_in_many_content_frames(self):
+    if self.client.conn.FRAME_MIN_SIZE == self.frame_max_size:
+      raise Skipped("Test requires that frame_max_size (%d) exceeds frame_min_size (%d)" % (self.frame_max_size, self.frame_max_size))
 
-      channel = self.channel
+    channel = self.channel
 
-      queue_name = "q"
-      self.queue_declare(queue=queue_name)
+    queue_name = "q"
+    self.queue_declare(queue=queue_name)
 
-      channel.tx_select()
+    channel.tx_select()
 
-      body = self.randomLongString()
-      channel.basic_publish(
-        content=Content(body),
-        routing_key=queue_name)
-      channel.tx_commit()
+    body = self.randomLongString()
+    channel.basic_publish(
+      content=Content(body),
+      routing_key=queue_name)
+    channel.tx_commit()
 
-      consuming_client = None
-      try:
-        # Create a second connection with minimum framesize.  The Broker will then be forced to chunk
-        # the content in order to send it to us.
-        consuming_client = qpid.client.Client(self.config.broker.host, self.config.broker.port)
-        tune_params = { "frame_max" : self.client.conn.FRAME_MIN_SIZE }
-        consuming_client.start(username = self.config.broker.user, password = self.config.broker.password, tune_params = tune_params)
+    consuming_client = None
+    try:
+      # Create a second connection with minimum framesize.  The Broker will then be forced to chunk
+      # the content in order to send it to us.
+      consuming_client = qpid.client.Client(self.config.broker.host, self.config.broker.port)
+      tune_params = { "frame_max" : self.client.conn.FRAME_MIN_SIZE }
+      consuming_client.start(username = self.config.broker.user, password = self.config.broker.password, tune_params = tune_params)
 
-        consuming_channel = consuming_client.channel(1)
-        consuming_channel.channel_open()
-        consuming_channel.tx_select()
+      consuming_channel = consuming_client.channel(1)
+      consuming_channel.channel_open()
+      consuming_channel.tx_select()
 
-        consumer_reply = consuming_channel.basic_consume(queue=queue_name, no_ack=False)
-        consumer = consuming_client.queue(consumer_reply.consumer_tag)
-        msg = consumer.get(timeout=1)
-        consuming_channel.basic_ack(delivery_tag=msg.delivery_tag)
-        consuming_channel.tx_commit()
+      consumer_reply = consuming_channel.basic_consume(queue=queue_name, no_ack=False)
+      consumer = consuming_client.queue(consumer_reply.consumer_tag)
+      msg = consumer.get(timeout=1)
+      consuming_channel.basic_ack(delivery_tag=msg.delivery_tag)
+      consuming_channel.tx_commit()
 
-        self.assertEqual(len(body), len(msg.content.body))
-        self.assertEqual(body, msg.content.body)
-      finally:
-        if consuming_client:
-          consuming_client.close()
+      self.assertEqual(len(body), len(msg.content.body))
+      self.assertEqual(body, msg.content.body)
+    finally:
+      if consuming_client:
+        consuming_client.close()
 
     def test_commit_ok_possibly_interleaved_with_message_delivery(self):
       """This test exposes an defect on the Java Broker (QPID-6094).  The Java Broker (0.32 and below)
