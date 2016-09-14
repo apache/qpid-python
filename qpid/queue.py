@@ -40,7 +40,8 @@ class Queue(BaseQueue):
     self.thread = None
 
   def close(self, error = None):
-    self.error = error
+    if error and self.error is None:
+      self.error = error
     self.put(Queue.END)
     if self.thread is not None:
       self.thread.join()

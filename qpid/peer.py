@@ -105,7 +105,7 @@ class Peer:
         try:
           frame = self.conn.read()
         except EOF, e:
-          self.work.close()
+          self.work.close("Connection lost")
           break
         ch = self.channel(frame.channel)
         ch.receive(frame, self.work)
@@ -121,6 +121,7 @@ class Peer:
     self.delegate.closed(reason)
     for ch in self.channels.values():
       ch.closed(reason)
+    self.outgoing.close()
 
   def writer(self):
     try:
@@ -149,8 +150,8 @@ class Peer:
           content = None
 
         self.delegate(channel, Message(channel, frame, content))
-    except QueueClosed:
-      self.closed("worker closed")
+    except QueueClosed, e:
+      self.closed(str(e) or "worker closed")
     except:
       self.fatal()
 
