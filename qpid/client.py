@@ -246,6 +246,9 @@ class ClientDelegate(Delegate):
     self.client.closed = True
     self.client.reason = reason
     self.client.started.set()
+    with self.client.lock:
+      for queue in self.client.queues.values():
+        queue.close(reason)
 
 class StructFactory:
 
