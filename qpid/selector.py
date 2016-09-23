@@ -16,12 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import atexit, time, errno, os
+import time, errno, os
 from compat import select, SelectError, set, selectable_waiter, format_exc
 from threading import Thread, Lock
 from logging import getLogger
 
 log = getLogger("qpid.messaging")
+
+class SelectorException(Exception): pass
 
 class Acceptor:
 
@@ -53,8 +55,12 @@ class Selector:
     Selector.lock.acquire()
     try:
       if Selector.DEFAULT is None or Selector._current_pid != os.getpid():
+        # If we forked, mark the existing Selector dead.
+        if Selector.DEFAULT is not None:
+          log.warning("qpid.messaging: process was forked")
+          Selector.DEFAULT.dead(
+            SelectorException("qpid.messaging: forked child process used parent connection"), True)
         sel = Selector()
-        atexit.register(sel.stop)
         sel.start()
         Selector.DEFAULT = sel
         Selector._current_pid = os.getpid()
@@ -73,6 +79,9 @@ class Selector:
     self.exception = None
 
   def wakeup(self):
+    if self.exception:
+      log.error(str(self.exception))
+      raise self.exception
     self.waiter.wakeup()
 
   def register(self, selectable):
@@ -102,13 +111,14 @@ class Selector:
 
   def start(self):
     self.stopped = False
+    self.exception = None
     self.thread = Thread(target=self.run)
     self.thread.setDaemon(True)
     self.thread.start();
 
   def run(self):
     try:
-      while not self.stopped:
+      while not self.stopped and not self.exception:
         wakeup = None
         for sel in self.selectables.copy():
           t = self._update(sel)
@@ -152,16 +162,60 @@ class Selector:
           if w is not None and now > w:
             sel.timeout()
     except Exception, e:
-      self.exception = e
-      info = format_exc()
-      log.error("qpid.messaging I/O thread has died: %s" % str(e))
-      for sel in self.selectables.copy():
-        if hasattr(sel, "abort"):
-          sel.abort(e, info)
+      log.error("qpid.messaging: I/O thread has died: %s\n%s" % (e, format_exc()))
+      dead(e, False)
       raise
+    self.dead(SelectorException("qpid.messaging: I/O thread exited"), False)
 
   def stop(self, timeout=None):
+    """Stop the selector and wait for it's thread to exit.
+    Ignored for the shared default() selector, which stops when the process exits.
+
+    """
+    if self.DEFAULT == self:    # Never stop the DEFAULT Selector
+      return
     self.stopped = True
     self.wakeup()
     self.thread.join(timeout)
+    self.dead(SelectorException("qpid.messaging: I/O thread stopped"), False)
+
+  def dead(self, e, forked):
+    """Mark the Selector as dead if it is stopped for any reason.
+    Ensure there any future calls to wait() will raise an exception.
+    If the thread died because of a fork() then ensure further that
+    attempting to take the connections lock also raises.
+    """
     self.thread = None
+    self.exception = e
+    for sel in self.selectables.copy():
+      try:
+        # Mark the connection as failed
+        sel.connection.error = e
+        if forked:
+          # Replace connection's locks, they may be permanently locked in the forked child.
+          c = sel.connection
+          c.error = e
+          c._lock = BrokenLock(e)
+          for ssn in c.sessions.values():
+            ssn._lock = c._lock
+            for l in ssn.senders + ssn.receivers:
+              l._lock = c._lock
+      except:
+        pass
+    try:
+      if forked:
+        self.waiter.close()       # Don't mess with the parent's FDs
+      else:
+        self.waiter.wakeup()      # In case somebody re-waited while we were cleaning up.
+    except:
+      pass
+
+class BrokenLock(object):
+  """Dummy lock-like object that raises an exception. Used in forked child to
+      replace locks that may be held in the parent process."""
+  def __init__(self, exception):
+    self.exception = exception
+
+  def acquire(self):
+    log.error(str(self.exception))
+    raise self.exception
