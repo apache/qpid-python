@@ -84,7 +84,7 @@ class ExampleTest (TestBase):
         # Now we'll wait for the message to arrive. We can use the timeout
         # argument in case the server hangs. By default queue.get() will wait
         # until a message arrives or the connection to the server dies.
-        msg = queue.get(timeout=10)
+        msg = queue.get(timeout=self.recv_timeout())
 
         # And check that we got the right response with assertEqual
         self.assertEqual(body, msg.content.body)

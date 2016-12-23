@@ -66,16 +66,16 @@ class QueueTests(TestBase):
                               content=Content("two", properties={"headers": headers}))
 
         #check one queue has both messages and the other has only one
-        self.assertEquals("one", queue1.get(timeout=1).content.body)
+        self.assertEquals("one", queue1.get(timeout=self.recv_timeout()).content.body)
         try:
-            msg = queue1.get(timeout=1)
+            msg = queue1.get(timeout=self.recv_timeout_negative())
             self.fail("Got extra message: %s" % msg.body)
         except Empty: pass
 
-        self.assertEquals("one", queue2.get(timeout=1).content.body)
-        self.assertEquals("two", queue2.get(timeout=1).content.body)
+        self.assertEquals("one", queue2.get(timeout=self.recv_timeout()).content.body)
+        self.assertEquals("two", queue2.get(timeout=self.recv_timeout()).content.body)
         try:
-            msg = queue2.get(timeout=1)
+            msg = queue2.get(timeout=self.recv_timeout_negative())
             self.fail("Got extra message: " + msg)
         except Empty: pass
 
@@ -134,7 +134,7 @@ class QueueTests(TestBase):
         queue = self.client.queue(consumer_reply.consumer_tag)
         while True:
             try:
-                msg = queue.get(timeout=1)
+                msg = queue.get(timeout=self.recv_timeout())
             except Empty:
                 break
         channel.basic_cancel(consumer_tag=consumer_reply.consumer_tag)

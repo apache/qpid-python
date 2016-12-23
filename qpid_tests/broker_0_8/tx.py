@@ -36,18 +36,18 @@ class TxTests(TestBase):
 
         #check results
         for i in range(1, 5):
-            msg = queue_c.get(timeout=1)
+            msg = queue_c.get(timeout=self.recv_timeout())
             self.assertEqual("TxMessage %d" % i, msg.content.body)
 
-        msg = queue_b.get(timeout=1)
+        msg = queue_b.get(timeout=self.recv_timeout())
         self.assertEqual("TxMessage 6", msg.content.body)
 
-        msg = queue_a.get(timeout=1)
+        msg = queue_a.get(timeout=self.recv_timeout())
         self.assertEqual("TxMessage 7", msg.content.body)
 
         for q in [queue_a, queue_b, queue_c]:
             try:
-                extra = q.get(timeout=1)
+                extra = q.get(timeout=self.recv_timeout_negative())
                 self.fail("Got unexpected message: " + extra.content.body)
             except Empty: None
 
@@ -64,7 +64,7 @@ class TxTests(TestBase):
 
         for q in [queue_a, queue_b, queue_c]:
             try:
-                extra = q.get(timeout=1)
+                extra = q.get(timeout=self.recv_timeout_negative())
                 self.fail("Got unexpected message: " + extra.content.body)
             except Empty: None
 
@@ -72,18 +72,18 @@ class TxTests(TestBase):
 
         #check results
         for i in range(1, 5):
-            msg = queue_a.get(timeout=1)
+            msg = queue_a.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
 
-        msg = queue_b.get(timeout=1)
+        msg = queue_b.get(timeout=self.recv_timeout())
         self.assertEqual("Message 6", msg.content.body)
 
-        msg = queue_c.get(timeout=1)
+        msg = queue_c.get(timeout=self.recv_timeout())
         self.assertEqual("Message 7", msg.content.body)
 
         for q in [queue_a, queue_b, queue_c]:
             try:
-                extra = q.get(timeout=1)
+                extra = q.get(timeout=self.recv_timeout_negative())
                 self.fail("Got unexpected message: " + extra.content.body)
             except Empty: None
 
@@ -100,7 +100,7 @@ class TxTests(TestBase):
 
         for q in [queue_a, queue_b, queue_c]:
             try:
-                extra = q.get(timeout=1)
+                extra = q.get(timeout=self.recv_timeout_negative())
                 self.fail("Got unexpected message: " + extra.content.body)
             except Empty: None
 
@@ -108,18 +108,18 @@ class TxTests(TestBase):
 
         #check results
         for i in range(1, 5):
-            msg = queue_a.get(timeout=1)
+            msg = queue_a.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
 
-        msg = queue_b.get(timeout=1)
+        msg = queue_b.get(timeout=self.recv_timeout())
         self.assertEqual("Message 6", msg.content.body)
 
-        msg = queue_c.get(timeout=1)
+        msg = queue_c.get(timeout=self.recv_timeout())
         self.assertEqual("Message 7", msg.content.body)
 
         for q in [queue_a, queue_b, queue_c]:
             try:
-                extra = q.get(timeout=1)
+                extra = q.get(timeout=self.recv_timeout_negative())
                 self.fail("Got unexpected message: " + extra.content.body)
             except Empty: None
 
@@ -155,19 +155,19 @@ class TxTests(TestBase):
         sub_a = channel.basic_consume(queue=name_a, no_ack=False)
         queue_a = self.client.queue(sub_a.consumer_tag)
         for i in range(1, 5):
-            msg = queue_a.get(timeout=1)
+            msg = queue_a.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
         channel.basic_ack(delivery_tag=msg.delivery_tag, multiple=True)    
 
         sub_b = channel.basic_consume(queue=name_b, no_ack=False)
         queue_b = self.client.queue(sub_b.consumer_tag)
-        msg = queue_b.get(timeout=1)
+        msg = queue_b.get(timeout=self.recv_timeout())
         self.assertEqual("Message 6", msg.content.body)
         channel.basic_ack(delivery_tag=msg.delivery_tag)    
 
         sub_c = channel.basic_consume(queue=name_c, no_ack=False)
         queue_c = self.client.queue(sub_c.consumer_tag)
-        msg = queue_c.get(timeout=1)
+        msg = queue_c.get(timeout=self.recv_timeout())
         self.assertEqual("Message 7", msg.content.body)
         channel.basic_ack(delivery_tag=msg.delivery_tag)    
 
@@ -195,7 +195,7 @@ class TxTests(TestBase):
         sub = channel.basic_consume(queue="commit-overlapping", no_ack=False)
         queue = self.client.queue(sub.consumer_tag)
         for i in range(1, 10):
-            msg = queue.get(timeout=1)
+            msg = queue.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
             if i in [3, 6, 10]:
                 channel.basic_ack(delivery_tag=msg.delivery_tag)    
@@ -204,6 +204,6 @@ class TxTests(TestBase):
 
         #check all have been acked:
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout_negative())
             self.fail("Got unexpected message: " + extra.content.body)
         except Empty: None

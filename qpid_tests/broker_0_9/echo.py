@@ -58,7 +58,7 @@ class EchoTests(TestBase):
             content=Content(body),
             routing_key="q")
     channel.tx_commit()
-    msg = consumer.get(timeout=1)
+    msg = consumer.get(timeout=self.recv_timeout())
     channel.basic_ack(delivery_tag=msg.delivery_tag)
     channel.tx_commit()
     self.assertEqual(len(body), len(msg.content.body))
@@ -85,9 +85,11 @@ class EchoTests(TestBase):
     try:
       # Create a second connection with minimum framesize.  The Broker will then be forced to chunk
       # the content in order to send it to us.
-      consuming_client = qpid.client.Client(self.config.broker.host, self.config.broker.port)
+      consuming_client = qpid.client.Client(self.config.broker.host, self.config.broker.port or self.DEFAULT_PORT)
       tune_params = { "frame_max" : self.client.conn.FRAME_MIN_SIZE }
-      consuming_client.start(username = self.config.broker.user, password = self.config.broker.password, tune_params = tune_params)
+      consuming_client.start(username = self.config.broker.user or self.DEFAULT_USERNAME,
+                             password = self.config.broker.password or self.DEFAULT_PASSWORD,
+                             tune_params = tune_params)
 
       consuming_channel = consuming_client.channel(1)
       consuming_channel.channel_open()
@@ -95,7 +97,7 @@ class EchoTests(TestBase):
 
       consumer_reply = consuming_channel.basic_consume(queue=queue_name, no_ack=False)
       consumer = consuming_client.queue(consumer_reply.consumer_tag)
-      msg = consumer.get(timeout=1)
+      msg = consumer.get(timeout=self.recv_timeout())
       consuming_channel.basic_ack(delivery_tag=msg.delivery_tag)
       consuming_channel.tx_commit()
 
@@ -135,7 +137,7 @@ class EchoTests(TestBase):
       consumer = self.consume("q", no_ack=False)
 
       # Get and ack/commit the first message
-      msg = consumer.get(timeout=1)
+      msg = consumer.get(timeout=self.recv_timeout())
       channel.basic_ack(delivery_tag=msg.delivery_tag)
       channel.tx_commit()
       # In the problematic case, the Broker interleaves our commit-ok response amongst the content
@@ -147,7 +149,7 @@ class EchoTests(TestBase):
       self.assertEqual(expectedBody, msg.content.body)
 
       for i in range(1, len(bodies)):
-        msg = consumer.get(timeout=5)
+        msg = consumer.get(timeout=self.recv_timeout())
 
         expectedBody = bodies[i]
         self.assertEqual(len(expectedBody), len(msg.content.body))

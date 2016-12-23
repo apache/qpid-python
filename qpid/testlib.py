@@ -46,6 +46,10 @@ class TestBase(unittest.TestCase):
     ...) which are wrappers for the Channel functions that note
     resources to clean up later.
     """
+    DEFAULT_USERNAME = "guest"
+    DEFAULT_PASSWORD = "guest"
+    DEFAULT_PORT = 5672
+    DEFAULT_PORT_TLS = 5671
 
     def configure(self, config):
         self.config = config
@@ -73,12 +77,20 @@ class TestBase(unittest.TestCase):
 
         self.client.close()
 
+    def recv_timeout(self):
+        """Timeout used when a message is anticipated."""
+        return float(self.config.defines.get("qpid.recv_timeout", "1"))
+
+    def recv_timeout_negative(self):
+        """Timeout used when a message is NOT expected."""
+        return float(self.config.defines.get("qpid.recv_timeout_negative", "0.5"))
+
     def connect(self, host=None, port=None, user=None, password=None, tune_params=None, client_properties=None, channel_options=None):
         """Create a new connction, return the Client object"""
         host = host or self.config.broker.host
-        port = port or self.config.broker.port or 5672
-        user = user or self.config.broker.user or "guest"
-        password = password or self.config.broker.password or "guest"
+        port = port or self.config.broker.port or self.DEFAULT_PORT
+        user = user or self.config.broker.user or self.DEFAULT_USERNAME
+        password = password or self.config.broker.password or self.DEFAULT_PASSWORD
         client = qpid.client.Client(host, port)
         try:
           client.start(username = user, password=password, tune_params=tune_params, client_properties=client_properties, channel_options=channel_options)
@@ -210,17 +222,17 @@ class TestBase010(unittest.TestCase):
     def connect(self, host=None, port=None):
         url = self.broker
         if url.scheme == URL.AMQPS:
-            default_port = 5671
+            default_port = self.DEFAULT_PORT_TLS
         else:
-            default_port = 5672
+            default_port = self.DEFAULT_PORT
         try:
             sock = connect(host or url.host, port or url.port or default_port)
         except socket.error, e:
             raise Skipped(e)
         if url.scheme == URL.AMQPS:
             sock = ssl(sock)
-        conn = Connection(sock, username=url.user or "guest",
-                          password=url.password or "guest")
+        conn = Connection(sock, username=url.user or self.DEFAULT_USERNAME,
+                          password=url.password or self.DEFAULT_PASSWORD)
         try:
             conn.start(timeout=10)
         except VersionError, e:

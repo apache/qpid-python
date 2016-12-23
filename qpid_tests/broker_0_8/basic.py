@@ -43,10 +43,10 @@ class BasicTests(TestBase):
         #check the queues of the two consumers
         excluded = self.client.queue("local_excluded")
         included = self.client.queue("local_included")
-        msg = included.get(timeout=1)
+        msg = included.get(timeout=self.recv_timeout())
         self.assertEqual("consume_no_local", msg.content.body)
         try:
-            excluded.get(timeout=1) 
+            excluded.get(timeout=self.recv_timeout())
             self.fail("Received locally published message though no_local=true")
         except Empty: None
 
@@ -113,7 +113,7 @@ class BasicTests(TestBase):
         queue = durable_subscription_client.queue(subscription.consumer_tag)
 
         # consume and verify message content
-        msg = queue.get(timeout=1)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assertEqual(test_message, msg.content.body)
         consumerchannel.basic_ack(delivery_tag=msg.delivery_tag)
       finally:
@@ -172,14 +172,14 @@ class BasicTests(TestBase):
         channel.basic_publish(routing_key="test-queue-4", content=Content("One"))
 
         myqueue = self.client.queue("my-consumer")
-        msg = myqueue.get(timeout=1)
+        msg = myqueue.get(timeout=self.recv_timeout())
         self.assertEqual("One", msg.content.body)
 
         #cancel should stop messages being delivered
         channel.basic_cancel(consumer_tag="my-consumer")
         channel.basic_publish(routing_key="test-queue-4", content=Content("Two"))
         try:
-            msg = myqueue.get(timeout=1) 
+            msg = myqueue.get(timeout=self.recv_timeout())
             self.fail("Got message after cancellation: " + msg)
         except Empty: None
 
@@ -204,11 +204,11 @@ class BasicTests(TestBase):
         channel.basic_publish(routing_key="test-ack-queue", content=Content("Four"))
         channel.basic_publish(routing_key="test-ack-queue", content=Content("Five"))
                 
-        msg1 = queue.get(timeout=1)
-        msg2 = queue.get(timeout=1)
-        msg3 = queue.get(timeout=1)
-        msg4 = queue.get(timeout=1)
-        msg5 = queue.get(timeout=1)
+        msg1 = queue.get(timeout=self.recv_timeout())
+        msg2 = queue.get(timeout=self.recv_timeout())
+        msg3 = queue.get(timeout=self.recv_timeout())
+        msg4 = queue.get(timeout=self.recv_timeout())
+        msg5 = queue.get(timeout=self.recv_timeout())
         
         self.assertEqual("One", msg1.content.body)
         self.assertEqual("Two", msg2.content.body)
@@ -221,14 +221,14 @@ class BasicTests(TestBase):
 
         channel.basic_recover(requeue=False)
         
-        msg3b = queue.get(timeout=1)
-        msg5b = queue.get(timeout=1)
+        msg3b = queue.get(timeout=self.recv_timeout())
+        msg5b = queue.get(timeout=self.recv_timeout())
         
         self.assertEqual("Three", msg3b.content.body)
         self.assertEqual("Five", msg5b.content.body)
 
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected message: " + extra.content.body)
         except Empty: None
 
@@ -248,11 +248,11 @@ class BasicTests(TestBase):
         channel.basic_publish(routing_key="test-requeue", content=Content("Four"))
         channel.basic_publish(routing_key="test-requeue", content=Content("Five"))
                 
-        msg1 = queue.get(timeout=1)
-        msg2 = queue.get(timeout=1)
-        msg3 = queue.get(timeout=1)
-        msg4 = queue.get(timeout=1)
-        msg5 = queue.get(timeout=1)
+        msg1 = queue.get(timeout=self.recv_timeout())
+        msg2 = queue.get(timeout=self.recv_timeout())
+        msg3 = queue.get(timeout=self.recv_timeout())
+        msg4 = queue.get(timeout=self.recv_timeout())
+        msg5 = queue.get(timeout=self.recv_timeout())
         
         self.assertEqual("One", msg1.content.body)
         self.assertEqual("Two", msg2.content.body)
@@ -270,8 +270,8 @@ class BasicTests(TestBase):
         subscription2 = channel.basic_consume(queue="test-requeue")
         queue2 = self.client.queue(subscription2.consumer_tag)
         
-        msg3b = queue2.get(timeout=1)
-        msg5b = queue2.get(timeout=1)
+        msg3b = queue2.get(timeout=self.recv_timeout())
+        msg5b = queue2.get(timeout=self.recv_timeout())
         
         self.assertEqual("Three", msg3b.content.body)
         self.assertEqual("Five", msg5b.content.body)
@@ -280,11 +280,11 @@ class BasicTests(TestBase):
         self.assertEqual(True, msg5b.redelivered)
 
         try:
-            extra = queue2.get(timeout=1)
+            extra = queue2.get(timeout=self.recv_timeout())
             self.fail("Got unexpected message in second queue: " + extra.content.body)
         except Empty: None
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected message in original queue: " + extra.content.body)
         except Empty: None
         
@@ -308,10 +308,10 @@ class BasicTests(TestBase):
 
         #only 5 messages should have been delivered:
         for i in range(1, 6):
-            msg = queue.get(timeout=1)
+            msg = queue.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected 6th message in original queue: " + extra.content.body)
         except Empty: None
 
@@ -319,13 +319,13 @@ class BasicTests(TestBase):
         channel.basic_ack(delivery_tag=msg.delivery_tag, multiple=True)
 
         for i in range(6, 11):
-            msg = queue.get(timeout=1)
+            msg = queue.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
 
         channel.basic_ack(delivery_tag=msg.delivery_tag, multiple=True)
 
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected 11th message in original queue: " + extra.content.body)
         except Empty: None
 
@@ -350,11 +350,11 @@ class BasicTests(TestBase):
 
         #only 5 messages should have been delivered (i.e. 45 bytes worth):
         for i in range(1, 6):
-            msg = queue.get(timeout=1)
+            msg = queue.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
 
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected 6th message in original queue: " + extra.content.body)
         except Empty: None
 
@@ -362,13 +362,13 @@ class BasicTests(TestBase):
         channel.basic_ack(delivery_tag=msg.delivery_tag, multiple=True)
 
         for i in range(6, 11):
-            msg = queue.get(timeout=1)
+            msg = queue.get(timeout=self.recv_timeout())
             self.assertEqual("Message %d" % i, msg.content.body)
 
         channel.basic_ack(delivery_tag=msg.delivery_tag, multiple=True)
 
         try:
-            extra = queue.get(timeout=1)
+            extra = queue.get(timeout=self.recv_timeout())
             self.fail("Got unexpected 11th message in original queue: " + extra.content.body)
         except Empty: None
 
@@ -376,7 +376,7 @@ class BasicTests(TestBase):
         large = "abcdefghijklmnopqrstuvwxyz"
         large = large + "-" + large;
         channel.basic_publish(routing_key="test-prefetch-size", content=Content(large))
-        msg = queue.get(timeout=1)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assertEqual(large, msg.content.body)
 
     def test_get(self):

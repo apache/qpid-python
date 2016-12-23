@@ -37,7 +37,7 @@ class BrokerTests(TestBase):
         ctag = ch.basic_consume(queue = "myqueue", no_ack = True).consumer_tag
         body = "test no-ack"
         ch.basic_publish(routing_key = "myqueue", content = Content(body))
-        msg = self.client.queue(ctag).get(timeout = 5)
+        msg = self.client.queue(ctag).get(timeout=self.recv_timeout())
         self.assert_(msg.content.body == body)
 
         # Acknowledging consumer
@@ -45,7 +45,7 @@ class BrokerTests(TestBase):
         ctag = ch.basic_consume(queue = "otherqueue", no_ack = False).consumer_tag
         body = "test ack"
         ch.basic_publish(routing_key = "otherqueue", content = Content(body))
-        msg = self.client.queue(ctag).get(timeout = 5)
+        msg = self.client.queue(ctag).get(timeout=self.recv_timeout())
         ch.basic_ack(delivery_tag = msg.delivery_tag)
         self.assert_(msg.content.body == body)
         
@@ -62,7 +62,7 @@ class BrokerTests(TestBase):
 
         body = "Immediate Delivery"
         channel.basic_publish(exchange="test-exchange", routing_key="key", content=Content(body), immediate=True)
-        msg = queue.get(timeout=5)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assert_(msg.content.body == body)
 
         # TODO: Ensure we fail if immediate=True and there's no consumer.
@@ -81,7 +81,7 @@ class BrokerTests(TestBase):
         channel.basic_publish(exchange="test-exchange", routing_key="key", content=Content(body))
         reply = channel.basic_consume(queue="test-queue", no_ack=True)
         queue = self.client.queue(reply.consumer_tag)
-        msg = queue.get(timeout=5)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assert_(msg.content.body == body)
 
     def test_invalid_channel(self):
@@ -111,10 +111,10 @@ class BrokerTests(TestBase):
         channel.channel_flow(active=False)        
         channel.basic_publish(routing_key="flow_test_queue", content=Content("abcdefghijklmnopqrstuvwxyz"))
         try:
-            incoming.get(timeout=1) 
+            incoming.get(timeout=self.recv_timeout_negative())
             self.fail("Received message when flow turned off.")
         except Empty: None
         
         channel.channel_flow(active=True)
-        msg = incoming.get(timeout=1)
+        msg = incoming.get(timeout=self.recv_timeout())
         self.assertEqual("abcdefghijklmnopqrstuvwxyz", msg.content.body)

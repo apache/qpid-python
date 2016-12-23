@@ -51,7 +51,7 @@ class QueueTests(TestBase):
         channel.basic_publish(exchange="test-exchange", routing_key="key", content=Content("four"))
         reply = channel.basic_consume(queue="test-queue", no_ack=True)
         queue = self.client.queue(reply.consumer_tag)
-        msg = queue.get(timeout=1)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assertEqual("four", msg.content.body)
 
         #check error conditions (use new channels): 
@@ -207,7 +207,7 @@ class QueueTests(TestBase):
         #empty queue:
         reply = channel.basic_consume(queue="delete-me-2", no_ack=True)
         queue = self.client.queue(reply.consumer_tag)
-        msg = queue.get(timeout=1)
+        msg = queue.get(timeout=self.recv_timeout())
         self.assertEqual("message", msg.content.body)
         channel.basic_cancel(consumer_tag=reply.consumer_tag)
 

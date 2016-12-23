@@ -42,7 +42,7 @@ class TestBaseTest(TestBase):
         q = self.consume("empty")
         self.assertEmpty(q)
         try:
-            q.get(timeout=1)
+            q.get(timeout=self.recv_timeout())
             self.fail("Queue is not empty.")
         except Empty: None              # Ignore
 
