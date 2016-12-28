@@ -49,7 +49,6 @@ class TestBase(unittest.TestCase):
     DEFAULT_USERNAME = "guest"
     DEFAULT_PASSWORD = "guest"
     DEFAULT_PORT = 5672
-    DEFAULT_PORT_TLS = 5671
 
     def configure(self, config):
         self.config = config
@@ -194,6 +193,10 @@ class TestBase010(unittest.TestCase):
     """
     Base class for Qpid test cases. using the final 0-10 spec
     """
+    DEFAULT_USERNAME = "guest"
+    DEFAULT_PASSWORD = "guest"
+    DEFAULT_PORT = 5672
+    DEFAULT_PORT_TLS = 5671
 
     def configure(self, config):
         self.config = config
