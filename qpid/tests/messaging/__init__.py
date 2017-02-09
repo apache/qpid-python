@@ -233,4 +233,4 @@ class CompatURL(URL):
       s += ":%s" % self.port
     return s
 
-import address, endpoints, message
+import address, endpoints, message, selector
