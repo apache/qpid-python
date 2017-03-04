@@ -303,7 +303,7 @@ if platform.system() == "Windows":
   scripts.append("qpid-python-test.bat")
   
 setup(name="qpid-python",
-      version="1.36.0",
+      version="1.36.0-SNAPSHOT",
       author="Apache Qpid",
       author_email="users@qpid.apache.org",
       packages=["mllib", "qpid", "qpid.messaging", "qpid.tests",
