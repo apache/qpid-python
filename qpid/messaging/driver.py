@@ -402,6 +402,7 @@ class Driver:
     waiting for output bandwidth (call the self.writeable() callback)
     """
     return self._transport is not None and \
+        self.engine is not None and \
         self._transport.writing(self.engine.pending())
 
   @synchronized
@@ -431,7 +432,7 @@ class Driver:
     reconnect the transport, declare the reconnect ok, then fail again after 2
     missed heartbeats and so on.
     """
-    if self._retrying and self.engine._connected: # Means we have received open-ok.
+    if self._retrying and self.engine is not None and self.engine._connected: # Means we have received open-ok.
       if self._reconnect_log:
         log.warn("reconnect succeeded: %s:%s", *self._last_host)
       self._next_retry = None
@@ -441,6 +442,8 @@ class Driver:
 
   @synchronized
   def readable(self):
+    if self.engine is None:
+      return
     try:
       data = self._transport.recv(64*1024)
       if data is None:
@@ -486,6 +489,7 @@ class Driver:
       self.engine.close()
     else:
       self.engine.close(e)
+    self.st_closed()
 
     self.schedule()
 
@@ -507,6 +511,8 @@ class Driver:
 
   @synchronized
   def writeable(self):
+    if self.engine is None:
+      return
     notify = False
     try:
       n = self._transport.send(self.engine.peek())
@@ -543,9 +549,10 @@ class Driver:
       if self._transport is None:
         if self.connection._connected and not self.connection.error:
           self.connect()
-      else:
+      elif self.engine is not None:
         self.engine.dispatch()
     except HeartbeatTimeout, e:
+      log.warn("Heartbeat timeout")
       self.close_engine(e)
     except ContentError, e:
       msg = compat.format_exc()
