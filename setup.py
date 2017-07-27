@@ -297,11 +297,8 @@ class install_lib(_install_lib):
         extra.append(tgt)
     return outfiles + extra
 
-scripts = ["qpid-python-test"]
+scripts = ["qpid-python-test", "qpid-python-test.bat"]
 
-if platform.system() == "Windows":
-  scripts.append("qpid-python-test.bat")
-  
 setup(name="qpid-python",
       version="1.37.0-SNAPSHOT",
       author="Apache Qpid",
