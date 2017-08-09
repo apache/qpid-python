@@ -20,9 +20,8 @@
 import sys, os
 from logging import getLogger
 from unittest import TestCase
-from qpid.selector import Selector
+from qpid.selector import Selector, SelectorStopped
 from qpid.messaging import *
-from qpid.messaging.exceptions import InternalError
 
 class SelectorTests(TestCase):
   """Make sure that using a connection after a selector stops raises and doesn't hang"""
@@ -43,16 +42,35 @@ class SelectorTests(TestCase):
   def test_use_after_stop(self):
     """Create endpoints, stop the selector, try to use them"""
     c = Connection.establish(self.broker)
+    cstr = str(c)
     ssn = c.session()
+    ssnrepr = repr(ssn)
     r = ssn.receiver("foo;{create:always,delete:always}")
+    rstr = str(r)
     s = ssn.sender("foo;{create:always,delete:always}")
+    srepr = str(s)
 
     Selector.DEFAULT.stop()
-    self.assertRaises(InternalError, c.session)
-    self.assertRaises(InternalError, ssn.sender, "foo")
-    self.assertRaises(InternalError, s.send, "foo")
-    self.assertRaises(InternalError, r.fetch)
-    self.assertRaises(InternalError, Connection.establish, self.broker)
+
+    # The following should be no-ops
+    c.close()
+    c.detach("foo")
+    ssn.close()
+    s.close()
+    r.close()
+
+    # str/repr should return the same result
+    self.assertEqual(cstr, str(c))
+    self.assertEqual(ssnrepr, repr(ssn))
+    self.assertEqual(rstr, str(r))
+    self.assertEqual(srepr, repr(s))
+
+    # Other functions should raise exceptions
+    self.assertRaises(SelectorStopped, c.session)
+    self.assertRaises(SelectorStopped, ssn.sender, "foo")
+    self.assertRaises(SelectorStopped, s.send, "foo")
+    self.assertRaises(SelectorStopped, r.fetch)
+    self.assertRaises(SelectorStopped, Connection.establish, self.broker)
 
   def test_use_after_fork(self):
     c = Connection.establish(self.broker)
@@ -64,7 +82,7 @@ class SelectorTests(TestCase):
       try:
         # Can establish new connections
         s = Connection.establish(self.broker).session().sender("child;{create:always}")
-        self.assertRaises(InternalError, c.session) # But can't use parent connection
+        self.assertRaises(SelectorStopped, c.session) # But can't use parent connection
         s.send("child")
         os._exit(0)
       except Exception, e:

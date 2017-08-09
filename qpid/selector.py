@@ -205,12 +205,15 @@ class Selector:
     except Exception, e:
       log.error("error stopping qpid.messaging (%s)\n%s", self.exception, format_exc())
 
-# Disable an object so it raises exceptions on any use
+# Disable an object to avoid hangs due to forked mutex locks or a stopped selector thread
 import inspect
 def disable(obj, exception):
   assert(exception)
-  def log_raise(*args, **kwargs):
-    _check(exception, 1)
-  # Replace all methods with log_raise
-  for m in inspect.getmembers(obj, predicate=inspect.ismethod):
-    setattr(obj, m[0], log_raise)
+  # Replace methods to raise exception or be a no-op 
+  for m in inspect.getmembers(
+      obj, predicate=lambda m: inspect.ismethod(m) and not inspect.isbuiltin(m)):
+    name = m[0]
+    if name in ["close", "detach", "detach_all"]: # No-ops for these
+      setattr(obj, name, lambda *args, **kwargs: None)
+    else:                       # Raise exception for all others
+      setattr(obj, name, lambda *args, **kwargs: _check(exception, 1))
