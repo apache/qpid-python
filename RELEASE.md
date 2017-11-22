@@ -8,7 +8,7 @@
   - Run: "git add ."
   - Run: 'git commit -m "update versions for ${TAG}"'
   - Run: 'git tag -m "tag ${TAG}" ${TAG}'
-5. Run: "bin/export.sh $PWD ${TAG}" to create the qpid-python-${VERSION}.tar.gz release archive.
+5. Run: "python setup.py --sdist" to create the qpid-python-${VERSION}.tar.gz release archive in the dist/ subdir.
 6. Create signature and checksums for the archive:
   - e.g "gpg --detach-sign --armor qpid-python-${VERSION}.tar.gz"
   - e.g "sha512sum qpid-python-${VERSION}.tar.gz > qpid-python-${VERSION}.tar.gz.sha512"
