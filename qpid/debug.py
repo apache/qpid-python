@@ -40,10 +40,10 @@ class LoudLock:
     while not self.lock.acquire(blocking=0):
       time.sleep(1)
       print >> sys.out, "TRYING"
-      traceback.print_stack(None, None, out)
+      traceback.print_stack(None, None, sys.out)
       print >> sys.out, "TRYING"
     print >> sys.out, "ACQUIRED"
-    traceback.print_stack(None, None, out)
+    traceback.print_stack(None, None, sys.out)
     print >> sys.out, "ACQUIRED"
     return True
 
@@ -52,4 +52,3 @@ class LoudLock:
 
   def release(self):
     self.lock.release()
-

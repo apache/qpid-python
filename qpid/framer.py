@@ -22,6 +22,7 @@ from exceptions import Closed
 from packer import Packer
 from threading import RLock
 from logging import getLogger
+from qpid.sasl import SASLError
 
 raw = getLogger("qpid.io.raw")
 frm = getLogger("qpid.io.frm")

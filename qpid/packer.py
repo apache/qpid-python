@@ -18,12 +18,17 @@
 #
 
 import struct
+from abc import abstractmethod
 
 class Packer:
 
-  def read(self, n): abstract
+  @abstractmethod
+  def read(self, n):
+      pass
 
-  def write(self, s): abstract
+  @abstractmethod
+  def write(self, s):
+      pass
 
   def unpack(self, fmt):
     values = struct.unpack(fmt, self.read(struct.calcsize(fmt)))

@@ -20,6 +20,7 @@
 from qpid.datatypes import Message, RangedSet
 from qpid.testlib import TestBase010
 from qpid.management import managementChannel, managementClient
+from qpid.queue import Empty
 from threading import Condition
 from time import sleep
 import qmf.console
@@ -723,4 +724,3 @@ class ManagementTest (TestBase010):
             assert(False)
         self.assertEqual("def", msg.content)
         self.assertEqual(False, "x-amqp-0-10.timestamp" in msg.properties)
-

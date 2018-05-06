@@ -24,6 +24,7 @@ server, or even a proxy implementation.
 """
 
 import socket, codec, errno, qpid
+from abc import abstractmethod
 from cStringIO import StringIO
 from codec import EOF
 from compat import SHUT_RDWR
@@ -335,9 +336,13 @@ class Frame:
     self.bof = True
     self.eof = True
 
-  def encode(self, enc): abstract
+  @abstractmethod
+  def encode(self, enc):
+      pass
 
-  def decode(spec, dec, size): abstract
+  @abstractmethod
+  def decode(spec, dec, size):
+      pass
 
 class Method(Frame):
 

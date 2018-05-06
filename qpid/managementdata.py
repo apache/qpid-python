@@ -750,7 +750,7 @@ class ManagementData:
   def do_call (self, data):
     encTokens = data.split ()
     try:
-      tokens = [a.decode(locale.getpreferredencoding()) for a in encArgs]
+      tokens = [a.decode(locale.getpreferredencoding()) for a in encTokens]
     except:
       tokens = encTokens
     if len (tokens) < 2:

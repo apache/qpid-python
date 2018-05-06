@@ -475,7 +475,7 @@ def find_rules(node, rules):
 
 def load_rules(specfile):
   rules = []
-  find_rules(xmlutil.parse(specfile), rules)
+  find_rules(mllib.xml_parse(specfile), rules)
   return rules
 
 def test_summary():

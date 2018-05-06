@@ -292,7 +292,7 @@ except ImportError:
   class UUID:
     def __init__(self, hex=None, bytes=None):
       if [hex, bytes].count(None) != 1:
-        raise TypeErrror("need one of hex or bytes")
+        raise TypeError("need one of hex or bytes")
       if bytes is not None:
         self.bytes = bytes
       elif hex is not None:

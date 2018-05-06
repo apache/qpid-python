@@ -59,4 +59,4 @@ class TestTestsXXX(Test):
   def testQuxFail(self):
     import sys
     sys.stdout.write("this test has output with no newline")
-    fdsa
+    fdsa  # noqa  It is supposed to fail
