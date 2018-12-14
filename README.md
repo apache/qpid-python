@@ -83,3 +83,4 @@ Other Qpid components depend on Qpid Python for testing.  You can use
     # System-wide install
 
     $ sudo python setup.py install
+
