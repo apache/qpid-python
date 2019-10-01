@@ -1,15 +1,14 @@
 # Qpid Python
 
-This distribution contains a Python client implementation and AMQP
-conformance tests for Apache Qpid.
-
-You can read more about Qpid here:
-
-> <http://qpid.apache.org>
+This distribution contains a Python 2 AMQP 0-x client implementation and AMQP
+conformance tests for [Apache Qpid](https://qpid.apache.org/).
 
 Documentation can be found here:
 
 > <http://qpid.apache.org/documentation.html>
+
+
+**NOTE**: For Python 3 and AMQP 1.0 support, look instead to [Qpid Proton](http://qpid.apache.org/proton).
 
 ## Getting started
 
