@@ -53,7 +53,7 @@ class Framer(Packer):
       if self.security_layer_tx:
         try:
           cipher_buf = self.security_layer_tx.encode(self.tx_buf)
-        except SASLError, e:
+        except SASLError as e:
           raise Closed(str(e))
         self._write(cipher_buf)
       else:
@@ -96,14 +96,14 @@ class Framer(Packer):
         if self.security_layer_rx:
           try:
             s = self.security_layer_rx.decode(s)
-          except SASLError, e:
+          except SASLError as e:
             raise Closed(str(e))
       except socket.timeout:
         if self.aborted():
           raise Closed()
         else:
           continue
-      except socket.error, e:
+      except socket.error as e:
         if self.rx_buf != "":
           raise e
         else:

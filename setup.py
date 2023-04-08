@@ -61,22 +61,19 @@ class preprocessor:
       else:
         try:
           fsrc = open(src, 'rb')
-        except os.error, (errno, errstr):
-          raise DistutilsFileError, \
-              "could not open '%s': %s" % (src, errstr)
+        except os.error as (errno, errstr):
+          raise DistutilsFileError("could not open '%s': %s" % (src, errstr))
 
         if os.path.exists(dst):
           try:
             os.unlink(dst)
-          except os.error, (errno, errstr):
-            raise DistutilsFileError, \
-                "could not delete '%s': %s" % (dst, errstr)
+          except os.error as (errno, errstr):
+            raise DistutilsFileError("could not delete '%s': %s" % (dst, errstr))
 
         try:
           fdst = open(dst, 'wb')
-        except os.error, (errno, errstr):
-          raise DistutilsFileError, \
-              "could not create '%s': %s" % (dst, errstr)
+        except os.error as (errno, errstr):
+          raise DistutilsFileError("could not create '%s': %s" % (dst, errstr))
 
         try:
           fdst.write(actor(fsrc.read()))
@@ -129,7 +126,7 @@ class build_doc(Command):
     try:
       from epydoc.docbuilder import build_doc_index
       from epydoc.docwriter.html import HTMLWriter
-    except ImportError, e:
+    except ImportError as e:
       log.warn('%s -- skipping build_doc', e)
       return
 

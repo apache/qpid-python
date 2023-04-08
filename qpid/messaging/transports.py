@@ -149,7 +149,7 @@ else:
         n = self.tls.write( self.write_retry )
         self.write_retry = None
         return n
-      except SSLError, e:
+      except SSLError as e:
         if self._update_state(e.args[0]):
           # will retry on next invokation
           return 0
@@ -163,7 +163,7 @@ else:
       self._clear_state()
       try:
         return self.tls.read(n)
-      except SSLError, e:
+      except SSLError as e:
         if self._update_state(e.args[0]):
           # will retry later:
           return None

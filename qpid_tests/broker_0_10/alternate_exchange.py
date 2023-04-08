@@ -110,7 +110,7 @@ class AlternateExchangeTests(TestBase010):
         try:
             session2.exchange_delete(exchange="alternate")
             self.fail("Expected deletion of in-use alternate-exchange to fail")
-        except SessionException, e:
+        except SessionException as e:
             session = self.session
             session.queue_delete(queue="q")
             session.exchange_delete(exchange="alternate")
@@ -130,7 +130,7 @@ class AlternateExchangeTests(TestBase010):
         try:
             session.exchange_delete(exchange="alternate")
             self.fail("Expected deletion of in-use alternate-exchange to fail")
-        except SessionException, e:
+        except SessionException as e:
             session = self.session
             session.exchange_delete(exchange="e")
             session.exchange_delete(exchange="alternate")
@@ -150,7 +150,7 @@ class AlternateExchangeTests(TestBase010):
             # attempt to change the alternate on an already existing exchange
             session.exchange_declare(exchange="onealternate", type="fanout", alternate_exchange="alt2")
             self.fail("Expected changing an alternate on an existing exchange to fail")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(530, e.args[0].error_code)
         session = self.conn.session("alternate", 2)
         session.exchange_delete(exchange="onealternate")
@@ -170,7 +170,7 @@ class AlternateExchangeTests(TestBase010):
             # attempt to add an alternate on an already existing exchange
             session.exchange_declare(exchange="noalternate", type="fanout", alternate_exchange="alt1")
             self.fail("Expected adding an alternate on an existing exchange to fail")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(530, e.args[0].error_code)
         session = self.conn.session("alternate", 2)
         session.exchange_delete(exchange="noalternate")

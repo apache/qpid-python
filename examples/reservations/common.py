@@ -60,7 +60,7 @@ class Dispatcher:
         try:
           snd = session.sender(to)
           snd.send(r)
-        except SendError, e:
+        except SendError as e:
           print e
         finally:
           snd.close()

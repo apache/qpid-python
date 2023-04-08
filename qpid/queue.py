@@ -83,7 +83,7 @@ class Queue(BaseQueue):
         o = self.get()
         if o == Queue.STOP: break
         self.listener(o)
-      except Closed, e:
+      except Closed as e:
         if self.exc_listener is not None:
           self.exc_listener(e)
         break

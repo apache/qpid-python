@@ -47,7 +47,7 @@ class Base(Test):
 
     try:
       self.conn = self.setup_connection()
-    except ConnectError, e:
+    except ConnectError as e:
       raise Skipped(e)
     self.ssn = self.setup_session()
     self.snd = self.setup_sender()

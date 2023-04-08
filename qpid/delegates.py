@@ -188,7 +188,7 @@ class Client(Delegate):
     initial = None
     try:
       mech, initial = self.sasl.start(mech_list)
-    except Exception, e:
+    except Exception as e:
       raise Closed(str(e))
     ch.connection_start_ok(client_properties=self.client_properties,
                            mechanism=mech, response=initial)
@@ -197,7 +197,7 @@ class Client(Delegate):
     resp = None
     try:
       resp = self.sasl.step(secure.challenge)
-    except Exception, e:
+    except Exception as e:
       raise Closed(str(e))
     ch.connection_secure_ok(response=resp)
 

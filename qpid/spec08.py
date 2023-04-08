@@ -372,7 +372,7 @@ def load(specfile, *errata):
                        get_docs(nd))
       try:
         spec.constants.add(const)
-      except ValueError, e:
+      except ValueError as e:
         pass
         #print "Warning:", e
 

@@ -454,7 +454,7 @@ class Driver:
         self._check_retry_ok()
       else:
         self.close_engine()
-    except socket.error, e:
+    except socket.error as e:
       self.close_engine(ConnectionError(text=str(e)))
 
     self.update_status()
@@ -519,7 +519,7 @@ class Driver:
       if n == 0: return
       sent = self.engine.read(n)
       rawlog.debug("SENT[%s]: %r", self.log_id, sent)
-    except socket.error, e:
+    except socket.error as e:
       self.close_engine(e)
       notify = True
 
@@ -551,10 +551,10 @@ class Driver:
           self.connect()
       elif self.engine is not None:
         self.engine.dispatch()
-    except HeartbeatTimeout, e:
+    except HeartbeatTimeout as e:
       log.warn("Heartbeat timeout")
       self.close_engine(e)
-    except ContentError, e:
+    except ContentError as e:
       msg = compat.format_exc()
       self.connection.error = ContentError(text=msg)
     except:
@@ -580,7 +580,7 @@ class Driver:
       else:
         raise ConnectError("no such transport: %s" % self.connection.transport)
       self.schedule()
-    except socket.error, e:
+    except socket.error as e:
       self.close_engine(ConnectError(text=str(e)))
 
 DEFAULT_DISPOSITION = Disposition(None)
@@ -696,7 +696,7 @@ class Engine:
         opslog.debug("RCVD[%s]: %r", self.log_id, op)
         op.dispatch(self)
       self.dispatch()
-    except MessagingError, e:
+    except MessagingError as e:
       self.close(e)
     except:
       self.close(InternalError(text=compat.format_exc()))
@@ -759,7 +759,7 @@ class Engine:
       mechs = start.mechanisms
     try:
       mech, initial = self._sasl.start(" ".join(mechs))
-    except sasl.SASLError, e:
+    except sasl.SASLError as e:
       if "ANONYMOUS" not in mechs and self.connection.username is None:
         _text="Anonymous connections disabled, missing credentials"
       else:
@@ -995,9 +995,9 @@ class Engine:
             xdeclare['auto-delete'] = "True"
           if 'exclusive' not in xdeclare:
             xdeclare['exclusive'] = "True"
-      except address.LexError, e:
+      except address.LexError as e:
         return MalformedAddress(text=str(e))
-      except address.ParseError, e:
+      except address.ParseError as e:
         return MalformedAddress(text=str(e))
 
   def validate_options(self, lnk, dir):
@@ -1369,7 +1369,7 @@ class Engine:
     enc, dec = get_codec(msg.content_type)
     try:
       body = enc(msg.content)
-    except AttributeError, e:
+    except AttributeError as e:
       # convert to non-blocking EncodeError
       raise EncodeError(e)
 
@@ -1428,7 +1428,7 @@ class Engine:
     enc, dec = get_codec(mp.content_type)
     try:
       content = dec(xfr.payload)
-    except Exception, e:
+    except Exception as e:
       raise DecodeError(e)
     msg = Message(content)
     msg.id = mp.message_id

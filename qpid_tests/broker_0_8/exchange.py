@@ -221,7 +221,7 @@ class DeclareMethodPassiveFieldNotFoundRuleTests(TestBase):
         try:
             self.channel.exchange_declare(exchange="humpty_dumpty", passive=True)
             self.fail("Expected 404 for passive declaration of unknown exchange.")
-        except Closed, e:
+        except Closed as e:
             self.assertChannelException(404, e.args[0])
 
 
@@ -313,7 +313,7 @@ class MiscellaneousErrorsTests(TestBase):
         try:
             self.channel.exchange_declare(exchange="test_type_not_known_exchange", type="invalid_type")
             self.fail("Expected 503 for declaration of unknown exchange type.")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(503, e.args[0])
 
     def testDifferentDeclaredType(self):
@@ -321,7 +321,7 @@ class MiscellaneousErrorsTests(TestBase):
         try:
             self.channel.exchange_declare(exchange="test_different_declared_type_exchange", type="topic")
             self.fail("Expected 530 for redeclaration of exchange with different type.")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(530, e.args[0])
         #cleanup    
         other = self.connect()
@@ -337,13 +337,13 @@ class MiscellaneousErrorsTests(TestBase):
         try:
             self.channel.exchange_declare(exchange="amq.direct", type="topic", passive=False)
             self.fail("Expected 530 for redeclaration of exchange with different type.")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(530, e.args[0])
 
     def testReservedExchangeNameDisallowed(self):
         try:
             self.channel.exchange_declare(exchange="amq.myexch", type="direct", passive=False)
             self.fail("Expected 530 for redeclaration of exchange with different type.")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(530, e.args[0])
 

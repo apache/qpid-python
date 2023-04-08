@@ -55,7 +55,7 @@ class SetupTests(Base):
       # Specifying port 0 yields a bad address on Windows; port 4 is unassigned
       self.conn = Connection.establish("localhost:4")
       assert False, "connect succeeded"
-    except ConnectError, e:
+    except ConnectError as e:
       assert "refused" in str(e)
 
   def testGetError(self):
@@ -63,7 +63,7 @@ class SetupTests(Base):
     try:
       self.conn.open()
       assert False, "connect succeeded"
-    except ConnectError, e:
+    except ConnectError as e:
       assert self.conn.get_error() == e
 
   def use_fds(self):
@@ -71,7 +71,7 @@ class SetupTests(Base):
     try:
       while True:
         fds.append(os.open(getattr(os, "devnull", "/dev/null"), os.O_RDONLY))
-    except OSError, e:
+    except OSError as e:
       if e.errno != errno.EMFILE:
         raise e
       else:
@@ -103,7 +103,7 @@ class SetupTests(Base):
         conn._lock.release()
         try:
           conn.open()
-        except ConnectError, e:
+        except ConnectError as e:
           pass
     finally:
       while fds:
@@ -738,9 +738,9 @@ class ReceiverTests(Base):
     try:
       msg = self.rcv.fetch(0)
       assert False, "unexpected result: %s" % msg
-    except Empty, e:
+    except Empty as e:
       assert False, "unexpected exception: %s" % e
-    except LinkClosed, e:
+    except LinkClosed as e:
       pass
 
   def testFetchFromClosedReceiver(self):
@@ -761,9 +761,9 @@ class ReceiverTests(Base):
     try:
       msg = self.rcv.fetch()
       assert False, "unexpected result: %s" % msg
-    except Empty, e:
+    except Empty as e:
       assert False, "unexpected exception: %s" % e
-    except LinkClosed, e:
+    except LinkClosed as e:
       pass
     t.join()
 
@@ -971,13 +971,13 @@ class AddressTests(Base):
     try:
       self.ssn.sender("test-bad-options-snd; %s" % options)
       assert False
-    except InvalidOption, e:
+    except InvalidOption as e:
       assert "error in options: %s" % error == str(e), e
 
     try:
       self.ssn.receiver("test-bad-options-rcv; %s" % options)
       assert False
-    except InvalidOption, e:
+    except InvalidOption as e:
       assert "error in options: %s" % error == str(e), e
 
   def testIllegalKey(self):
@@ -1054,7 +1054,7 @@ class AddressTests(Base):
     snd.close()
     try:
       self.ssn.sender("test-delete")
-    except NotFound, e:
+    except NotFound as e:
       assert "no such queue" in str(e)
 
   def testDeleteByReceiver(self):
@@ -1068,7 +1068,7 @@ class AddressTests(Base):
     try:
       self.ssn.receiver("test-delete")
       assert False
-    except NotFound, e:
+    except NotFound as e:
       assert "no such queue" in str(e)
 
   def testDeleteSpecial(self):
@@ -1077,7 +1077,7 @@ class AddressTests(Base):
     try:
       snd.close()
       assert False, "successfully deleted amq.topic"
-    except SessionError, e:
+    except SessionError as e:
       assert e.code == 530
     # XXX: need to figure out close after error
     self.conn._remove_session(self.ssn)
@@ -1230,9 +1230,9 @@ test-link-bindings-queue; {
     try:
       snd = self.ssn.sender("amq.topic; {assert: always, node: {type: queue}}")
       assert 0, "assertion failed to trigger"
-    except AssertionFailed, e:
+    except AssertionFailed as e:
       pass
-    except NotFound, e:  # queue named amp.topic not found
+    except NotFound as e:  # queue named amp.topic not found
       pass
 
   def testAssert2(self):
@@ -1254,14 +1254,14 @@ class AddressErrorTests(Base):
     try:
       self.ssn.sender(addr, durable=self.durable())
       assert False, "sender creation succeeded"
-    except exc, e:
+    except exc as e:
       assert check(e), "unexpected error: %s" % compat.format_exc(e)
 
   def receiverErrorTest(self, addr, exc, check=lambda e: True):
     try:
       self.ssn.receiver(addr)
       assert False, "receiver creation succeeded"
-    except exc, e:
+    except exc as e:
       assert check(e), "unexpected error: %s" % compat.format_exc(e)
 
   def testNoneTarget(self):

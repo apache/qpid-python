@@ -21,7 +21,7 @@ if 'QPID_USE_SWIG_CLIENT' in os.environ and os.environ['QPID_USE_SWIG_CLIENT']:
   try:
     from qpid_messaging import *
     from qpid.datatypes import uuid4
-  except ImportError, e:
+  except ImportError as e:
     print "Swigged client not found. Falling back to pure bindings, %s\n" % e
     from qpid.messaging import *
 else:

@@ -126,7 +126,7 @@ class BaseWaiter:
         try:
           ready, _, _ = select([self], [], [], timeout)
           break
-        except SelectError, e:
+        except SelectError as e:
           if e[0] == errno.EINTR:
             elapsed = time.time() - start
             timeout = timeout - elapsed

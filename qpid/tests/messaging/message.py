@@ -179,7 +179,7 @@ class MessageEchoTests(Base):
       self.snd.send(msg)
       self.rcv.fetch(0)
       assert False, "Exception not raised on mismatched content/content_type"
-    except Exception, e:
+    except Exception as e:
       pass
 
   def testRecoverAfterException(self):

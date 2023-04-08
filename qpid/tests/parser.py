@@ -33,5 +33,5 @@ class ParserBase:
     try:
       p = self.do_parse(addr)
       assert False, "invalid address parsed: %s" % p
-    except ParseError, e:
+    except ParseError as e:
       assert error == str(e), "expected %r, got %r" % (error, str(e))

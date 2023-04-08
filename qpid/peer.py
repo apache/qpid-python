@@ -104,12 +104,12 @@ class Peer:
       while True:
         try:
           frame = self.conn.read()
-        except EOF, e:
+        except EOF as e:
           self.work.close("Connection lost")
           break
         ch = self.channel(frame.channel)
         ch.receive(frame, self.work)
-    except VersionError, e:
+    except VersionError as e:
       self.closed(e)
     except:
       self.fatal()
@@ -129,7 +129,7 @@ class Peer:
         try:
           message = self.outgoing.get()
           self.conn.write(message)
-        except socket.error, e:
+        except socket.error as e:
           self.closed(e)
           break
         self.conn.flush()
@@ -150,7 +150,7 @@ class Peer:
           content = None
 
         self.delegate(channel, Message(channel, frame, content))
-    except QueueClosed, e:
+    except QueueClosed as e:
       self.closed(str(e) or "worker closed")
     except:
       self.fatal()
@@ -339,7 +339,7 @@ class Channel:
         return Message(self, resp, read_content(self.responses))
       else:
         return Message(self, resp)
-    except QueueClosed, e:
+    except QueueClosed as e:
       if self._closed:
         raise Closed(self.reason)
       else:
@@ -396,7 +396,7 @@ class Channel:
           raise Closed(self.reason)
         if not completed:
           self.closed("Timed-out waiting for completion of %s" % frame)
-    except QueueClosed, e:
+    except QueueClosed as e:
       if self._closed:
         raise Closed(self.reason)
       else:

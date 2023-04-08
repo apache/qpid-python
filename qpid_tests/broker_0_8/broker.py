@@ -89,7 +89,7 @@ class BrokerTests(TestBase):
         try:
             channel.queue_declare(exclusive=True)
             self.fail("Expected error on queue_declare for invalid channel")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(504, e.args[0])
         
     def test_closed_channel(self):
@@ -99,7 +99,7 @@ class BrokerTests(TestBase):
         try:
             channel.queue_declare(exclusive=True)
             self.fail("Expected error on queue_declare for closed channel")
-        except Closed, e:
+        except Closed as e:
             self.assertConnectionException(504, e.args[0])
 
     def test_channel_flow(self):

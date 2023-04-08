@@ -671,7 +671,7 @@ class Session(Endpoint):
       self._wakeup()
       try:
         sender._ewait(lambda: sender.linked)
-      except LinkError, e:
+      except LinkError as e:
         sender.close()
         raise e
     return sender
@@ -695,7 +695,7 @@ class Session(Endpoint):
       self._wakeup()
       try:
         receiver._ewait(lambda: receiver.linked)
-      except LinkError, e:
+      except LinkError as e:
         receiver.close()
         raise e
     return receiver
@@ -825,7 +825,7 @@ class Session(Endpoint):
         raise Timeout("commit timed out")
     except TransactionError:
       raise
-    except Exception, e:
+    except Exception as e:
       self.error = TransactionAborted(text="Transaction aborted: %s"%e)
       raise self.error
     if self.aborted:
