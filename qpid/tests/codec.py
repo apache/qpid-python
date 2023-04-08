@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import unittest
 from qpid.codec import Codec
 from qpid.spec08 import load
@@ -704,25 +705,25 @@ if __name__ == '__main__':
     test_runner = unittest.TextTestRunner(run_output_stream, '', '')
     test_result = test_runner.run(codec_test_suite)
 
-    print '\n%d test run...' % (test_result.testsRun)
+    print('\n%d test run...' % (test_result.testsRun))
 
     if test_result.wasSuccessful():
-        print '\nAll tests successful\n'
+        print('\nAll tests successful\n')
 
     if test_result.failures:
-        print '\n----------'
-        print '%d FAILURES:' % (len(test_result.failures))
-        print '----------\n'
+        print('\n----------')
+        print('%d FAILURES:' % (len(test_result.failures)))
+        print('----------\n')
         for failure in test_result.failures:
-            print str(failure[0]) + ' ... FAIL'
+            print(str(failure[0]) + ' ... FAIL')
 
     if test_result.errors:
-        print '\n---------'
-        print '%d ERRORS:' % (len(test_result.errors))
-        print '---------\n'
+        print('\n---------')
+        print('%d ERRORS:' % (len(test_result.errors)))
+        print('---------\n')
 
         for error in test_result.errors:
-            print str(error[0]) + ' ... ERROR'
+            print(str(error[0]) + ' ... ERROR')
 
     f = open('codec_unit_test_output.txt', 'w')
     f.write(str(run_output_stream.getvalue()))

@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import sys
 from qpid.messaging import *
 
@@ -43,10 +44,10 @@ try:
   sender.send(Message("Hello world!"));
 
   message = receiver.fetch()
-  print message.content
+  print(message.content)
   session.acknowledge()
 
 except MessagingError as m:
-  print m
+  print(m)
 
 connection.close()

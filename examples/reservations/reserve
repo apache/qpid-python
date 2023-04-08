@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import optparse, os, sys, time
 from uuid import uuid4
 from qpid.messaging import *
@@ -95,10 +96,10 @@ class Requester(Dispatcher):
     self.agents[id] = (status, owner)
 
     if opts.status:
-      print self.agent_status(id)
+      print(self.agent_status(id))
 
   def do_empty(self, msg):
-    print "no matching resources"
+    print("no matching resources")
 
   def candidates(self, candidate_status, candidate_owner):
     for id, (status, owner) in self.agents.items():
@@ -160,8 +161,8 @@ try:
                                           "identity": [cid]},
                             content = {"owner": opts.owner})
           if not requested:
-            print "requesting %s:" % request_type,
-          print cid,
+            print("requesting %s:" % request_type, end=' ')
+          print(cid, end=' ')
           sys.stdout.flush()
           req.correlation(req_msg.correlation_id)
           snd.send(req_msg)
@@ -170,7 +171,7 @@ try:
         discovering = False
 
   if requested:
-    print
+    print()
     owners = {}
     for id in requested:
       st, ow = req.agents[id]
@@ -183,14 +184,14 @@ try:
       owners[k].sort()
       v = ", ".join(owners[k])
       if k is None:
-        print "free: %s" % v
+        print("free: %s" % v)
       else:
-        print "owner %s: %s" % (k, v)
+        print("owner %s: %s" % (k, v))
   elif req.agents and not opts.status:
-    print "no available resources"
+    print("no available resources")
 
   if req.outstanding:
-    print "request timed out"
+    print("request timed out")
 except KeyboardInterrupt:
   pass
 finally:

@@ -24,6 +24,7 @@
 ## This file is being obsoleted by qmf/console.py
 ###############################################################################
 
+from __future__ import print_function
 import qpid
 import re
 import socket
@@ -171,14 +172,14 @@ class ManagementData:
     try:
       line = "Call Result: " + self.methodsPending[sequence] + \
              "  " + str (status) + " (" + sText + ")"
-      print line, args
+      print(line, args)
       del self.methodsPending[sequence]
     finally:
       self.lock.release ()
 
   def closeHandler (self, context, reason):
     if self.operational:
-      print "Connection to broker lost:", reason
+      print("Connection to broker lost:", reason)
     self.operational = False
     if self.cli != None:
       self.cli.setPromptMessage ("Broker Disconnected")
@@ -458,21 +459,21 @@ class ManagementData:
         self.disp.table ("Management Object Types:",
                          ("ObjectType", "Active", "Deleted"), rows)
       else:
-        print "Waiting for next periodic update"
+        print("Waiting for next periodic update")
     finally:
       self.lock.release ()
 
   def listObjects (self, tokens):
     """ Generate a display of a list of objects in a class """
     if len(tokens) == 0:
-      print "Error - No class name provided"
+      print("Error - No class name provided")
       return
 
     self.lock.acquire ()
     try:
       classKey = self.getClassKey (tokens[0])
       if classKey == None:
-        print ("Object type %s not known" % tokens[0])
+        print(("Object type %s not known" % tokens[0]))
       else:
         rows = []
         if classKey in self.tables:
@@ -506,18 +507,18 @@ class ManagementData:
         classKey  = self.getClassForId (self.rawObjId (rootId))
         remaining = tokens
         if classKey == None:
-          print "Id not known: %d" % int (tokens[0])
+          print("Id not known: %d" % int (tokens[0]))
           raise ValueError ()
       else:
         classKey  = self.getClassKey (tokens[0])
         remaining = tokens[1:]
         if classKey not in self.tables:
-          print "Class not known: %s" % tokens[0]
+          print("Class not known: %s" % tokens[0])
           raise ValueError ()
 
       userIds = self.listOfIds (classKey, remaining)
       if len (userIds) == 0:
-        print "No object IDs supplied"
+        print("No object IDs supplied")
         raise ValueError ()
 
       ids = []
@@ -586,7 +587,7 @@ class ManagementData:
     try:
       classKey = self.getClassKey (className)
       if classKey == None:
-        print ("Class name %s not known" % className)
+        print(("Class name %s not known" % className))
         raise ValueError ()
 
       rows = []
@@ -665,7 +666,7 @@ class ManagementData:
         raise ValueError ()
 
       if methodName not in self.schema[classKey][2]:
-        print "Method '%s' not valid for class '%s'" % (methodName, self.displayClassName(classKey))
+        print("Method '%s' not valid for class '%s'" % (methodName, self.displayClassName(classKey)))
         raise ValueError ()
 
       schemaMethod = self.schema[classKey][2][methodName]
@@ -674,7 +675,7 @@ class ManagementData:
         if schemaMethod[1][arg][2].find("I") != -1:
           count += 1
       if len (args) != count:
-        print "Wrong number of method args: Need %d, Got %d" % (count, len (args))
+        print("Wrong number of method args: Need %d, Got %d" % (count, len (args)))
         raise ValueError ()
 
       namedArgs = {}
@@ -723,7 +724,7 @@ class ManagementData:
     else:
       row = self.makeIdRow (select)
       if row == None:
-        print "Display Id %d not known" % select
+        print("Display Id %d not known" % select)
         return
       rows.append(row)
     self.disp.table("Translation of Display IDs:",
@@ -754,7 +755,7 @@ class ManagementData:
     except:
       tokens = encTokens
     if len (tokens) < 2:
-      print "Not enough arguments supplied"
+      print("Not enough arguments supplied")
       return
     
     displayId  = long (tokens[0])

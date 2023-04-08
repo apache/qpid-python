@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import threading, traceback, signal, sys, time
 
 def stackdump(sig, frm):
@@ -27,7 +28,7 @@ def stackdump(sig, frm):
       code.append('File: "%s", line %d, in %s' % (filename, lineno, name))
       if line:
         code.append("  %s" % (line.strip()))
-  print "\n".join(code)
+  print("\n".join(code))
 
 signal.signal(signal.SIGQUIT, stackdump)
 
@@ -39,12 +40,12 @@ class LoudLock:
   def acquire(self, blocking=1):
     while not self.lock.acquire(blocking=0):
       time.sleep(1)
-      print >> sys.out, "TRYING"
+      print("TRYING", file=sys.out)
       traceback.print_stack(None, None, out)
-      print >> sys.out, "TRYING"
-    print >> sys.out, "ACQUIRED"
+      print("TRYING", file=sys.out)
+    print("ACQUIRED", file=sys.out)
     traceback.print_stack(None, None, out)
-    print >> sys.out, "ACQUIRED"
+    print("ACQUIRED", file=sys.out)
     return True
 
   def _is_owned(self):

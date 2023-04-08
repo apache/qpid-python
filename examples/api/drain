@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import optparse
 from qpid.messaging import *
 from qpid.util import URL
@@ -84,13 +85,13 @@ try:
   while not opts.count or count < opts.count:
     try:
       msg = rcv.fetch(timeout=timeout)
-      print opts.format % Formatter(msg)
+      print(opts.format % Formatter(msg))
       count += 1
       ssn.acknowledge()
     except Empty:
       break
 except ReceiverError as e:
-  print e
+  print(e)
 except KeyboardInterrupt:
   pass
 

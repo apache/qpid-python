@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 from qpid.tests.messaging.implementation import *
 from qpid.tests.messaging import Base
 from qpidtoollibs import BrokerAgent
@@ -33,14 +34,14 @@ class GeneralTests(Base):
 
     def assertEqual(self, left, right, text=None):
         if not left == right:
-            print "assertEqual failure: %r != %r" % (left, right)
+            print("assertEqual failure: %r != %r" % (left, right))
             if text:
-                print "  %r" % text
+                print("  %r" % text)
             assert None
 
     def fail(self, text=None):
         if text:
-            print "Fail: %r" % text
+            print("Fail: %r" % text)
         assert None
 
     def setup_connection(self):
@@ -283,7 +284,7 @@ class SequenceNumberTests(Base):
 
     def fail(self, text=None):
         if text:
-            print "Fail: %r" % text
+            print("Fail: %r" % text)
         assert None
 
     def setup_connection(self):

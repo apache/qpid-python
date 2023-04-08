@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import print_function
 import os, mllib, cPickle as pickle, sys
 from util import fill
 
@@ -26,7 +27,7 @@ class Enum(object):
 
   # XXX: for backwards compatibility
   def values(cls):
-    print >> sys.stderr, "warning, please use .VALUES instead of .values()"
+    print("warning, please use .VALUES instead of .values()", file=sys.stderr)
     return cls.VALUES
   # we can't use the backport preprocessor here because this code gets
   # called by setup.py

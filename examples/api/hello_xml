@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import sys
 from qpid.messaging import *
 
@@ -68,10 +69,10 @@ try:
 # Retrieve matching message from the receiver and print it
 
   message = receiver.fetch(timeout=1)
-  print message.content
+  print(message.content)
   session.acknowledge()
 
 except MessagingError as m:
-  print m
+  print(m)
 
 connection.close()
