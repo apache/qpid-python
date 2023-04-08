@@ -637,7 +637,7 @@ def test(type, value):
     enc = stream.getvalue()
     stream.reset()
     dup = []
-    for i in xrange(len(values)):
+    for i in range(len(values)):
       dup.append(codec.decode(type))
     if values != dup:
       raise AssertionError("%r --> %r --> %r" % (values, enc, dup))

@@ -271,7 +271,7 @@ class Channel:
         # if other type
         raise ContentError("Content body must be string or buffer, not a %s" % type(content.body))
       frame_max = self.client.tune_params['frame_max'] - self.client.conn.AMQP_HEADER_SIZE
-      for chunk in (content.body[i:i + frame_max] for i in xrange(0, len(content.body), frame_max)):
+      for chunk in (content.body[i:i + frame_max] for i in range(0, len(content.body), frame_max)):
         self.write(Body(chunk))
 
   def receive(self, frame, work):

@@ -121,7 +121,7 @@ class Client:
     self.lock.acquire()
     try:
       id = None
-      for i in xrange(1, 64*1024):
+      for i in range(1, 64*1024):
         if not self.sessions.has_key(i):
           id = i
           break

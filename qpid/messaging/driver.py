@@ -894,7 +894,7 @@ class Engine:
     if ssn.closed: return
     sst = self._attachments.get(ssn)
     if sst is None:
-      for i in xrange(0, self.channel_max):
+      for i in range(0, self.channel_max):
         if not self._sessions.has_key(i):
           ch = i
           break

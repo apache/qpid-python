@@ -73,7 +73,7 @@ class LVQTests (Base):
             counters[k] += 1
             messages.append(create_message(k, "%s-%i" % (k, counters[k])))
         # make sure we have sent at least one message for every key
-        for k, v in counters.iteritems():
+        for k, v in counters.items():
             if v == 0:
                 counters[k] += 1
                 messages.append(create_message(k, "%s-%i" % (k, counters[k])))

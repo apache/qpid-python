@@ -210,7 +210,7 @@ class UUIDTest(TestCase):
     # this test is kind of lame, but it does excercise the basic
     # functionality of the class
     u = uuid4()
-    for i in xrange(1024):
+    for i in range(1024):
       assert u != uuid4()
 
 class MessageTest(TestCase):
