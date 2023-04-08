@@ -26,6 +26,11 @@ from __future__ import division
 from __future__ import generators
 from __future__ import nested_scopes
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 import mllib.transforms
 
 try:

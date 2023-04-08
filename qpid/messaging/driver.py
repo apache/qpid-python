@@ -37,6 +37,16 @@ from qpid.util import URL, default,get_client_properties_with_defaults
 from qpid.validator import And, Context, List, Map, Types, Values
 from threading import Condition, Thread
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
+try:
+  long
+except NameError:
+  long = int
+
 log = getLogger("qpid.messaging")
 rawlog = getLogger("qpid.messaging.io.raw")
 opslog = getLogger("qpid.messaging.io.ops")

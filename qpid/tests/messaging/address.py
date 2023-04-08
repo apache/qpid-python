@@ -26,6 +26,11 @@ from qpid.lexer import Token
 from qpid.harness import Skipped
 from qpid.tests.parser import ParserBase
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 def indent(st):
   return "  " + st.replace("\n", "\n  ")
 

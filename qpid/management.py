@@ -39,6 +39,10 @@ except ImportError:
 from .codec010    import StringCodec as Codec
 from threading    import Lock, Condition
 
+try:
+  long
+except NameError:
+  long = int
 
 class SequenceManager:
   """ Manage sequence numbers for asynchronous method calls """

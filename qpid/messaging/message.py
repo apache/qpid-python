@@ -21,6 +21,16 @@ from __future__ import absolute_import
 from qpid.codec010 import StringCodec
 from qpid.ops import PRIMITIVE
 
+try:
+  unicode
+except NameError:
+  unicode = str
+
+try:
+  buffer
+except NameError:
+  buffer = memoryview
+
 def codec(name):
   type = PRIMITIVE[name]
 
@@ -44,7 +54,7 @@ TYPE_MAPPINGS={
   unicode: "text/plain; charset=utf8",
   unicode: "text/plain",
   buffer: None,
-  str: None,
+  bytes: None,
   None.__class__: None
   }
 

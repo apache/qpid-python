@@ -41,6 +41,11 @@ from shlex           import split
 from qpid.connection import Connection
 from qpid.util       import connect
 
+try:
+  long
+except NameError:
+  long = int
+
 class Broker:
   def __init__ (self, text):
     rex = re.compile(r"""

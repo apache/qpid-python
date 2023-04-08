@@ -41,6 +41,11 @@ from qpid.ops import PRIMITIVE
 from qpid.util import default, URL
 from threading import Thread, RLock
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 log = getLogger("qpid.messaging")
 
 static = staticmethod
