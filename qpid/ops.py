@@ -17,7 +17,11 @@
 # under the License.
 #
 from __future__ import print_function
-import os, mllib, cPickle as pickle, sys
+import os, mllib, sys
+try:
+  import cPickle as pickle
+except ImportError:
+  import pickle
 from util import fill
 
 class Primitive(object):
