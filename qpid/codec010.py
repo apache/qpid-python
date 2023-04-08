@@ -60,7 +60,7 @@ class Codec(Packer):
     return PRIMITIVE[enc]
 
   def _encoding(self, klass, obj):
-    if self.ENCODINGS.has_key(klass):
+    if klass in self.ENCODINGS:
       return self.ENCODINGS[klass](obj)
     for base in klass.__bases__:
       result = self._encoding(base, obj)
@@ -339,7 +339,7 @@ class Codec(Packer):
     for i in range(len(op.FIELDS)):
       f = op.FIELDS[i]
       if flags & (0x1 << i):
-        if COMPOUND.has_key(f.type):
+        if f.type in COMPOUND:
           value = self.read_compound(COMPOUND[f.type])
         else:
           value = getattr(self, "read_%s" % f.type)()
@@ -360,7 +360,7 @@ class Codec(Packer):
     for i in range(len(op.FIELDS)):
       f = op.FIELDS[i]
       if flags & (0x1 << i):
-        if COMPOUND.has_key(f.type):
+        if f.type in COMPOUND:
           enc = self.write_compound
         else:
           enc = getattr(self, "write_%s" % f.type)

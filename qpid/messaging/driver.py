@@ -820,7 +820,7 @@ class Engine:
 
     if not sc.commands.empty():
       while sst.min_completion in sc.commands:
-        if sst.actions.has_key(sst.min_completion):
+        if sst.min_completion in sst.actions:
           sst.actions.pop(sst.min_completion)()
         sst.min_completion += 1
 
@@ -895,7 +895,7 @@ class Engine:
     sst = self._attachments.get(ssn)
     if sst is None:
       for i in range(0, self.channel_max):
-        if not self._sessions.has_key(i):
+        if i not in self._sessions:
           ch = i
           break
       else:
