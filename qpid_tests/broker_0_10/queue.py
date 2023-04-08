@@ -43,7 +43,7 @@ class QueueTests(TestBase010):
         self.assertEqual(3, reply.message_count)
 
         #now do the purge, then test that three messages are purged and the count drops to 0
-        session.queue_purge(queue="test-queue");
+        session.queue_purge(queue="test-queue")
         reply = session.queue_query(queue="test-queue")
         self.assertEqual(0, reply.message_count)        
 

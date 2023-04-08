@@ -161,18 +161,18 @@ class Peer:
 
   def stop(self):
     try:
-      self.work.close();
-      self.outgoing.close();
-      self.conn.close();
+      self.work.close()
+      self.outgoing.close()
+      self.conn.close()
     finally:
-      timeout = 1;
-      self.worker_thread.join(timeout);
+      timeout = 1
+      self.worker_thread.join(timeout)
       if self.worker_thread.is_alive():
         log.warn("Worker thread failed to shutdown within timeout")
-      self.reader_thread.join(timeout);
+      self.reader_thread.join(timeout)
       if self.reader_thread.is_alive():
         log.warn("Reader thread failed to shutdown within timeout")
-      self.writer_thread.join(timeout);
+      self.writer_thread.join(timeout)
       if self.writer_thread.is_alive():
         log.warn("Writer thread failed to shutdown within timeout")
 

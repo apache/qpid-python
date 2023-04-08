@@ -536,7 +536,7 @@ class Codec:
     set = []
     for i in range(0, count):
       set.append(self.decode_long())
-    return set;
+    return set
 
   def encode_uuid(self, s):
     self.pack("16s", s)

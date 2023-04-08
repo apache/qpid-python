@@ -656,7 +656,7 @@ class managementClient:
     name        = codec.read_str8()
     classKey    = (packageName, className, hash)
     if classKey not in self.schema:
-      return;
+      return
     schemaClass = self.schema[classKey]
     row = []
     es = schemaClass['E']
@@ -880,7 +880,7 @@ class managementClient:
     elif opcode == 'g':
       self.parseContent (ch, 'B', codec, seq)
     else:
-      raise ValueError ("Unknown opcode: %c" % opcode);
+      raise ValueError ("Unknown opcode: %c" % opcode)
 
   def method (self, channel, userSequence, objId, classId, methodName, args):
     """ Invoke a method on an object """

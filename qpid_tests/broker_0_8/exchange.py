@@ -80,8 +80,8 @@ class StandardExchangeVerifier:
         headers = {"name":"fred", "age":3}
         self.assertPublishGet(q, exchange=ex, properties={'headers':headers})
         self.channel.basic_publish(exchange=ex) # No headers, won't deliver
-        self.assertEmpty(q);                 
-        
+        self.assertEmpty(q)
+
 
 class RecommendedTypesRuleTests(TestBase, StandardExchangeVerifier):
     """

@@ -71,24 +71,24 @@ class MultiConsumerMsgGroupTests(Base):
 
         # C1 should acquire A-0, then C2 should acquire B-3
 
-        m1 = c1.fetch(0);
+        m1 = c1.fetch(0)
         assert m1.properties['THE-GROUP'] == 'A'
         assert m1.content['index'] == 0
 
-        m2 = c2.fetch(0);
+        m2 = c2.fetch(0)
         assert m2.properties['THE-GROUP'] == 'B'
         assert m2.content['index'] == 3
 
         # C1 Acknowledge A-0
-        c1.session.acknowledge(m1);
+        c1.session.acknowledge(m1)
 
         # C2 should next acquire A-1
-        m3 = c2.fetch(0);
+        m3 = c2.fetch(0)
         assert m3.properties['THE-GROUP'] == 'A'
         assert m3.content['index'] == 1
 
         # C1 should next acquire C-6, since groups A&B are held by c2
-        m4 = c1.fetch(0);
+        m4 = c1.fetch(0)
         assert m4.properties['THE-GROUP'] == 'C'
         assert m4.content['index'] == 6
 
@@ -96,13 +96,13 @@ class MultiConsumerMsgGroupTests(Base):
         ## Owners= ---, ^C2, +C2, ^C2, +C2, +C2, ^C1, +C1, +C1,
 
         # C2 Acknowledge B-3, freeing up the rest of B group
-        c2.session.acknowledge(m2);
+        c2.session.acknowledge(m2)
 
         ## Queue = XXX, a-1, a-2, XXX, b-4, b-5, c-6, c-7, c-8...
         ## Owners= ---, ^C2, +C2, ---, ---, ---, ^C1, +C1, +C1,
 
         # C1 should now acquire B-4, since it is next "free"
-        m5 = c1.fetch(0);
+        m5 = c1.fetch(0)
         assert m5.properties['THE-GROUP'] == 'B'
         assert m5.content['index'] == 4
 
@@ -116,11 +116,11 @@ class MultiConsumerMsgGroupTests(Base):
         ## Owners= ---, ^C2, +C2, ---, ^C1, +C1, ---, ---, ---
 
         # C2 should next fetch A-2, followed by C-7
-        m7 = c2.fetch(0);
+        m7 = c2.fetch(0)
         assert m7.properties['THE-GROUP'] == 'A'
         assert m7.content['index'] == 2
 
-        m8 = c2.fetch(0);
+        m8 = c2.fetch(0)
         assert m8.properties['THE-GROUP'] == 'C'
         assert m8.content['index'] == 7
 
@@ -134,7 +134,7 @@ class MultiConsumerMsgGroupTests(Base):
         ## Owners= ---, ---, ---, ---, ^C1, +C1, ---, ---, ---
 
         # the next fetch of C2 would get C-8, since B-5 is "owned"
-        m9 = c2.fetch(0);
+        m9 = c2.fetch(0)
         assert m9.properties['THE-GROUP'] == 'C'
         assert m9.content['index'] == 8
 
@@ -148,7 +148,7 @@ class MultiConsumerMsgGroupTests(Base):
         ## Owners= ---, ---, ---, ---, ---, ^C2, ---, ---, ^C2
 
         # the next fetch of C2 would get B-5
-        m10 = c2.fetch(0);
+        m10 = c2.fetch(0)
         assert m10.properties['THE-GROUP'] == 'B'
         assert m10.content['index'] == 5
 
@@ -194,13 +194,13 @@ class MultiConsumerMsgGroupTests(Base):
         s2 = self.setup_session()
         b1 = s2.receiver("msg-group-q; {mode: browse}", options={"capacity":0})
 
-        m2 = b1.fetch(0);
+        m2 = b1.fetch(0)
         assert m2.properties['THE-GROUP'] == 'A'
         assert m2.content['index'] == 0
 
         # C1 should acquire A-0
 
-        m1 = c1.fetch(0);
+        m1 = c1.fetch(0)
         assert m1.properties['THE-GROUP'] == 'A'
         assert m1.content['index'] == 0
 
@@ -222,7 +222,7 @@ class MultiConsumerMsgGroupTests(Base):
         assert m2.content['index'] == 3
 
         # verify the consumer can own groups currently seen by the browser
-        m3 = c1.fetch(0);
+        m3 = c1.fetch(0)
         assert m3.properties['THE-GROUP'] == 'B'
         assert m3.content['index'] == 1
 
@@ -337,7 +337,7 @@ class MultiConsumerMsgGroupTests(Base):
         assert m2.content['index'] == 2
 
         # C1 shuffles off the mortal coil...
-        c1.close();
+        c1.close()
 
         # but the session (s1) remains active, so "A" remains blocked
         # from c2, c2 should fetch the next B-3
@@ -1024,7 +1024,7 @@ class MultiConsumerMsgGroupTests(Base):
         c2 = s2.receiver("msg-group-q", options={"capacity":0})
 
         # C1 should acquire A-0
-        m1 = c1.fetch(0);
+        m1 = c1.fetch(0)
         assert m1.properties['THE-GROUP'] == 'A'
         assert m1.content['index'] == 0
 
@@ -1138,7 +1138,7 @@ class MultiConsumerMsgGroupTests(Base):
             m.content['index'] = index
             index += 1
             if m.properties['THE-GROUP'] == 'B':
-                m.ttl = 1;
+                m.ttl = 1
             snd.send(m)
 
         sleep(2)  # let all B's expire
@@ -1152,19 +1152,19 @@ class MultiConsumerMsgGroupTests(Base):
         # C1 should acquire A-0, then C2 should acquire C-2, Group B should
         # expire and never be fetched
 
-        m1 = c1.fetch(0);
+        m1 = c1.fetch(0)
         assert m1.properties['THE-GROUP'] == 'A'
         assert m1.content['index'] == 0
 
-        m2 = c2.fetch(0);
+        m2 = c2.fetch(0)
         assert m2.properties['THE-GROUP'] == 'C'
         assert m2.content['index'] == 2
 
-        m1 = c1.fetch(0);
+        m1 = c1.fetch(0)
         assert m1.properties['THE-GROUP'] == 'A'
         assert m1.content['index'] == 3
 
-        m2 = c2.fetch(0);
+        m2 = c2.fetch(0)
         assert m2.properties['THE-GROUP'] == 'C'
         assert m2.content['index'] == 5
 

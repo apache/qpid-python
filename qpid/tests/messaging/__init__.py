@@ -201,7 +201,7 @@ class VersionTest (Base):
   def create_connection(self, version="amqp1.0", force=False):
     opts = self.connection_options()
     if force or not 'protocol' in opts:
-      opts['protocol'] = version;
+      opts['protocol'] = version
     return Connection.establish(self.broker, **opts)
 
   def setup_connection(self):

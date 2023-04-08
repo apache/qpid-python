@@ -156,12 +156,12 @@ class GeneralTests(Base):
         conn2 = Connection.establish(self.broker, **self.connection_options())
         ssn2 = conn2.session()
 
-        s1 = self.ssn.sender("holding_q; {create:always, delete:always, node:{x-declare:{alternate-exchange:'amq.fanout'}}}");
-        s2 = ssn2.sender("holding_q");
+        s1 = self.ssn.sender("holding_q; {create:always, delete:always, node:{x-declare:{alternate-exchange:'amq.fanout'}}}")
+        s2 = ssn2.sender("holding_q")
 
-        s2.send(Message("a"));
-        s1.send(Message("b"));
-        s2.send(Message("c"));
+        s2.send(Message("a"))
+        s1.send(Message("b"))
+        s2.send(Message("c"))
 
         r = self.ssn.receiver("amq.fanout; {link:{x-declare:{arguments:{'no-local':True}}}}")
 
@@ -181,15 +181,15 @@ class GeneralTests(Base):
         self.assertEqual(received, ["a", "c"])
 
     def _node_disambiguation_test(self, e, q, ambiguous_send=False):
-        s1 = self.ssn.sender("ambiguous; {node:{type:topic}}");
-        s2 = self.ssn.sender("ambiguous; {node:{type:queue}}");
+        s1 = self.ssn.sender("ambiguous; {node:{type:topic}}")
+        s2 = self.ssn.sender("ambiguous; {node:{type:queue}}")
         s1.send(Message("a"))
         s2.send(Message("b"))
         if ambiguous_send:
             # pure python client defaults to using the queue when the
             # node name is ambiguous and no type is specified; the
             # swigged version treats this as an error
-            s3 = self.ssn.sender("ambiguous");
+            s3 = self.ssn.sender("ambiguous")
             s3.send(Message("c"))
         self.assertEqual(e.fetch().content, "a")
         self.assertEqual(q.fetch().content, "b")

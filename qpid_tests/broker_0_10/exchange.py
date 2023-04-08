@@ -185,7 +185,7 @@ class StandardExchangeVerifier:
             headers = {"name":"fred", "age":3}
             self.assertPublishGet(q, exchange=ex, properties=headers)
             self.session.message_transfer(destination=ex) # No headers, won't deliver
-            self.assertEmpty(q);
+            self.assertEmpty(q)
         finally:
             if unbind:
                 self.session.exchange_unbind(queue="q", exchange=ex, binding_key="")
@@ -546,19 +546,19 @@ class AutodeleteTests(TestHelper, StandardExchangeVerifier):
     def testAutodeleteFanout(self):
         self.session.exchange_declare(exchange="e", type="fanout", auto_delete=True)
         self.verifyFanOutExchange("e", unbind=True)
-        self.checkNotExists("e");
+        self.checkNotExists("e")
 
     def testAutodeleteDirect(self):
         self.session.exchange_declare(exchange="e", type="direct", auto_delete=True)
         self.verifyDirectExchange("e", unbind=True)
-        self.checkNotExists("e");
+        self.checkNotExists("e")
 
     def testAutodeleteTopic(self):
         self.session.exchange_declare(exchange="e", type="topic", auto_delete=True)
         self.verifyTopicExchange("e", unbind=True)
-        self.checkNotExists("e");
+        self.checkNotExists("e")
 
     def testAutodeleteHeaders(self):
         self.session.exchange_declare(exchange="e", type="headers", auto_delete=True)
         self.verifyHeadersExchange("e", unbind=True)
-        self.checkNotExists("e");
+        self.checkNotExists("e")

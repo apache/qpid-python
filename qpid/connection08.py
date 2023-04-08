@@ -305,7 +305,8 @@ class Connection:
     return self.read_0_10()
 
   def close(self):
-    self.io.close();
+    self.io.close()
+
 
 class Frame:
 

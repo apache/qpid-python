@@ -43,7 +43,7 @@ class QueueTests(TestBase):
         self.assertEqual(3, reply.message_count)
 
         #now do the purge, then test that three messages are purged and the count drops to 0
-        reply = channel.queue_purge(queue="test-queue");
+        reply = channel.queue_purge(queue="test-queue")
         self.assertEqual(3, reply.message_count)        
         reply = channel.queue_declare(queue="test-queue")
         self.assertEqual(0, reply.message_count)

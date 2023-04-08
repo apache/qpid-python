@@ -126,7 +126,7 @@ class Selector:
     _check(self.exception)
     self.thread = Thread(target=self.run)
     self.thread.daemon = True
-    self.thread.start();
+    self.thread.start()
 
   def run(self):
     try:

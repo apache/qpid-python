@@ -767,7 +767,7 @@ class Engine:
         _text=str(e)
       raise AuthenticationFailure(text=_text)
 
-    client_properties = get_client_properties_with_defaults(provided_client_properties=self.connection.client_properties);
+    client_properties = get_client_properties_with_defaults(provided_client_properties=self.connection.client_properties)
     self.write_op(ConnectionStartOk(client_properties=client_properties,
                                     mechanism=mech, response=initial))
 

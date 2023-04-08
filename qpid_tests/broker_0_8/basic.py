@@ -375,7 +375,7 @@ class BasicTests(TestBase):
 
         #make sure that a single oversized message still gets delivered
         large = "abcdefghijklmnopqrstuvwxyz"
-        large = large + "-" + large;
+        large = large + "-" + large
         channel.basic_publish(routing_key="test-prefetch-size", content=Content(large))
         msg = queue.get(timeout=self.recv_timeout())
         self.assertEqual(large, msg.content.body)
