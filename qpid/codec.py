@@ -27,7 +27,10 @@ The unit test for this module is located in tests/codec.py
 """
 
 import re, qpid, spec08, os
-from cStringIO import StringIO
+try:
+  from cStringIO import StringIO
+except ImportError:
+  from io import StringIO
 from struct import *
 from reference import ReferenceId
 from logging import getLogger

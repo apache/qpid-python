@@ -24,7 +24,10 @@ server, or even a proxy implementation.
 """
 
 import socket, codec, errno, qpid
-from cStringIO import StringIO
+try:
+  from cStringIO import StringIO
+except ImportError:
+  from io import StringIO
 from codec import EOF
 from compat import SHUT_RDWR
 from exceptions import VersionError

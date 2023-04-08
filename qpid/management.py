@@ -31,7 +31,10 @@ import socket
 from threading    import Thread
 from datatypes    import Message, RangedSet
 from time         import time
-from cStringIO    import StringIO
+try:
+  from cStringIO    import StringIO
+except ImportError:
+  from io import StringIO
 from codec010     import StringCodec as Codec
 from threading    import Lock, Condition
 

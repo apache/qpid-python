@@ -29,7 +29,10 @@ from connection08 import EOF, Method, Header, Body, Request, Response, VersionEr
 from message import Message
 from queue import Queue, Closed as QueueClosed
 from content import Content
-from cStringIO import StringIO
+try:
+  from cStringIO import StringIO
+except ImportError:
+  from io import StringIO
 from time import time
 from exceptions import Closed, Timeout, ContentError
 from logging import getLogger

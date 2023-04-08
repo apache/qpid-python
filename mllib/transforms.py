@@ -22,7 +22,10 @@ Useful transforms for dom objects.
 """
 
 import mllib.dom
-from cStringIO import StringIO
+try:
+  from cStringIO import StringIO
+except ImportError:
+  from io import StringIO
 
 class Visitor:
 
