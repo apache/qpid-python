@@ -230,8 +230,8 @@ class MessageTests(TestBase010):
 
         session.message_subscribe(destination="my-consumer", queue="test-queue-4")
         myqueue = session.incoming("my-consumer")
-        session.message_flow(destination="my-consumer", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="my-consumer", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="my-consumer", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="my-consumer", unit=session.credit_unit.byte, value=0xFFFFFFFF)
 
         #should flush here
 
@@ -282,8 +282,8 @@ class MessageTests(TestBase010):
 
         # subscribe with implied acquire, explicit accept:
         session1.message_subscribe(queue = "test-ack-queue", destination = "consumer")
-        session1.message_flow(destination="consumer", unit=session1.credit_unit.message, value=0xFFFFFFFFL)
-        session1.message_flow(destination="consumer", unit=session1.credit_unit.byte, value=0xFFFFFFFFL)
+        session1.message_flow(destination="consumer", unit=session1.credit_unit.message, value=0xFFFFFFFF)
+        session1.message_flow(destination="consumer", unit=session1.credit_unit.byte, value=0xFFFFFFFF)
         queue = session1.incoming("consumer")
 
         msg1 = queue.get(timeout=1)
@@ -335,8 +335,8 @@ class MessageTests(TestBase010):
         self.assertEquals(queueObj.msgTotalEnqueues, 5)
         self.assertEquals(queueObj.msgTotalDequeues, 3)
 
-        session2.message_flow(destination="checker", unit=session2.credit_unit.message, value=0xFFFFFFFFL)
-        session2.message_flow(destination="checker", unit=session2.credit_unit.byte, value=0xFFFFFFFFL)
+        session2.message_flow(destination="checker", unit=session2.credit_unit.message, value=0xFFFFFFFF)
+        session2.message_flow(destination="checker", unit=session2.credit_unit.byte, value=0xFFFFFFFF)
         queue = session2.incoming("checker")
 
         msg3b = queue.get(timeout=1)
@@ -370,8 +370,8 @@ class MessageTests(TestBase010):
         self.assertEquals(queueObj.msgTotalEnqueues, 5)
         self.assertEquals(queueObj.msgTotalDequeues, 5)
 
-        self.session.message_flow(destination="final-checker", unit=self.session.credit_unit.message, value=0xFFFFFFFFL)
-        self.session.message_flow(destination="final-checker", unit=self.session.credit_unit.byte, value=0xFFFFFFFFL)
+        self.session.message_flow(destination="final-checker", unit=self.session.credit_unit.message, value=0xFFFFFFFF)
+        self.session.message_flow(destination="final-checker", unit=self.session.credit_unit.byte, value=0xFFFFFFFF)
         try:
             extra = self.session.incoming("final-checker").get(timeout=1)
             self.fail("Got unexpected message: " + extra.body)
@@ -384,16 +384,16 @@ class MessageTests(TestBase010):
         session.exchange_bind(queue = "r", exchange = "amq.fanout")
 
         session.message_subscribe(queue = "q", destination = "consumer")
-        session.message_flow(destination="consumer", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="consumer", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="consumer", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="consumer", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         session.message_transfer(message=Message(session.delivery_properties(routing_key="q"), "blah, blah"))
         msg = session.incoming("consumer").get(timeout = 1)
         self.assertEquals(msg.body, "blah, blah")
         session.message_reject(RangedSet(msg.id))
 
         session.message_subscribe(queue = "r", destination = "checker")
-        session.message_flow(destination="checker", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="checker", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="checker", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="checker", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         msg = session.incoming("checker").get(timeout = 1)
         self.assertEquals(msg.body, "blah, blah")
 
@@ -414,7 +414,7 @@ class MessageTests(TestBase010):
         #set message credit to finite amount (less than enough for all messages)
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "c")
         #set infinite byte credit
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="c")
         #check that expected number were received
         q = session.incoming("c")
         for i in range(1, 6):
@@ -447,7 +447,7 @@ class MessageTests(TestBase010):
         #set byte credit to finite amount (less than enough for all messages)
         session.message_flow(unit = session.credit_unit.byte, value = msg_size*5, destination = "c")
         #set infinite message credit
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination ="c")
         #check that expected number were received
         q = session.incoming("c")
         for i in range(5):
@@ -478,7 +478,7 @@ class MessageTests(TestBase010):
         #set message credit to finite amount (less than enough for all messages)
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "c")
         #set infinite byte credit
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="c")
         #check that expected number were received
         q = session.incoming("c")
         ids = []
@@ -519,7 +519,7 @@ class MessageTests(TestBase010):
         #set byte credit to finite amount (less than enough for all messages)
         session.message_flow(unit = session.credit_unit.byte, value = msg_size*5, destination = "c")
         #set infinite message credit
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination ="c")
         #check that expected number were received
         q = session.incoming("c")
         msgs = []
@@ -554,7 +554,7 @@ class MessageTests(TestBase010):
         ssn.message_transfer(message=Message(ssn.delivery_properties(routing_key="q"), "A"))
 
         for unit in ssn.credit_unit.VALUES:
-            ssn.message_flow("c", unit, 0xFFFFFFFFL)
+            ssn.message_flow("c", unit, 0xFFFFFFFF)
 
         q = ssn.incoming("c")
         msgA = q.get(timeout=10)
@@ -567,7 +567,7 @@ class MessageTests(TestBase010):
         ssn.message_accept(RangedSet(msgA.id))
 
         for unit in ssn.credit_unit.VALUES:
-            ssn.message_flow("c", unit, 0xFFFFFFFFL)
+            ssn.message_flow("c", unit, 0xFFFFFFFF)
 
         #send message B
         ssn.message_transfer(message=Message(ssn.delivery_properties(routing_key="q"), "B"))
@@ -584,7 +584,7 @@ class MessageTests(TestBase010):
         session.message_subscribe(queue = "q", destination = "c")
         session.message_set_flow_mode(flow_mode = 1, destination = "c")
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "c")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="c")
 
 
         #send batch of messages to queue
@@ -609,7 +609,7 @@ class MessageTests(TestBase010):
 
         #re-establish window and check remaining messages
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "c")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="c")
         for i in range(0, 5):
             msg = q.get(timeout = 1)
             self.assertDataEquals(session, msg, "Message %d" % (i+6))
@@ -634,7 +634,7 @@ class MessageTests(TestBase010):
         session.message_subscribe(queue=self.test_queue_name, destination="a")
         a = session.incoming("a")
         session.message_set_flow_mode(flow_mode = 1, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         # issue 5 message credits
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "a")
 
@@ -653,7 +653,7 @@ class MessageTests(TestBase010):
 
         session.message_stop(destination = "a")
 
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "a")
 
         # complete earlier messages after setting the window to 5 message credits
@@ -681,8 +681,8 @@ class MessageTests(TestBase010):
         session.message_subscribe(queue=self.test_queue_name, destination="a")
         a = session.incoming("a")
         session.message_set_flow_mode(flow_mode = session.flow_mode.credit, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFAL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFA, destination ="a")
         #test wraparound of credit balance does not occur
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
         for i in range(1, 50):
@@ -703,11 +703,11 @@ class MessageTests(TestBase010):
             session.message_transfer(message=Message(session.delivery_properties(routing_key="q"), "Message %s" % i))
 
         session.message_subscribe(queue = "q", destination = "a", acquire_mode = 1)
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination ="a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         session.message_subscribe(queue = "q", destination = "b", acquire_mode = 1)
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = "b")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "b")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination ="b")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="b")
 
         for i in range(6, 11):
             session.message_transfer(message=Message(session.delivery_properties(routing_key="q"), "Message %s" % i))
@@ -739,8 +739,8 @@ class MessageTests(TestBase010):
 
         session.message_subscribe(queue = "q", destination = "a", acquire_mode = 1, accept_mode = 1)
         session.message_set_flow_mode(flow_mode = session.flow_mode.credit, destination = "a")
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination ="a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         msg = session.incoming("a").get(timeout = 1)
         self.assertEquals("acquire me", msg.body)
         #message should still be on the queue:
@@ -763,8 +763,8 @@ class MessageTests(TestBase010):
         session.message_transfer(message=Message(session.delivery_properties(routing_key="q"), "acquire me"))
 
         session.message_subscribe(queue = "q", destination = "a", acquire_mode = 1)
-        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         msg = session.incoming("a").get(timeout = 1)
         self.assertEquals("acquire me", msg.body)
         #message should still be on the queue:
@@ -789,8 +789,8 @@ class MessageTests(TestBase010):
         session.message_transfer(message=Message(session.delivery_properties(routing_key="q"), "release me"))
 
         session.message_subscribe(queue = "q", destination = "a")
-        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         msg = session.incoming("a").get(timeout = 1)
         self.assertEquals("release me", msg.body)
         session.message_cancel(destination = "a")
@@ -810,7 +810,7 @@ class MessageTests(TestBase010):
 
         session.message_subscribe(queue = "q", destination = "a")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         queue = session.incoming("a")
         first = queue.get(timeout = 1)
         for i in range(2, 10):
@@ -843,7 +843,7 @@ class MessageTests(TestBase010):
 
         session.message_subscribe(queue = "q", destination = "a")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         queue = session.incoming("a")
         ids = []
         for i in range (1, 11):
@@ -868,8 +868,8 @@ class MessageTests(TestBase010):
         session.close(timeout=10)
 
         session = self.session
-        session.message_flow(destination="checker", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="checker", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="checker", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="checker", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         queue = session.incoming("checker")
 
         self.assertEquals("message 4", queue.get(timeout = 1).body)
@@ -887,7 +887,7 @@ class MessageTests(TestBase010):
         session.message_subscribe(queue = "q", destination = "a")
         session.message_set_flow_mode(flow_mode = 0, destination = "a")
         session.message_flow(unit = session.credit_unit.message, value = 5, destination = "a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
 
         queue = session.incoming("a")
         for i in range(1, 6):
@@ -902,7 +902,7 @@ class MessageTests(TestBase010):
 
         #now create a not-acquired subscriber
         session.message_subscribe(queue = "q", destination = "b", acquire_mode=1)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "b")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="b")
 
         #check it gets those not consumed
         queue = session.incoming("b")
@@ -930,7 +930,7 @@ class MessageTests(TestBase010):
 
         #create a not-acquired subscriber
         session.message_subscribe(queue = "q", destination = "a", acquire_mode=1)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
 
         #browse through messages
@@ -952,7 +952,7 @@ class MessageTests(TestBase010):
 
         #create a second not-acquired subscriber
         session.message_subscribe(queue = "q", destination = "b", acquire_mode=1)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "b")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="b")
         session.message_flow(unit = session.credit_unit.message, value = 1, destination = "b")
         #check it gets those not consumed
         queue = session.incoming("b")
@@ -979,12 +979,12 @@ class MessageTests(TestBase010):
 
         #create two 'browsers'
         session.message_subscribe(queue = "q", destination = "a", acquire_mode=1)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
         queueA = session.incoming("a")
 
         session.message_subscribe(queue = "q", destination = "b", acquire_mode=1)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "b")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="b")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "b")
         queueB = session.incoming("b")
         
@@ -1001,7 +1001,7 @@ class MessageTests(TestBase010):
         
         #create consumer
         session.message_subscribe(queue = "q", destination = "c")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "c")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="c")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "c")
         queueC = session.incoming("c")
         #consume the message then ack it
@@ -1023,7 +1023,7 @@ class MessageTests(TestBase010):
         #subscribe:
         session.message_subscribe(queue="q", destination="a")
         a = session.incoming("a")
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = "a")
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination ="a")
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
 
         # receive all messages into list
@@ -1058,8 +1058,8 @@ class MessageTests(TestBase010):
 
         consumer_tag = "tag1"
         session.message_subscribe(queue="xyz", destination=consumer_tag)
-        session.message_flow(unit = session.credit_unit.message, value = 0xFFFFFFFFL, destination = consumer_tag)
-        session.message_flow(unit = session.credit_unit.byte, value = 0xFFFFFFFFL, destination = consumer_tag)
+        session.message_flow(unit = session.credit_unit.message, value =0xFFFFFFFF, destination = consumer_tag)
+        session.message_flow(unit = session.credit_unit.byte, value =0xFFFFFFFF, destination = consumer_tag)
         queue = session.incoming(consumer_tag)
         msg = queue.get(timeout=1)
         self.assertEquals("", msg.body)
@@ -1098,7 +1098,7 @@ class MessageTests(TestBase010):
         messages = session.incoming(d)
         sleep(1)
         session.message_flow(unit = session.credit_unit.message, value=2, destination=d)
-        session.message_flow(unit = session.credit_unit.byte, value=0xFFFFFFFFL, destination=d)
+        session.message_flow(unit = session.credit_unit.byte, value=0xFFFFFFFF, destination=d)
         assert messages.get(timeout=1).body == "second"
         self.assertEmpty(messages)
 

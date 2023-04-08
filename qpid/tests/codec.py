@@ -553,7 +553,7 @@ class ResolveTestCase(BaseDataTypes):
     # Test resolving above the max signed 32bit integer value of 2^31 -1
     # As above except use an explicitly cast python long
     def test_resolve_long_above_signed_32bit_max(self):
-        value = 2147483648L #2^31, i.e 1 above the 32bit signed max
+        value = 2147483648  #2^31, i.e 1 above the 32bit signed max
         expected = "signed_long"
         resolved = self.codec.resolve(value.__class__, value)
         self.failUnlessEqual(resolved, expected, "resolve FAILED...expected %s got %s" % (expected, resolved))
@@ -561,7 +561,7 @@ class ResolveTestCase(BaseDataTypes):
     # Test resolving an explicitly cast python long of value 1, i.e less than the max signed 32bit integer value
     # Should be encoded as a 32bit signed int on the wire
     def test_resolve_long_1(self):
-        value = 1L
+        value = 1
         expected = "signed_int"
         resolved = self.codec.resolve(value.__class__, value)
         self.failUnlessEqual(resolved, expected, "resolve FAILED...expected %s got %s" % (expected, resolved))
@@ -585,13 +585,13 @@ class ResolveTestCase(BaseDataTypes):
     # Test resolving a value of 2^63, i.e more than the max a signed 64bit integer value can hold.
     # Should throw an exception indicating the value can't be encoded.
     def test_resolve_above_64bit_signed_max(self):
-        value = 9223372036854775808L #2^63
+        value = 9223372036854775808  #2^63
         self.failUnlessRaises(Exception, self.codec.resolve, value.__class__, value)
     # -------------------
     # Test resolving a value of -2^63 -1, i.e less than the min a signed 64bit integer value can hold.
     # Should throw an exception indicating the value can't be encoded.
     def test_resolve_below_64bit_signed_min(self):
-        value = 9223372036854775808L # -2^63 -1
+        value = 9223372036854775808  # -2^63 -1
         self.failUnlessRaises(Exception, self.codec.resolve, value.__class__, value)
     # -------------------
     # Test resolving a float. Should indicate use of double as python uses 64bit floats
