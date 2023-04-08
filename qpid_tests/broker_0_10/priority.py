@@ -136,23 +136,23 @@ class PriorityTests (Base):
     def test_ring_queue_1(self):
         priorities = [4,5,3,6,9,9,2,9,2,9,9,1,9,9,9,3,3,3,9,9,3,9,3,9,9,9,9,9,9,2,3]
         seq = content("msg")
-        self.ring_queue_check([Message(content=seq.next(), priority = p) for p in priorities])
+        self.ring_queue_check([Message(content=next(seq), priority = p) for p in priorities])
 
     def test_ring_queue_2(self):
         priorities = [9,0,2,3,6,3,4,2,9,2,9,9,1,9,4,7,1,1,3,9,7,3,9,3,9,1,5,1,9,7,2,3,0,9]
         seq = content("msg")
-        self.ring_queue_check([Message(content=seq.next(), priority = p) for p in priorities])
+        self.ring_queue_check([Message(content=next(seq), priority = p) for p in priorities])
 
     def test_ring_queue_3(self):
         #test case given for QPID-3866
         priorities = [8,9,5,1,2,2,3,4,9,7,8,9,9,2]
         seq = content("msg")
-        self.ring_queue_check([Message(content=seq.next(), priority = p) for p in priorities], 5)
+        self.ring_queue_check([Message(content=next(seq), priority = p) for p in priorities], 5)
 
     def test_ring_queue_4(self):
         priorities = [9,0,2,3,6,3,4,2,9,2,9,3,1,9,4,7,1,1,3,2,7,3,9,3,6,1,5,1,9,7,2,3,0,2]
         seq = content("msg")
-        self.ring_queue_check([Message(content=seq.next(), priority = p) for p in priorities])
+        self.ring_queue_check([Message(content=next(seq), priority = p) for p in priorities])
 
     def test_requeue(self):
         priorities = [4,5,3,6,9,9,2,9,2,9,9,1,9,9,9,3,3,3,9,9,3,9,3,9,9,9,9,9,9,2,3]
