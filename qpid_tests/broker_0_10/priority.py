@@ -242,12 +242,5 @@ def sorted_(msgs, key=None, reverse=False):
     of keyword arguments to list.sort()
     """
     temp = [m for m in msgs]
-    temp.sort(key_to_cmp(key, reverse=reverse))
+    temp.sort(key=key, reverse=reverse)
     return temp
-
-def key_to_cmp(key, reverse=False):
-    if key:
-        if reverse: return lambda a, b: cmp(key(b), key(a))
-        else: return lambda a, b: cmp(key(a), key(b))  
-    else:
-        return None
