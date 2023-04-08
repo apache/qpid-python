@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-import re, rfc822
+import re, email.utils
 from lexer import Lexicon, LexError
 from parser import Parser, ParseError
 
@@ -96,7 +96,7 @@ class MimeTypeParser(Parser):
     if self.matches(TOKEN):
       return self.eat().value
     elif self.matches(STRING):
-      return rfc822.unquote(self.eat().value)
+      return email.utils.unquote(self.eat().value)
     else:
       raise ParseError(self.next(), TOKEN, STRING)
 
