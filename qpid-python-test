@@ -29,6 +29,11 @@ from logging import getLogger, StreamHandler, Formatter, Filter, \
 from qpid.harness import Skipped
 from qpid.util import URL
 
+if sys.version_info.major == 3:
+  CLASS_TYPES = (type,)
+else:
+  CLASS_TYPES = (type, types.ClassType)
+
 levels = {
   "DEBUG": DEBUG,
   "WARN": WARN,
@@ -502,7 +507,7 @@ class FunctionScanner(PatternMatcher):
 class ClassScanner(PatternMatcher):
 
   def inspect(self, obj):
-    return type(obj) in (types.ClassType, types.TypeType) and self.matches(obj.__name__)
+    return type(obj) in CLASS_TYPES and self.matches(obj.__name__)
 
   def descend(self, cls):
     # the None is required for older versions of python
@@ -514,7 +519,7 @@ class ClassScanner(PatternMatcher):
     for name in names:
       obj = getattr(cls, name)
       t = type(obj)
-      if t == types.MethodType and name.startswith("test"):
+      if hasattr(obj, '__call__') and name.startswith("test"):
         yield MethodTest(cls, name)
 
 class ModuleScanner:
