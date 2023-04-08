@@ -26,7 +26,10 @@ import os, dom, transforms, parsers, sys
 import xml.sax, types
 from xml.sax.handler import ErrorHandler
 from xml.sax.xmlreader import InputSource
-from cStringIO import StringIO
+try:
+  from cStringIO import StringIO
+except ImportError:
+  from io import StringIO
 
 def transform(node, *args):
   result = node

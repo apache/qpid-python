@@ -22,7 +22,10 @@ from __future__ import print_function
 import unittest
 from qpid.codec import Codec
 from qpid.spec08 import load
-from cStringIO import StringIO
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from io import StringIO
 from qpid.reference import ReferenceId
 
 __doc__ = """
