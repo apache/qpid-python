@@ -287,7 +287,7 @@ class Method(Metadata):
     if self.content:
       code += ", content"
     code += ")"
-    exec code in g, l
+    exec(code, g, l)
     return l[name]
 
 class Field(Metadata):
