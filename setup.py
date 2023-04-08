@@ -39,8 +39,7 @@ class preprocessor:
     name, actor = self.actor(src, dst)
     if actor:
       if not os.path.isfile(src):
-        raise DistutilsFileError, \
-            "can't copy '%s': doesn't exist or not a regular file" % src
+        raise DistutilsFileError("can't copy '%s': doesn't exist or not a regular file" % src)
 
       if os.path.isdir(dst):
         dir = dst
