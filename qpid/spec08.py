@@ -30,7 +30,7 @@ situations.
 """
 
 from __future__ import print_function
-import re, new, mllib, qpid
+import re, types, mllib, qpid
 from util import fill
 
 class SpecContainer:
@@ -122,7 +122,7 @@ class Spec(Metadata):
     return qpid.Struct(type, *args, **kwargs)
 
   def define_module(self, name, doc = None):
-    module = new.module(name, doc)
+    module = types.ModuleType(name, doc)
     module.__file__ = self.file
     for c in self.classes:
       cls = c.define_class(c.name)
