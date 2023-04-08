@@ -38,6 +38,16 @@ from time import time
 from .exceptions import Closed, Timeout, ContentError
 from logging import getLogger
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
+try:
+  buffer
+except NameError:
+  buffer = memoryview
+
 log = getLogger("qpid.peer")
 
 class Sequence:
@@ -273,7 +283,7 @@ class Channel:
       if not isinstance(content.body, (basestring, buffer)):
         # The 0-8..0-91 client does not support the messages bodies apart from string/buffer - fail early
         # if other type
-        raise ContentError("Content body must be string or buffer, not a %s" % type(content.body))
+        raise ContentError("Content body must be bytes or buffer, not a %s" % type(content.body))
       frame_max = self.client.tune_params['frame_max'] - self.client.conn.AMQP_HEADER_SIZE
       for chunk in (content.body[i:i + frame_max] for i in range(0, len(content.body), frame_max)):
         self.write(Body(chunk))

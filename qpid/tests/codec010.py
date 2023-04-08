@@ -25,6 +25,16 @@ from qpid.codec010 import StringCodec
 from qpid.datatypes import timestamp, uuid4
 from qpid.ops import PRIMITIVE
 
+try:
+  long
+except NameError:
+  long = int
+
+try:
+  buffer
+except NameError:
+  buffer = memoryview
+
 class CodecTest(TestCase):
 
   def check(self, type, value, compare=True):
