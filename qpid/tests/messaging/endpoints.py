@@ -681,7 +681,7 @@ class SessionTests(Base):
     deadline = time.time() + self.timeout()
     while time.time() < deadline:
         if cb.handler_called:
-            break;
+            break
     assert cb.handler_called
     assert cb.ssn == self.ssn
     snd.close()

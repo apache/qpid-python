@@ -162,10 +162,10 @@ class ManagementData:
       pass
 
   def configHandler (self, context, className, list, timestamps):
-    self.dataHandler (0, className, list, timestamps);
+    self.dataHandler (0, className, list, timestamps)
 
   def instHandler (self, context, className, list, timestamps):
-    self.dataHandler (1, className, list, timestamps);
+    self.dataHandler (1, className, list, timestamps)
 
   def methodReply (self, broker, sequence, status, sText, args):
     """ Callback for method-reply messages """

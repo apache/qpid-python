@@ -1028,7 +1028,7 @@ class MessageTests(TestBase010):
         session.message_flow(unit = session.credit_unit.message, value = 10, destination = "a")
 
         # receive all messages into list
-        messages = [];
+        messages = []
         for i in range(1, 11):
             msg = a.get(timeout = 1)
             self.assertEquals("message-%d" % (i), msg.body)

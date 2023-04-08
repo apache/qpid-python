@@ -41,7 +41,7 @@ try:
   sender = session.sender(address)
   receiver = session.receiver(address)
 
-  sender.send(Message("Hello world!"));
+  sender.send(Message("Hello world!"))
 
   message = receiver.fetch()
   print(message.content)

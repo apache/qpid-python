@@ -137,7 +137,7 @@ class Client:
     if self.peer:
       try:
         if not self.closed:
-          channel = self.channel(0);
+          channel = self.channel(0)
           if channel and not channel._closed:
              try:
                channel.connection_close(reply_code=200)

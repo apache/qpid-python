@@ -201,7 +201,7 @@ def indent(text):
 class JunitXmlStyleReporter:
 
   def __init__(self, file):
-    self.f = open(file, "w");
+    self.f = open(file, "w")
 
   def begin(self):
     self.f.write('<?xml version="1.0" encoding="UTF-8" ?>\n')
@@ -575,8 +575,8 @@ ignored = [t for t in h.tests if is_ignored(t.name())]
 total = len(filtered) + len(ignored)
 
 if opts.xml and not list_only:
-   xmlr = JunitXmlStyleReporter(opts.xml);
-   xmlr.begin();
+   xmlr = JunitXmlStyleReporter(opts.xml)
+   xmlr.begin()
 else:
    xmlr = None
 

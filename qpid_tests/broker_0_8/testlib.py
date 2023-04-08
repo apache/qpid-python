@@ -34,7 +34,7 @@ import sys
 from traceback import *
 
 def mytrace(frame, event, arg):
-    print_stack(frame);
+    print_stack(frame)
     print("====")
     return mytrace
     
@@ -56,7 +56,7 @@ class TestBaseTest(TestBase):
         q = self.consume("full")
         self.channel.basic_publish(routing_key="full")
         try:
-            self.assertEmpty(q);
+            self.assertEmpty(q)
             self.fail("assertEmpty did not assert on non-empty queue")
         except AssertionError: None     # Ignore
 

@@ -90,7 +90,7 @@ class Delegate:
     self.connection.detach(d.name, ch)
 
   def session_request_timeout(self, ch, rt):
-    ch.session_timeout(rt.timeout);
+    ch.session_timeout(rt.timeout)
 
   def session_command_point(self, ch, cp):
     ssn = ch.session
