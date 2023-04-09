@@ -206,7 +206,7 @@ class Connection(Endpoint):
       self.port = default(url.port, default(self.port, AMQP_PORT))
 
     if self.protocol and self.protocol != "amqp0-10":
-        raise ConnectionError("Connection option 'protocol' value '" + value + "' unsupported (must be amqp0-10)")
+        raise ConnectionError("Connection option 'protocol' value '" + self.protocol + "' unsupported (must be amqp0-10)")
       
     self.username = default(url.user, self.username)
     self.password = default(url.password, self.password)
