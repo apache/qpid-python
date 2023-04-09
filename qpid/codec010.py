@@ -18,7 +18,7 @@
 #
 
 from __future__ import absolute_import
-import datetime, string
+import datetime
 from .packer import Packer
 from .datatypes import serial, timestamp, RangedSet, Struct, UUID
 from .ops import Compound, PRIMITIVE, COMPOUND
@@ -258,7 +258,7 @@ class Codec(Packer):
     sc = StringCodec()
     if m is not None:
       sc.write_uint32(len(m))
-      sc.write(string.joinfields(map(self._write_map_elem, m.keys(), m.values()), ""))
+      sc.write(b"".join(map(self._write_map_elem, m.keys(), m.values())))
     self.write_vbin32(sc.encoded)
 
   def read_array(self):
