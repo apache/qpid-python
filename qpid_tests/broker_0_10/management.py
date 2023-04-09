@@ -343,7 +343,7 @@ class ManagementTest (TestBase010):
         self.assertEqual(aq.msgDepth,1)
 
         "Verify that the trace was cleared on the rerouted message"
-        url = "%s://%s:%d" % (self.broker.scheme or "amqp", self.broker.host, self.broker.port)
+        url = "%s://%s:%d" % (self.broker.scheme or "amqp", self.broker.host, self.broker.port or 5672)
         conn = qpid.messaging.Connection(url)
         conn.open()
         sess = conn.session()
