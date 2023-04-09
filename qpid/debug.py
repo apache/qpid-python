@@ -42,10 +42,10 @@ class LoudLock:
     while not self.lock.acquire(blocking=0):
       time.sleep(1)
       print("TRYING", file=sys.out)
-      traceback.print_stack(None, None, out)
+      traceback.print_stack(None, None, sys.out)
       print("TRYING", file=sys.out)
     print("ACQUIRED", file=sys.out)
-    traceback.print_stack(None, None, out)
+    traceback.print_stack(None, None, sys.out)
     print("ACQUIRED", file=sys.out)
     return True
 
