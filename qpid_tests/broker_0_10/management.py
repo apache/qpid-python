@@ -25,6 +25,7 @@ from threading import Condition
 from time import sleep
 import qmf.console
 import qpid.messaging
+from qpid.messaging.exceptions import Empty
 from qpidtoollibs import BrokerAgent
 
 class ManagementTest (TestBase010):
