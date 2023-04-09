@@ -92,7 +92,7 @@ jobs:
         run: |
           poetry run ruff check .
 
-      - name: Test with our bespoke test runner
+      - name: Start qpidd in docker
         run: |
           docker run --rm -d -p 5672:5672 irinabov/docker-qpid-cpp-broker
 
@@ -106,8 +106,16 @@ jobs:
             sleep 3
           done
 
+      - name: Client tests with our bespoke test runner
+        run: |
           ${{ env.pythonLocation }}/bin/python ./qpid-python-test
 
       - name: Test setup.py install
         run: |
           ${{ env.pythonLocation }}/bin/python setup.py install --user
+
+      - name: Broker tests with the 🛞 runner we ❤️
+        run: |
+          # qpid-python dependency is the current package, it was installed in the prior step
+          ${{ env.pythonLocation }}/bin/python -m pip install --user qpid-tools qpid-qmf --no-deps
+          ${{ env.pythonLocation }}/bin/python qpid-python-test -m qpid_tests
