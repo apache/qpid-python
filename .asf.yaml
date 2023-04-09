@@ -26,3 +26,19 @@ github:
     - messaging
     - amqps
     - python
+  features:
+    wiki: false
+    issues: false
+    projects: true
+  enabled_merge_buttons:
+    merge: false
+    squash: true
+    rebase: true
+  protected_branches:
+    main: {}
+  autolink_jira:
+    - INFRA
+    - QPID
+  dependabot_alerts: true
+  dependabot_updates: true
+  del_branch_on_merge: true
