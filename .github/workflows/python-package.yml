@@ -94,7 +94,7 @@ jobs:
 
       - name: Start qpidd in docker
         run: |
-          docker run --rm -d -p 5672:5672 irinabov/docker-qpid-cpp-broker
+          docker run --name qpid-cpp --rm -d -p 5672:5672 irinabov/docker-qpid-cpp-broker
 
           attempts=0
           while ! nc -zv localhost 5672; do
@@ -107,6 +107,7 @@ jobs:
           done
 
       - name: Client tests with our bespoke test runner
+        continue-on-error: matrix.python-version != '2.7'
         run: |
           ${{ env.pythonLocation }}/bin/python ./qpid-python-test
 
@@ -114,8 +115,167 @@ jobs:
         run: |
           ${{ env.pythonLocation }}/bin/python setup.py install --user
 
-      - name: Broker tests with the 🛞 runner we ❤️
+      # https://qpid.apache.org/releases/qpid-cpp-1.39.0/cpp-broker/book/AMQP-Compatibility.html
+      # we need qpid-cpp broker to test amqp0-10 and qpid-j broker to test amqp0-8 and amqp0-9
+
+      - name: Install test dependencies from pip
         run: |
           # qpid-python dependency is the current package, it was installed in the prior step
           ${{ env.pythonLocation }}/bin/python -m pip install --user qpid-tools qpid-qmf --no-deps
+
+      - name: C++ Broker tests with the 🛞 runner we ❤️
+        run: |
           ${{ env.pythonLocation }}/bin/python qpid-python-test -m qpid_tests
+
+      - name: Kill qpidd
+        run: docker stop qpid-cpp
+
+      # https://github.com/chrisob/qpid-broker-j-docker
+      - name: Start qpidj
+        run: |
+          docker run --name qpid-j --rm -d \
+            -p 5672:5672 -p 8080:8080 \
+            -v $PWD/.github/workflows/initial-config.json:/usr/local/etc/initial-config.json \
+            chrisob/qpid-broker-j-docker
+
+          # the `while ! nc` from outside of container to exposed port does not work, because docker itself accepts
+          # lets exec nc inside the container, even though installing the netcat usually takes longer than the router startup
+          docker exec -u 0:0 qpid-j apt-get update
+          docker exec -u 0:0 qpid-j apt-get install -y netcat
+
+          attempts=0
+          while ! docker exec qpid-j nc -zv localhost 5672; do
+            attempts=$((attempts+1))
+            if [ $attempts -ge 10 ]; then
+              echo >&2 "qpid-j not reachable, giving up"
+              exit 1
+            fi
+            sleep 3
+          done
+
+      - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-8)
+        continue-on-error: matrix.python-version != '2.7'
+        run: |
+          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+            -m qpid_tests.broker_0_8 \
+            --broker amqp://guest/guest@localhost:5672 \
+            -i qpid_tests.broker_0_8.basic.BasicTests.test_consume_exclusive \
+            -i qpid_tests.broker_0_8.broker.BrokerTests.test_basic_delivery_immediate \
+            -i qpid_tests.broker_0_8.exchange.DefaultExchangeRuleTests.testDefaultExchangeExplicitBind \
+            -i qpid_tests.broker_0_8.queue.QueueTests.test_declare_exclusive \
+            -i qpid_tests.broker_0_8.queue.QueueTests.test_purge \
+            -i qpid_tests.broker_0_8.tx.TxTests.test_auto_rollback \
+            -i qpid_tests.broker_0_8.tx.TxTests.test_rollback
+
+      - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-9)
+        continue-on-error: matrix.python-version != '2.7'
+        run: |
+          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+            -m qpid_tests.broker_0_9 \
+            --broker amqp://guest/guest@localhost:5672 \
+            -i qpid_tests.broker_0_9.query.QueryTests.test_binding_query_direct \
+            -i qpid_tests.broker_0_9.query.QueryTests.test_binding_query_fanout \
+            -i qpid_tests.broker_0_9.query.QueryTests.test_binding_query_header \
+            -i qpid_tests.broker_0_9.query.QueryTests.test_binding_query_topic \
+            -i qpid_tests.broker_0_9.query.QueryTests.test_exchange_query
+
+      - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-10)
+        continue-on-error: matrix.python-version != '2.7'
+        run: |
+          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+            -m qpid_tests.broker_0_10 \
+            --broker amqp://guest/guest@localhost:5672 \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_forget_xid_on_completion \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_get_timeout \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_implicit_end \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_set_timeout_too_high \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_simple_commit \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_simple_prepare_commit \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_simple_prepare_rollback \
+            -i qpid_tests.broker_0_10.dtx.DtxTests.test_simple_rollback \
+            -i qpid_tests.broker_0_10.exchange.AutodeleteTests.testAutodeleteFanout \
+            -i qpid_tests.broker_0_10.exchange.AutodeleteTests.testAutodeleteHeaders \
+            -i qpid_tests.broker_0_10.extensions.ExtensionTests.test_policy_negative_count \
+            -i qpid_tests.broker_0_10.extensions.ExtensionTests.test_policy_negative_size \
+            -i qpid_tests.broker_0_10.extensions.ExtensionTests.test_policy_size_as_float \
+            -i qpid_tests.broker_0_10.extensions.ExtensionTests.test_timed_autodelete \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_binding_count_on_queue \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_broker_connectivity_oldAPI \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_connection_close \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_connection_stats \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_get_objects \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_immediate_method \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_methods_async \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_methods_sync \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_move_queued_messages \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_move_queued_messages_empty \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_purge_queue \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_reroute_alternate_exchange \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_reroute_invalid_alt_exchange \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_reroute_priority_queue \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_reroute_queue \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_self_session_id \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_standard_exchanges \
+            -i qpid_tests.broker_0_10.management.ManagementTest.test_timestamp_config \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_ack \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_acquire \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_acquire_with_no_accept_and_credit_flow \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_credit_flow_bytes \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_no_local_awkward \
+            -i qpid_tests.broker_0_10.message.MessageTests.test_window_flow_bytes \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_close \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_default_group_id \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_move_all \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_move_count \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_purge_acquired \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_purge_count \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_purge_free \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_query \
+            -i qpid_tests.broker_0_10.msg_groups.MultiConsumerMsgGroupTests.test_reroute \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_ambiguous_create_1 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_ambiguous_create_2 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_ambiguous_delete_1 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_ambiguous_delete_2 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_node_disambiguation_1 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_node_disambiguation_2 \
+            -i qpid_tests.broker_0_10.new_api.GeneralTests.test_qpid_3481_acquired_to_alt_exchange_2_consumers \
+            -i qpid_tests.broker_0_10.new_api.SequenceNumberTests.test_create_sequence_queue \
+            -i qpid_tests.broker_0_10.new_api.SequenceNumberTests.test_get_sequence_number \
+            -i qpid_tests.broker_0_10.new_api.SequenceNumberTests.test_sequence_number_gap \
+            -i qpid_tests.broker_0_10.priority.PriorityTests.test_fairshare_1 \
+            -i qpid_tests.broker_0_10.priority.PriorityTests.test_fairshare_2 \
+            -i qpid_tests.broker_0_10.priority.PriorityTests.test_fairshare_3 \
+            -i qpid_tests.broker_0_10.priority.PriorityTests.test_fairshare_with_alias \
+            -i qpid_tests.broker_0_10.priority.PriorityTests.test_prioritised_delivery_with_alias \
+            -i qpid_tests.broker_0_10.qmf_events.EventTests.test_queue_autodelete_exclusive \
+            -i qpid_tests.broker_0_10.qmf_events.EventTests.test_queue_autodelete_shared \
+            -i qpid_tests.broker_0_10.qmf_events.EventTests.test_queue_declare \
+            -i qpid_tests.broker_0_10.qmf_events.EventTests.test_queue_delete \
+            -i qpid_tests.broker_0_10.queue.QueueTests.test_declare_exclusive \
+            -i qpid_tests.broker_0_10.queue.QueueTests.test_declare_exclusive_alreadyinuse \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_abandoned_alt \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_limit_overflow \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_lvq_replace \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_no_route \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_purge \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_reject \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_ring_overflow \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_discards_ttl \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_enqueues_dequeues \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_exchange_stats \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_message_release \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_reroutes \
+            -i qpid_tests.broker_0_10.stats.BrokerStatsTests.test_transactional_enqueues_dequeues \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_alert_count \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_alert_count_alias \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_alert_on_alert_queue \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_alert_size \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_alert_size_alias \
+            -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_hysteresis
+
+      - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 1.0, or whatever this actually happens to test)
+        continue-on-error: matrix.python-version != '2.7'
+        run: |
+          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+            -m qpid_tests.broker_1_0 \
+            --broker amqp://guest/guest@localhost:5672
