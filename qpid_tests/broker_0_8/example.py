@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from qpid.content import Content
 from qpid.testlib import TestBase
 

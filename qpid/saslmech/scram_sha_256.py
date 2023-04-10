@@ -17,7 +17,8 @@
 # under the License.
 #
 
-from scram import SCRAM_base
+from __future__ import absolute_import
+from .scram import SCRAM_base
 import hashlib
 
 class SCRAM_SHA_256(SCRAM_base):

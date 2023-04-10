@@ -16,9 +16,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 import re, email.utils
-from lexer import Lexicon, LexError
-from parser import Parser, ParseError
+from .lexer import Lexicon, LexError
+from .parser import Parser, ParseError
 
 l = Lexicon()
 

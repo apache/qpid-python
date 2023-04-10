@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 from __future__ import print_function
 import os
 if 'QPID_USE_SWIG_CLIENT' in os.environ and os.environ['QPID_USE_SWIG_CLIENT']:

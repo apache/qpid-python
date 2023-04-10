@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from qpid.tests.messaging.implementation import *
 from qpid.messaging.address import parse
 from qpid.tests.messaging import Base

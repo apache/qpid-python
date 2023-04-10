@@ -23,8 +23,9 @@
 Support for amqp 'reference' content (as opposed to inline content)
 """
 
+from __future__ import absolute_import
 import threading
-from queue import Queue, Closed
+from .queue import Queue, Closed
 
 class NotOpened(Exception): pass
 

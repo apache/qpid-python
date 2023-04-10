@@ -20,6 +20,7 @@
 
 # TODO: summarize, test harness preconditions (e.g. broker is alive)
 
+from __future__ import absolute_import
 from __future__ import print_function
 import logging, optparse, os, struct, sys, time, traceback, types
 from fnmatch import fnmatchcase as match

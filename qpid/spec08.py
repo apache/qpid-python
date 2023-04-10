@@ -29,9 +29,10 @@ class so that the generated code can be reused in a variety of
 situations.
 """
 
+from __future__ import absolute_import
 from __future__ import print_function
 import re, types, mllib, qpid
-from util import fill
+from .util import fill
 
 class SpecContainer:
 

@@ -19,4 +19,5 @@
 # under the License.
 #
 
-import query, queue, messageheader, echo
+from __future__ import absolute_import
+from . import query, queue, messageheader, echo

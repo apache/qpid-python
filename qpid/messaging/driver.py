@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import socket, struct, sys, time
 from logging import getLogger, DEBUG
 from qpid import compat

@@ -17,6 +17,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 import os, re, sys, string, platform
 from distutils.core import setup, Command
 from distutils.command.build import build as _build

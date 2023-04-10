@@ -28,6 +28,7 @@ Areas that still need work:
   - protocol negotiation/multiprotocol impl
 """
 
+from __future__ import absolute_import
 from logging import getLogger
 from math import ceil
 from qpid.codec010 import StringCodec
@@ -245,7 +246,7 @@ class Connection(Endpoint):
     self._condition = Condition(self._lock)
     self._waiter = Waiter(self._condition)
     self._modcount = Serial(0)
-    from driver import Driver
+    from .driver import Driver
     self._driver = Driver(self)
 
   def _wait(self, predicate, timeout=None):

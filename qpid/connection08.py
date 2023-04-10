@@ -23,14 +23,16 @@ to read and write Frame objects. This could be used by a client,
 server, or even a proxy implementation.
 """
 
-import socket, codec, errno, qpid
+from __future__ import absolute_import
+import socket, errno, qpid
+from . import codec
 try:
   from cStringIO import StringIO
 except ImportError:
   from io import StringIO
-from codec import EOF
-from compat import SHUT_RDWR
-from exceptions import VersionError
+from .codec import EOF
+from .compat import SHUT_RDWR
+from .exceptions import VersionError
 from logging import getLogger, DEBUG
 
 log = getLogger("qpid.connection08")

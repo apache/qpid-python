@@ -20,6 +20,7 @@
 # setup, usage, teardown, errors(sync), errors(async), stress, soak,
 # boundary-conditions, config
 
+from __future__ import absolute_import
 import errno, os, socket, sys, time
 from qpid import compat
 from qpid.compat import set

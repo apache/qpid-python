@@ -24,6 +24,7 @@
 ## This file is being obsoleted by qmf/console.py
 ###############################################################################
 
+from __future__ import absolute_import
 from __future__ import print_function
 import qpid
 import re
@@ -35,7 +36,7 @@ import locale
 from qpid.connection import Timeout
 from qpid.management import managementChannel, managementClient
 from threading       import Lock
-from disp            import Display
+from .disp           import Display
 from shlex           import split
 from qpid.connection import Connection
 from qpid.util       import connect

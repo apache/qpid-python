@@ -17,16 +17,18 @@
 # under the License.
 #
 
-import datatypes, session
+from __future__ import absolute_import
+from . import datatypes, session
 from threading import Thread, Condition, RLock
-from util import wait, notify
-from codec010 import StringCodec
-from framing import *
-from session import Session
-from generator import control_invoker
-from exceptions import *
+from .util import wait, notify
+from .codec010 import StringCodec
+from .framing import *
+from .session import Session
+from .generator import control_invoker
+from .exceptions import *
 from logging import getLogger
-import qpid.delegates, socket
+import qpid.delegates
+import socket
 import sys
 
 class ChannelBusy(Exception): pass
@@ -43,7 +45,7 @@ def client(*args, **kwargs):
 def server(*args, **kwargs):
   return qpid.delegates.Server(*args, **kwargs)
 
-from framer import Framer
+from .framer import Framer
 
 class Connection(Framer):
 

@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import socket
 from qpid.util import connect
 

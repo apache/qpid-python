@@ -22,16 +22,17 @@ An AMQP client implementation that uses a custom delegate for
 interacting with the server.
 """
 
+from __future__ import absolute_import
 import os, threading
-from peer import Peer, Channel, Closed
-from delegate import Delegate
-from util import get_client_properties_with_defaults
-from connection08 import Connection, Frame, connect
-from spec08 import load
-from queue import Queue
-from reference import ReferenceId, References
-from saslmech.finder import get_sasl_mechanism
-from saslmech.sasl import SaslException
+from .peer import Peer, Channel, Closed
+from .delegate import Delegate
+from .util import get_client_properties_with_defaults
+from .connection08 import Connection, Frame, connect
+from .spec08 import load
+from .queue import Queue
+from .reference import ReferenceId, References
+from .saslmech.finder import get_sasl_mechanism
+from .saslmech.sasl import SaslException
 
 
 class Client:
@@ -42,7 +43,7 @@ class Client:
     if spec:
       self.spec = spec
     else:
-      from specs_config import amqp_spec_0_9
+      from .specs_config import amqp_spec_0_9
       self.spec = load(amqp_spec_0_9)
     self.structs = StructFactory(self.spec)
     self.sessions = {}

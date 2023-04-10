@@ -23,7 +23,12 @@ Tests for exchange behaviour.
 Test classes ending in 'RuleTests' are derived from rules in amqp.xml.
 """
 
-import Queue, logging
+from __future__ import absolute_import
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
+import logging
 from qpid.testlib import TestBase
 from qpid.content import Content
 from qpid.client import Closed

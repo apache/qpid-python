@@ -22,7 +22,9 @@ This module provides document parsing and transformation utilities for
 both SGML and XML.
 """
 
-import os, dom, transforms, parsers, sys
+from __future__ import absolute_import
+import os, sys
+from . import dom, transforms, parsers
 import xml.sax, types
 from xml.sax.handler import ErrorHandler
 from xml.sax.xmlreader import InputSource

@@ -25,17 +25,18 @@
 Management API for Qpid
 """
 
+from __future__ import absolute_import
 import qpid
 import struct
 import socket
 from threading    import Thread
-from datatypes    import Message, RangedSet
+from .datatypes   import Message, RangedSet
 from time         import time
 try:
   from cStringIO    import StringIO
 except ImportError:
   from io import StringIO
-from codec010     import StringCodec as Codec
+from .codec010    import StringCodec as Codec
 from threading    import Lock, Condition
 
 

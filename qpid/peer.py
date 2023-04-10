@@ -24,17 +24,18 @@ sorts incoming frames to their intended channels, and dispatches
 incoming method frames to a delegate.
 """
 
+from __future__ import absolute_import
 import threading, traceback, socket, sys
-from connection08 import EOF, Method, Header, Body, Request, Response, VersionError
-from message import Message
-from queue import Queue, Closed as QueueClosed
-from content import Content
+from .connection08 import EOF, Method, Header, Body, Request, Response, VersionError
+from .message import Message
+from .queue import Queue, Closed as QueueClosed
+from .content import Content
 try:
   from cStringIO import StringIO
 except ImportError:
   from io import StringIO
 from time import time
-from exceptions import Closed, Timeout, ContentError
+from .exceptions import Closed, Timeout, ContentError
 from logging import getLogger
 
 log = getLogger("qpid.peer")

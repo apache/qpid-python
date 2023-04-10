@@ -21,9 +21,10 @@
 Delegate implementation intended for use with the peer module.
 """
 
+from __future__ import absolute_import
 from __future__ import print_function
 import threading, inspect, traceback, sys
-from connection08 import Method, Request, Response
+from .connection08 import Method, Request, Response
 
 def _handler_name(method):
   return "%s_%s" % (method.klass.name, method.name)

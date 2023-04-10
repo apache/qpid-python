@@ -17,8 +17,9 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import threading, struct, datetime, time
-from exceptions import Timeout
+from .exceptions import Timeout
 
 class Struct:
 

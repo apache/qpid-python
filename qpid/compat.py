@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import sys
 import errno
 import time

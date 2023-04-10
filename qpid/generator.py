@@ -17,9 +17,10 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import sys
 
-from ops import *
+from .ops import *
 
 def METHOD(module, op):
   method = lambda self, *args, **kwargs: self.invoke(op, args, kwargs)

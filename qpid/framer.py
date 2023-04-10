@@ -17,9 +17,10 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import struct, socket
-from exceptions import Closed
-from packer import Packer
+from .exceptions import Closed
+from .packer import Packer
 from threading import RLock
 from logging import getLogger
 

@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from logging import getLogger, StreamHandler, Formatter
 from logging import DEBUG, INFO, WARN, ERROR, CRITICAL
 

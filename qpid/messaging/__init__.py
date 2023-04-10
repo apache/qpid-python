@@ -28,6 +28,7 @@ Areas that still need work:
   - protocol negotiation/multiprotocol impl
 """
 
+from __future__ import absolute_import
 from qpid.datatypes import timestamp, uuid4, Serial
 from qpid.messaging.constants import *
 from qpid.messaging.endpoints import *
