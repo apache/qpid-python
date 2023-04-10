@@ -29,6 +29,7 @@ class so that the generated code can be reused in a variety of
 situations.
 """
 
+from __future__ import print_function
 import re, new, mllib, qpid
 from util import fill
 
@@ -501,4 +502,4 @@ def test_summary():
     rows.append('<tr><td colspan="3">%s</td></tr>' % rule.text)
     rows.append('<tr><td colspan="3">&nbsp;</td></tr>')
 
-  print template % "\n".join(rows)
+  print(template % "\n".join(rows))

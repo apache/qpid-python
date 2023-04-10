@@ -23,6 +23,7 @@ Tests for exchange behaviour.
 Test classes ending in 'RuleTests' are derived from rules in amqp.xml.
 """
 
+from __future__ import print_function
 import Queue, logging, traceback
 from qpid.testlib import TestBase010
 from qpid.datatypes import Message
@@ -46,8 +47,8 @@ class TestHelper(TestBase010):
             for ssn, ex in self.exchanges:
                 ssn.exchange_delete(exchange=ex)
         except:
-            print "Error on tearDown:"
-            print traceback.print_exc()
+            print("Error on tearDown:")
+            print(traceback.print_exc())
         TestBase010.tearDown(self)
 
     def createMessage(self, key="", body=""):

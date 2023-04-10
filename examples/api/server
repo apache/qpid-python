@@ -18,6 +18,7 @@
 # under the License.
 #
 
+from __future__ import print_function
 import optparse, sys, traceback
 from qpid.messaging import *
 from qpid.util import URL
@@ -83,12 +84,12 @@ try:
       snd = ssn.sender(msg.reply_to)
       snd.send(response)
     except SendError as e:
-      print e
+      print(e)
     if snd is not None:
       snd.close()
     ssn.acknowledge()
 except ReceiverError as e:
-  print e
+  print(e)
 except KeyboardInterrupt:
   pass
 

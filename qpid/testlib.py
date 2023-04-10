@@ -21,6 +21,7 @@
 # Support library for qpid python tests.
 #
 
+from __future__ import print_function
 import string
 import random
 
@@ -71,8 +72,8 @@ class TestBase(unittest.TestCase):
             for ch, ex in self.exchanges:
                 ch.exchange_delete(exchange=ex)
         except:
-            print "Error on tearDown:"
-            print traceback.print_exc()
+            print("Error on tearDown:")
+            print(traceback.print_exc())
 
         self.client.close()
 

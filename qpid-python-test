@@ -20,6 +20,7 @@
 
 # TODO: summarize, test harness preconditions (e.g. broker is alive)
 
+from __future__ import print_function
 import logging, optparse, os, struct, sys, time, traceback, types
 from fnmatch import fnmatchcase as match
 from getopt import GetoptError
@@ -401,9 +402,9 @@ def run_test(name, test, config):
     if interceptor.last != "\n":
       sys.stdout.write("\n")
     sys.stdout.write(output)
-  print " %s" % colorize_word(runner.status())
+  print(" %s" % colorize_word(runner.status()))
   if runner.failed() or runner.skipped():
-    print runner.get_formatted_exceptions()
+    print(runner.get_formatted_exceptions())
   root.setLevel(level)
   filter.patterns = patterns
   return TestResult(end - start, runner.passed(), runner.skipped(), runner.failed(), runner.get_formatted_exceptions())
@@ -579,7 +580,7 @@ skipped = 0
 start = time.time()
 for t in filtered:
   if list_only:
-    print t.name()
+    print(t.name())
   else:
     st = t.run()
     if xmlr:
@@ -613,22 +614,22 @@ if not list_only:
     skip = "skip"
   else:
     skip = "pass"
-  print colorize("Totals:", 1),
+  print(colorize("Totals:", 1), end=' ')
   totals = [colorize_word("total", "%s tests" % total),
             colorize_word(_pass, "%s passed" % passed),
             colorize_word(skip, "%s skipped" % skipped),
             colorize_word(ign, "%s ignored" % len(ignored)),
             colorize_word(outcome, "%s failed" % failed)]
-  print ", ".join(totals),
+  print(", ".join(totals), end=' ')
   if opts.hoe and failed > 0:
-    print " -- (halted after %s)" % run
+    print(" -- (halted after %s)" % run)
   else:
-    print
+    print()
   if opts.time and run > 0:
-    print colorize("Timing:", 1),
+    print(colorize("Timing:", 1), end=' ')
     timing = [colorize_word("elapsed", "%.2fs elapsed" % (end - start)),
               colorize_word("average", "%.2fs average" % ((end - start)/run))]
-    print ", ".join(timing)
+    print(", ".join(timing))
 
 if xmlr:
    xmlr.end()

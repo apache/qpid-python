@@ -16,13 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import print_function
 import os
 if 'QPID_USE_SWIG_CLIENT' in os.environ and os.environ['QPID_USE_SWIG_CLIENT']:
   try:
     from qpid_messaging import *
     from qpid.datatypes import uuid4
   except ImportError as e:
-    print "Swigged client not found. Falling back to pure bindings, %s\n" % e
+    print("Swigged client not found. Falling back to pure bindings, %s\n" % e)
     from qpid.messaging import *
 else:
   from qpid.messaging import *
