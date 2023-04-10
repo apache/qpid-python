@@ -17,7 +17,8 @@
 # under the License.
 #
 
-import os, connection, session
+import os, session
+import qpid.connection
 from util import notify, get_client_properties_with_defaults
 from datatypes import RangedSet
 from exceptions import VersionError, Closed
@@ -37,7 +38,7 @@ class Delegate:
   def received(self, op):
     ssn = self.connection.attached.get(op.channel)
     if ssn is None:
-      ch = connection.Channel(self.connection, op.channel)
+      ch = qpid.connection.Channel(self.connection, op.channel)
     else:
       ch = ssn.channel
 
@@ -66,9 +67,9 @@ class Delegate:
     try:
       self.connection.attach(a.name, ch, self.delegate, a.force)
       ch.session_attached(a.name)
-    except connection.ChannelBusy:
+    except qpid.connection.ChannelBusy:
       ch.session_detached(a.name)
-    except connection.SessionBusy:
+    except qpid.connection.SessionBusy:
       ch.session_detached(a.name)
 
   def session_attached(self, ch, a):
@@ -122,7 +123,7 @@ class Server(Delegate):
     self.connection.read_header()
     # XXX
     self.connection.write_header(0, 10)
-    connection.Channel(self.connection, 0).connection_start(mechanisms=["ANONYMOUS"])
+    qpid.connection.Channel(self.connection, 0).connection_start(mechanisms=["ANONYMOUS"])
 
   def connection_start_ok(self, ch, start_ok):
     ch.connection_tune(channel_max=65535)

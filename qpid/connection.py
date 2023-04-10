@@ -26,7 +26,7 @@ from session import Session
 from generator import control_invoker
 from exceptions import *
 from logging import getLogger
-import delegates, socket
+import qpid.delegates, socket
 import sys
 
 class ChannelBusy(Exception): pass
@@ -38,10 +38,10 @@ class SessionBusy(Exception): pass
 class ConnectionFailed(Exception): pass
 
 def client(*args, **kwargs):
-  return delegates.Client(*args, **kwargs)
+  return qpid.delegates.Client(*args, **kwargs)
 
 def server(*args, **kwargs):
-  return delegates.Server(*args, **kwargs)
+  return qpid.delegates.Server(*args, **kwargs)
 
 from framer import Framer
 
