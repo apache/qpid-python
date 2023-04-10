@@ -89,7 +89,7 @@ try:
       ssn.acknowledge()
     except Empty:
       break
-except ReceiverError, e:
+except ReceiverError as e:
   print e
 except KeyboardInterrupt:
   pass

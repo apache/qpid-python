@@ -82,12 +82,12 @@ try:
     try:
       snd = ssn.sender(msg.reply_to)
       snd.send(response)
-    except SendError, e:
+    except SendError as e:
       print e
     if snd is not None:
       snd.close()
     ssn.acknowledge()
-except ReceiverError, e:
+except ReceiverError as e:
   print e
 except KeyboardInterrupt:
   pass

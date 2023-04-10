@@ -170,7 +170,7 @@ class ConnectionTest(TestCase):
     try:
       m = echos.get(timeout=10)
       assert False
-    except Closed, e:
+    except Closed as e:
       pass
 
   def testCloseListen(self):

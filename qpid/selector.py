@@ -151,7 +151,7 @@ class Selector:
               timeout = max(0, wakeup - time.time())
             rd, wr, ex = select(self.reading, self.writing, (), timeout)
             break
-          except SelectError, e:
+          except SelectError as e:
             # Repeat the select call if we were interrupted.
             if e[0] == errno.EINTR:
               continue
@@ -172,7 +172,7 @@ class Selector:
           w = sel.timing()
           if w is not None and now > w:
             sel.timeout()
-    except Exception, e:
+    except Exception as e:
       log.error("qpid.messaging thread died: %s" % e)
       self.exception = SelectorStopped(str(e))
     self.exception = self.exception or self.stopped
@@ -198,11 +198,11 @@ class Selector:
             disable(l, self.exception)
           disable(ssn, self.exception)
         disable(c, self.exception)
-    except Exception, e:
+    except Exception as e:
       log.error("error stopping qpid.messaging (%s)\n%s", self.exception, format_exc())
     try:
       self.waiter.close()
-    except Exception, e:
+    except Exception as e:
       log.error("error stopping qpid.messaging (%s)\n%s", self.exception, format_exc())
 
 # Disable an object to avoid hangs due to forked mutex locks or a stopped selector thread

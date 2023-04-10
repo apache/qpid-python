@@ -162,7 +162,7 @@ class DtxTests(TestBase010):
             session.dtx_end(xid=tx)
             session.dtx_rollback(xid=tx)
             self.fail("Session not selected for use with dtx, expected exception!")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(503, e.args[0].error_code)
 
     def test_start_already_known(self):
@@ -187,7 +187,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             session2.dtx_start(xid=tx)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -233,7 +233,7 @@ class DtxTests(TestBase010):
             session.dtx_end(xid=tx)
             session.dtx_rollback(xid=tx)
             self.fail("Join and resume both set, expected exception!")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(503, e.args[0].error_code)
 
     def test_start_join(self):
@@ -353,7 +353,7 @@ class DtxTests(TestBase010):
         try:
             session.dtx_end(xid=tx, suspend=True, fail=True)
             self.fail("Suspend and fail both set, expected exception!")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(503, e.args[0].error_code)
 
         #cleanup
@@ -376,7 +376,7 @@ class DtxTests(TestBase010):
         try:
             session.dtx_end(xid=tx)
             self.fail("Attempted to end association with unknown xid, expected exception!")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(409, e.args[0].error_code)
 
     def test_end(self):
@@ -431,7 +431,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             tester.dtx_commit(xid=tx, one_phase=True)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -459,7 +459,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             tester.dtx_commit(xid=tx, one_phase=False)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -486,7 +486,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             tester.dtx_commit(xid=tx, one_phase=False)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -514,7 +514,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             tester.dtx_rollback(xid=tx)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -543,7 +543,7 @@ class DtxTests(TestBase010):
         failed = False
         try:
             tester.dtx_prepare(xid=tx)
-        except SessionException, e:
+        except SessionException as e:
             failed = True
             error = e
 
@@ -641,7 +641,7 @@ class DtxTests(TestBase010):
         session.dtx_start(xid=tx)
         try:
             session.dtx_set_timeout(xid=tx, timeout=3601)
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(542, e.args[0].error_code)
 
 
@@ -690,35 +690,35 @@ class DtxTests(TestBase010):
         session = self.session
         try:
             session.dtx_start(resume=True)
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(503, e.args[0].error_code)
 
     def test_prepare_unknown(self):
         session = self.session
         try:
             session.dtx_prepare(xid=self.xid("unknown"))
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
     def test_commit_unknown(self):
         session = self.session
         try:
             session.dtx_commit(xid=self.xid("unknown"))
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
     def test_rollback_unknown(self):
         session = self.session
         try:
             session.dtx_rollback(xid=self.xid("unknown"))
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
     def test_get_timeout_unknown(self):
         session = self.session
         try:
             session.dtx_get_timeout(xid=self.xid("unknown"))
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
     def xid(self, txid):

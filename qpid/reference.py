@@ -71,7 +71,7 @@ class Reference:
     def next(self):
         try:
             return self.get_chunk()
-        except Closed, e:
+        except Closed as e:
             raise StopIteration
 
     def __iter__(self):

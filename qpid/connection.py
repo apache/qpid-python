@@ -182,7 +182,7 @@ class Connection(Framer):
           break
         else:
           continue
-      except socket.error, e:
+      except socket.error as e:
         if self.aborted() or str(e) != "The read operation timed out":
           self.close_code = (None, str(e))
           self.detach_all()
@@ -195,7 +195,7 @@ class Connection(Framer):
       for op in op_dec.read():
         try:
           self.delegate.received(op)
-        except Closed, e:
+        except Closed as e:
           self.close_code = (None, str(e))
           if not self.opened:
             self.failed = True

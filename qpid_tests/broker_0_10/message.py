@@ -166,7 +166,7 @@ class MessageTests(TestBase010):
         try:
             session.message_subscribe(destination="second", queue="test-queue-2")
             self.fail("Expected consume request to fail due to previous exclusive consumer")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(405, e.args[0].error_code)
 
     def test_consume_exclusive2(self):
@@ -179,7 +179,7 @@ class MessageTests(TestBase010):
         try:
             session.message_subscribe(destination="second", queue="test-queue-2", exclusive=True)
             self.fail("Expected exclusive consume request to fail due to previous consumer")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(405, e.args[0].error_code)
 
     def test_consume_queue_not_found(self):
@@ -191,7 +191,7 @@ class MessageTests(TestBase010):
             #queue specified but doesn't exist:
             session.message_subscribe(queue="invalid-queue", destination="a")
             self.fail("Expected failure when consuming from non-existent queue")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
     def test_consume_queue_not_specified(self):
@@ -200,7 +200,7 @@ class MessageTests(TestBase010):
             #queue not specified and none previously declared for channel:
             session.message_subscribe(destination="a")
             self.fail("Expected failure when consuming from unspecified queue")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(531, e.args[0].error_code)
 
     def test_consume_unique_consumers(self):
@@ -216,7 +216,7 @@ class MessageTests(TestBase010):
         try:
             session.message_subscribe(destination="first", queue="test-queue-3")
             self.fail("Expected consume request to fail due to non-unique tag")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(530, e.args[0].error_code)
 
     def test_cancel(self):
@@ -249,14 +249,14 @@ class MessageTests(TestBase010):
         try:
             session.message_cancel(destination="my-consumer")
             self.fail("Expected 404 for recancellation of subscription.")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
         session = self.conn.session("alternate-session", timeout=10)
         try:
             session.message_cancel(destination="this-never-existed")
             self.fail("Expected 404 for cancellation of unknown subscription.")
-        except SessionException, e:
+        except SessionException as e:
             self.assertEquals(404, e.args[0].error_code)
 
 

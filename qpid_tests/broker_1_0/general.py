@@ -59,7 +59,7 @@ class GeneralTests (VersionTest):
             assert msg.content == expected.content
             try:
                 assert msg.properties.get('x-amqp-delivery-count') == 0, (msg.properties.get('x-amqp-delivery-count'))
-            except KeyError, e: None #default is 0
+            except KeyError as e: None #default is 0
             self.ssn.acknowledge(msg)
         rcv.close()
 

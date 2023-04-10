@@ -83,9 +83,9 @@ class AddressTests(ParserBase, Test):
     try:
       from subprocess import Popen, PIPE, STDOUT
       po = Popen([parser, mode], stdin=PIPE, stdout=PIPE, stderr=STDOUT)
-    except ImportError, e:
+    except ImportError as e:
       raise Skipped("%s" % e)
-    except OSError, e:
+    except OSError as e:
       raise Skipped("%s: %s" % (e, parser))
     out, _ = po.communicate(input=input)
     return out

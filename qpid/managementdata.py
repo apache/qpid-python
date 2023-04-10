@@ -645,7 +645,7 @@ class ManagementData:
         titles = ("Argument", "Type", "Direction", "Unit", "Notes", "Description")
         self.disp.table (caption, titles, rows)
 
-    except Exception,e:
+    except Exception as e:
       pass
     self.lock.release ()
 
@@ -686,7 +686,7 @@ class ManagementData:
 
       self.methodSeq = self.methodSeq + 1
       self.methodsPending[self.methodSeq] = methodName
-    except Exception, e:
+    except Exception as e:
       methodOk = False
     self.lock.release ()
     if methodOk:

@@ -46,7 +46,7 @@ try:
   print message.content
   session.acknowledge()
 
-except MessagingError,m:
+except MessagingError as m:
   print m
 
 connection.close()

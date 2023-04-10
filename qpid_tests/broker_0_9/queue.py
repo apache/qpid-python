@@ -109,7 +109,7 @@ class QueueTests(TestBase):
         try:
             channel.queue_declare(queue="auto-delete-me", passive=True)
             self.fail("Expected queue to have been deleted")
-        except Closed, e:
+        except Closed as e:
             self.assertChannelException(404, e.args[0])
 
     def test_flow_control(self):

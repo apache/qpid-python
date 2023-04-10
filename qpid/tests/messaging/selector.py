@@ -85,7 +85,7 @@ class SelectorTests(TestCase):
         self.assertRaises(SelectorStopped, c.session) # But can't use parent connection
         s.send("child")
         os._exit(0)
-      except Exception, e:
+      except Exception as e:
         print >>sys.stderr, "test child process error: %s" % e
         os.exit(1)
       finally:

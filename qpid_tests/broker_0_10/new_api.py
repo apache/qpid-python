@@ -54,7 +54,7 @@ class GeneralTests(Base):
         try:
             ssn.receiver("does-not-exist")
             self.fail("Expected non-existent node to cause NotFound exception")
-        except NotFound, e: None
+        except NotFound as e: None
 
     def test_qpid_3481_acquired_to_alt_exchange(self):
         """

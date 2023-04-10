@@ -63,7 +63,7 @@ class SockIO:
     try:
       try:
         self.sock.shutdown(SHUT_RDWR)
-      except socket.error, e:
+      except socket.error as e:
         if (e.errno == errno.ENOTCONN):
           pass
         else:
@@ -131,7 +131,7 @@ def connect(host, port, options = None):
                          certfile=ssl_certfile,
                          ca_certs=ssl_trustfile,
                          cert_reqs=validate)
-    except ImportError, e:
+    except ImportError as e:
       # Python 2.5 and older
       if ssl_verify_hostname:
         log.error("Your version of Python does not support ssl hostname verification. Please upgrade your version of Python.")
