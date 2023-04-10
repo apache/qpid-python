@@ -121,7 +121,7 @@ class QueueTests(TestBase):
         channel.queue_declare(queue=queue_name, arguments={"x-qpid-capacity" : 25, "x-qpid-flow-resume-capacity" : 15})
 
         try:
-            for i in xrange(100):
+            for i in range(100):
                 channel.basic_publish(exchange="", routing_key=queue_name,
                                       content=Content("This is a message with more than 25 bytes. This should trigger flow control."))
                 time.sleep(.1)

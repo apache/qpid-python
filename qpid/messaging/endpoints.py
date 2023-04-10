@@ -180,7 +180,7 @@ class Connection(Endpoint):
     for key in opt_keys:
         setattr(self, key, None)
     # Get values from options, check for invalid options
-    for (key, value) in options.iteritems():
+    for (key, value) in options.items():
         if key in opt_keys:
             setattr(self, key, value)
         else:

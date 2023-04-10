@@ -82,7 +82,7 @@ class SetupTests(Base):
     try:
       for i in range(32):
         if fds: os.close(fds.pop())
-      for i in xrange(64):
+      for i in range(64):
         conn = Connection.establish(self.broker, **self.connection_options())
         conn.close()
     finally:
@@ -94,7 +94,7 @@ class SetupTests(Base):
     try:
       for i in range(32):
         if fds: os.close(fds.pop())
-      for i in xrange(64):
+      for i in range(64):
         conn = Connection("localhost:0", **self.connection_options())
         # XXX: we need to force a waiter to be created for this test
         # to work
