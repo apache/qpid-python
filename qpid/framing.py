@@ -208,11 +208,11 @@ class OpEncoder:
 
   def write(self, *ops):
     for op in ops:
-      if COMMANDS.has_key(op.NAME):
+      if op.NAME in COMMANDS:
         seg_type = segment_type.command
         seg_track = track.command
         enc = self.encode_command(op)
-      elif CONTROLS.has_key(op.NAME):
+      elif op.NAME in CONTROLS:
         seg_type = segment_type.control
         seg_track = track.control
         enc = self.encode_compound(op)

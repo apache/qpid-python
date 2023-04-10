@@ -131,7 +131,7 @@ class Codec:
         return "signed_long"
       else:
         raise ValueError('Integer value is outwith the supported 64bit signed range')
-    if self.encodings.has_key(klass):
+    if klass in self.encodings:
       return self.encodings[klass]
     for base in klass.__bases__:
       result = self.resolve(base, value)
@@ -461,7 +461,7 @@ class Codec:
       log.debug("Field table entry key: %r", key)
       code = self.decode_octet()
       log.debug("Field table entry type code: %r", code)
-      if self.types.has_key(code):
+      if code in self.types:
         value = self.decode(self.types[code])
       else:
         w = width(code)
@@ -649,7 +649,7 @@ class Codec:
     count = self.decode_long()
     result = []
     for i in range(0, count):
-      if self.types.has_key(code):
+      if code in self.types:
         value = self.decode(self.types[code])
       else:
         w = width(code)

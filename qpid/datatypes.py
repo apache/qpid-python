@@ -33,10 +33,10 @@ class Struct:
     for field in _type.fields:
       if idx < len(args):
         arg = args[idx]
-        if kwargs.has_key(field.name):
+        if field.name in kwargs:
           raise TypeError("%s() got multiple values for keyword argument '%s'" %
                           (_type.name, field.name))
-      elif kwargs.has_key(field.name):
+      elif field.name in kwargs:
         arg = kwargs.pop(field.name)
       else:
         arg = field.default()

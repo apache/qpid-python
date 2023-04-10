@@ -226,8 +226,8 @@ def qualify(nd, field="@name"):
 def resolve(nd, domains):
   candidates = qualify(nd, "@type"), pythonize(nd["@type"])
   for c in candidates:
-    if domains.has_key(c):
-      while domains.has_key(c):
+    if c in domains:
+      while c in domains:
         c = domains[c]
       return c
   else:

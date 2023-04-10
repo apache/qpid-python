@@ -125,7 +125,7 @@ class Base(Test):
       if redelivered:
         assert echo.redelivered, \
             "expected %s to be redelivered: %s" % (msg, echo)
-        if delta.has_key("redelivered"):
+        if "redelivered" in delta:
           del delta["redelivered"]
       assert mttl is not None and ettl is not None, "%s, %s" % (mttl, ettl)
       assert mttl >= ettl, "%s, %s" % (mttl, ettl)

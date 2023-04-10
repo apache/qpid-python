@@ -112,7 +112,7 @@ class Connection(Framer):
 
   def __channel(self):
     for i in range(1, self.channel_max):
-      if not self.attached.has_key(i):
+      if i not in self.attached:
         return i
     else:
       raise ChannelsBusy()

@@ -41,11 +41,11 @@ class Struct:
     return field
 
   def exists(self, attr):
-    return self.type.fields.byname.has_key(attr)
+    return attr in self.type.fields.byname
 
   def has(self, attr):
     self._check(attr)
-    return self._values.has_key(attr)
+    return attr in self._values
 
   def set(self, attr, value):
     self._check(attr)

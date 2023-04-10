@@ -298,7 +298,7 @@ class Connection(Endpoint):
     else:
       name = "%s:%s" % (self.id, name)
 
-    if self.sessions.has_key(name):
+    if name in self.sessions:
       return self.sessions[name]
     else:
       ssn = Session(self, name, transactional)

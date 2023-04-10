@@ -310,10 +310,10 @@ class Frame:
 
     def __new__(cls, name, bases, dict):
       for attr in ("encode", "decode", "type"):
-        if not dict.has_key(attr):
+        if attr not in dict:
           raise TypeError("%s must define %s" % (name, attr))
       dict["decode"] = staticmethod(dict["decode"])
-      if dict.has_key("__init__"):
+      if "__init__" in dict:
         __init__ = dict["__init__"]
         def init(self, *args, **kwargs):
           args = list(args)

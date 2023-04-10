@@ -122,7 +122,7 @@ class Client:
     try:
       id = None
       for i in range(1, 64*1024):
-        if not self.sessions.has_key(i):
+        if i not in self.sessions:
           id = i
           break
     finally:
@@ -257,9 +257,9 @@ class StructFactory:
     self.factories = {}
 
   def __getattr__(self, name):
-    if self.factories.has_key(name):
+    if name in self.factories:
       return self.factories[name]
-    elif self.spec.domains.byname.has_key(name):
+    elif name in self.spec.domains.byname:
       f = lambda *args, **kwargs: self.struct(name, *args, **kwargs)
       self.factories[name] = f
       return f

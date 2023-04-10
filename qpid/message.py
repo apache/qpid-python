@@ -43,7 +43,7 @@ class Message:
 
   def __getattr__(self, attr):
     fields = self.method.fields.byname
-    if fields.has_key(attr):
+    if attr in fields:
       f = fields[attr]
       result = self[self.method.fields.index(f)]
     else:
@@ -51,7 +51,7 @@ class Message:
         if attr == r.name:
           def respond(*args, **kwargs):
             batch=0
-            if kwargs.has_key("batchoffset"):
+            if "batchoffset" in kwargs:
               batch=kwargs.pop("batchoffset")
             self.channel.respond(Method(r, r.arguments(*args, **kwargs)), batch, self.frame)
           result = respond
