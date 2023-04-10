@@ -661,7 +661,7 @@ def oldtests():
     """
     for value in ("1", "0", "110", "011", "11001", "10101", "10011"):
       for i in range(10):
-        dotest("bit", map(lambda x: x == "1", value*i))
+        dotest("bit", [x == "1" for x in value*i])
 
     for value in ({}, {"asdf": "fdsa", "fdsa": 1, "three": 3}, {"one": 1}):
       dotest("table", value)

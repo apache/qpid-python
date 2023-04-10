@@ -364,7 +364,7 @@ def load(specfile, *errata):
   spec_root = doc["amqp"]
   spec = Spec(int(spec_root["@major"]), int(spec_root["@minor"]), specfile)
 
-  for root in [spec_root] + map(lambda x: mllib.xml_parse(x)["amqp"], errata):
+  for root in [spec_root] + [mllib.xml_parse(x)["amqp"] for x in errata]:
     # constants
     for nd in root.query["constant"]:
       val = nd["@value"]
