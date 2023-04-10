@@ -20,7 +20,12 @@
 from __future__ import absolute_import
 import threading, struct, datetime, time
 from .exceptions import Timeout
+from .py3compat import PY3__cmp__, cmp
 
+try:
+  long
+except NameError:
+  long = int
 class Struct:
 
   def __init__(self, _type, *args, **kwargs):
@@ -124,6 +129,7 @@ def serial(o):
   else:
     return Serial(o)
 
+@PY3__cmp__
 class Serial:
 
   def __init__(self, value):
@@ -290,6 +296,7 @@ try:
   from uuid import uuid4
   from uuid import UUID
 except ImportError:
+  @PY3__cmp__
   class UUID:
     def __init__(self, hex=None, bytes=None):
       if [hex, bytes].count(None) != 1:
