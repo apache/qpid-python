@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import os
 
 AMQP_SPEC_DIR=os.path.join(os.path.dirname(os.path.abspath(__file__)), "specs")

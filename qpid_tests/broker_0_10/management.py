@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from qpid.datatypes import Message, RangedSet
 from qpid.testlib import TestBase010
 from qpid.management import managementChannel, managementClient

@@ -20,6 +20,7 @@
 # setup, usage, teardown, errors(sync), errors(async), stress, soak,
 # boundary-conditions, config
 
+from __future__ import absolute_import
 from qpid.tests import Test
 from qpid.framing import *
 

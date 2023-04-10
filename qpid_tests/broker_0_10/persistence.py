@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 from qpid.datatypes import Message, RangedSet
 #from qpid.testlib import testrunner, TestBase010
 from qpid.testlib import TestBase010

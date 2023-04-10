@@ -16,8 +16,9 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 import time, errno, os, atexit, traceback
-from compat import select, SelectError, set, selectable_waiter, format_exc
+from .compat import select, SelectError, set, selectable_waiter, format_exc
 from threading import Thread, Lock
 from logging import getLogger
 from qpid.messaging import InternalError

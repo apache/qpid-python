@@ -19,4 +19,5 @@
 # under the License.
 #
 
-import basic, broker, example, exchange, queue, testlib, tx
+from __future__ import absolute_import
+from . import basic, broker, example, exchange, queue, testlib, tx

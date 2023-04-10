@@ -21,13 +21,17 @@
 # Support library for qpid python tests.
 #
 
+from __future__ import absolute_import
 from __future__ import print_function
 import string
 import random
 
 import unittest, traceback, socket
 import qpid.client, qmf.console
-import Queue
+try:
+    import Queue
+except ImportError:
+    import queue as Queue
 from qpid.content import Content
 from qpid.message import Message
 from qpid.harness import Skipped

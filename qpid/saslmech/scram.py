@@ -17,9 +17,10 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from hmac import HMAC
 from binascii import b2a_hex
-from sasl import Sasl
+from .sasl import Sasl
 import os
 import base64
 

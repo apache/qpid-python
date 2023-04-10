@@ -21,6 +21,7 @@
 Add-on utilities for the L{qpid.messaging} API.
 """
 
+from __future__ import absolute_import
 from qpid.messaging import *
 from logging import getLogger
 from threading import Thread

@@ -21,6 +21,7 @@
 Simple DOM for both SGML and XML documents.
 """
 
+from __future__ import absolute_import
 from __future__ import division
 from __future__ import generators
 from __future__ import nested_scopes

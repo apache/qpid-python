@@ -27,7 +27,7 @@ try:
 except ImportError:
   from html.parser import HTMLParser
 import xml.sax.handler
-from dom import *
+from .dom import *
 
 class Parser:
 

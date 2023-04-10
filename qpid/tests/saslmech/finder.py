@@ -17,10 +17,11 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from unittest import TestCase
 from qpid.saslmech.finder import get_sasl_mechanism
-from my_sasl import MY_SASL
-from my_sasl2 import MY_SASL2
+from .my_sasl import MY_SASL
+from .my_sasl2 import MY_SASL2
 
 class SaslFinderTests (TestCase):
   """Tests the ability to chose the a sasl mechanism from those available to be loaded"""

@@ -16,7 +16,8 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-from connection08 import Method, Request
+from __future__ import absolute_import
+from .connection08 import Method, Request
 
 class Message:
 

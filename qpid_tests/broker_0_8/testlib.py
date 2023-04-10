@@ -21,10 +21,14 @@
 # Tests for the testlib itself.
 # 
 
+from __future__ import absolute_import
 from __future__ import print_function
 from qpid.content import Content
 from qpid.testlib import TestBase
-from Queue import Empty
+try:
+    from Queue import Empty
+except ImportError:
+    from queue import Empty
 
 import sys
 from traceback import *

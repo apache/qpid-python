@@ -17,7 +17,8 @@
 # under the License.
 #
 
-import connection
+from __future__ import absolute_import
+from . import connection
 
 class Struct:
 

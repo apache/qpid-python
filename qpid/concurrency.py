@@ -17,7 +17,9 @@
 # under the License.
 #
 
-import compat, inspect, time
+from __future__ import absolute_import
+import inspect, time
+from . import compat
 
 def synchronized(meth):
   args, vargs, kwargs, defs = inspect.getargspec(meth)

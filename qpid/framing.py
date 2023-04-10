@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import struct
 
 FIRST_SEG = 0x08
@@ -197,9 +198,9 @@ class SegmentEncoder:
     self.frames = []
     return result
 
-from ops import COMMANDS, CONTROLS, COMPOUND, Header, segment_type, track
+from .ops import COMMANDS, CONTROLS, COMPOUND, Header, segment_type, track
 
-from codec010 import StringCodec
+from .codec010 import StringCodec
 
 class OpEncoder:
 

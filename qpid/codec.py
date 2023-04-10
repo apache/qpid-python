@@ -26,13 +26,15 @@ fields.
 The unit test for this module is located in tests/codec.py
 """
 
-import re, qpid, spec08, os
+from __future__ import absolute_import
+import re, qpid, os
+from . import spec08
 try:
   from cStringIO import StringIO
 except ImportError:
   from io import StringIO
 from struct import *
-from reference import ReferenceId
+from .reference import ReferenceId
 from logging import getLogger
 
 log = getLogger("qpid.codec")

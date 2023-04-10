@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 from unittest import TestCase
 from qpid.util import get_client_properties_with_defaults
 

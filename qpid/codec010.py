@@ -17,10 +17,11 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import datetime, string
-from packer import Packer
-from datatypes import serial, timestamp, RangedSet, Struct, UUID
-from ops import Compound, PRIMITIVE, COMPOUND
+from .packer import Packer
+from .datatypes import serial, timestamp, RangedSet, Struct, UUID
+from .ops import Compound, PRIMITIVE, COMPOUND
 
 class CodecException(Exception): pass
 

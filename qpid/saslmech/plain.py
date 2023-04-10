@@ -17,7 +17,8 @@
 # under the License.
 #
 
-from sasl import Sasl
+from __future__ import absolute_import
+from .sasl import Sasl
 
 class PLAIN(Sasl):
 

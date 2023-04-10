@@ -16,6 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 import re
 from qpid.lexer import Lexicon, LexError
 from qpid.parser import Parser, ParseError

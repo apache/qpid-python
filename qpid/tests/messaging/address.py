@@ -18,6 +18,7 @@
 #
 
 
+from __future__ import absolute_import
 from qpid.tests import Test
 from qpid.messaging.address import lex, parse, ParseError, EOF, ID, NUMBER, \
     SYM, WSPACE, LEXER

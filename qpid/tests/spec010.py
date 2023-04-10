@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import os, tempfile, shutil, stat
 from unittest import TestCase
 from qpid.codec010 import Codec, StringCodec

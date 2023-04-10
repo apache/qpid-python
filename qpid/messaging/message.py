@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 from qpid.codec010 import StringCodec
 from qpid.ops import PRIMITIVE
 

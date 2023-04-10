@@ -17,7 +17,8 @@
 # under the License.
 #
 
-from sasl import Sasl
+from __future__ import absolute_import
+from .sasl import Sasl
 from hmac import HMAC
 
 class CRAM_MD5(Sasl):

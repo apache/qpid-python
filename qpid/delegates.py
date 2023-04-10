@@ -17,13 +17,15 @@
 # under the License.
 #
 
-import os, session
+from __future__ import absolute_import
+import os
 import qpid.connection
-from util import notify, get_client_properties_with_defaults
-from datatypes import RangedSet
-from exceptions import VersionError, Closed
+from . import session
+from .util import notify, get_client_properties_with_defaults
+from .datatypes import RangedSet
+from .exceptions import VersionError, Closed
 from logging import getLogger
-from ops import Control
+from .ops import Control
 import sys
 from qpid import sasl
 

@@ -16,13 +16,14 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+from __future__ import absolute_import
 from __future__ import print_function
 import os, mllib, sys
 try:
   import cPickle as pickle
 except ImportError:
   import pickle
-from util import fill
+from .util import fill
 
 class Primitive(object):
   pass
@@ -269,7 +270,7 @@ def load_types(file):
       f.close()
   return types
 
-from specs_config import amqp_spec as file
+from .specs_config import amqp_spec as file
 types = load_types(file)
 
 ENUMS = {}

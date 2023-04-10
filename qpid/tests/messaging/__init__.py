@@ -17,6 +17,7 @@
 # under the License.
 #
 
+from __future__ import absolute_import
 import time
 from math import ceil
 from qpid.harness import Skipped
@@ -233,4 +234,4 @@ class CompatURL(URL):
       s += ":%s" % self.port
     return s
 
-import address, endpoints, message, selector
+from . import address, endpoints, message, selector
