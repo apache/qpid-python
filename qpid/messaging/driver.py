@@ -631,8 +631,8 @@ class Engine:
     self.address_cache = Cache(self.connection.address_ttl)
 
     self._status = CLOSED
-    self._buf = ""
-    self._hdr = ""
+    self._buf = b""
+    self._hdr = b""
     # Set _last_in and _last_out here so heartbeats will be timed from the
     # beginning of connection if no data is sent/received.
     self._last_in = time.time()
@@ -885,7 +885,7 @@ class Engine:
   def open(self):
     self._reset()
     self._status = OPEN
-    self._buf += struct.pack(HEADER, "AMQP", 1, 1, 0, 10)
+    self._buf += struct.pack(HEADER, b"AMQP", 1, 1, 0, 10)
 
   def disconnect(self):
     self.write_op(ConnectionClose(close_code.normal))

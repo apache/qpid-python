@@ -28,11 +28,11 @@ class SpecTest(TestCase):
   def testSessionHeader(self):
     sc = StringCodec()
     sc.write_compound(Header(sync=True))
-    assert sc.encoded == "\x01\x01"
+    assert sc.encoded == b"\x01\x01"
 
     sc = StringCodec()
     sc.write_compound(Header(sync=False))
-    assert sc.encoded == "\x01\x00"
+    assert sc.encoded == b"\x01\x00"
 
   def encdec(self, value):
     sc = StringCodec()
@@ -57,9 +57,9 @@ class SpecTest(TestCase):
 
   def testXid(self):
     sc = StringCodec()
-    xid = Xid(format=0, global_id="gid", branch_id="bid")
+    xid = Xid(format=0, global_id=b"gid", branch_id=b"bid")
     sc.write_compound(xid)
-    assert sc.encoded == '\x00\x00\x00\x10\x06\x04\x07\x00\x00\x00\x00\x00\x03gid\x03bid'
+    assert sc.encoded == b'\x00\x00\x00\x10\x06\x04\x07\x00\x00\x00\x00\x00\x03gid\x03bid'
     dec = sc.read_compound(Xid)
     assert xid.__dict__ == dec.__dict__
 

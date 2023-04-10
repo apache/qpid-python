@@ -43,10 +43,10 @@ class CodecTest(TestCase):
     self.check("map", {"unicode": u"this is a unicode test"})
 
   def testMapBinary(self):
-    self.check("map", {"binary": "\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5"})
+    self.check("map", {"binary": b"\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5"})
 
   def testMapBuffer(self):
-    s = "\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5"
+    s = b"\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5"
     dec = self.check("map", {"buffer": buffer(s)}, False)
     assert dec["buffer"] == s
 
@@ -82,7 +82,7 @@ class CodecTest(TestCase):
   def testMapAll(self):
     decoded = self.check("map", {"string": "this is a test",
                                  "unicode": u"this is a unicode test",
-                                 "binary": "\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5",
+                                 "binary": b"\x7f\xb4R^\xe5\xf0:\x89\x96E1\xf6\xfe\xb9\x1b\xf5",
                                  "int": 3,
                                  "long": 2**32,
                                  "timestamp": timestamp(0),

@@ -177,7 +177,7 @@ class Client(Delegate):
     cli_minor = 10
     self.connection.write_header(cli_major, cli_minor)
     magic, _, _, major, minor = self.connection.read_header()
-    if not (magic == "AMQP" and major == cli_major and minor == cli_minor):
+    if not (magic == b"AMQP" and major == cli_major and minor == cli_minor):
       raise VersionError("client: %s-%s, server: %s-%s" %
                          (cli_major, cli_minor, major, minor))
 
