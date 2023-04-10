@@ -43,7 +43,7 @@ def auto_fetch_reconnect_urls(conn):
       ssn.acknowledge(msg, sync=False)
 
   thread = Thread(name="auto-fetch-reconnect-urls", target=main)
-  thread.setDaemon(True)
+  thread.daemon = True
   thread.start()
 
 

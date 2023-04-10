@@ -276,7 +276,7 @@ class Future:
 
   def get(self, timeout=None):
     self._set.wait(timeout)
-    if self._set.isSet():
+    if self._set.is_set():
       if self._error != None:
         raise self.exception(self._error)
       return self.value
@@ -284,7 +284,7 @@ class Future:
       raise Timeout()
 
   def is_set(self):
-    return self._set.isSet()
+    return self._set.is_set()
 
 try:
   from uuid import uuid4

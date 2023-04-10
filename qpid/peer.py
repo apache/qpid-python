@@ -167,13 +167,13 @@ class Peer:
     finally:
       timeout = 1;
       self.worker_thread.join(timeout);
-      if self.worker_thread.isAlive():
+      if self.worker_thread.is_alive():
         log.warn("Worker thread failed to shutdown within timeout")
       self.reader_thread.join(timeout);
-      if self.reader_thread.isAlive():
+      if self.reader_thread.is_alive():
         log.warn("Reader thread failed to shutdown within timeout")
       self.writer_thread.join(timeout);
-      if self.writer_thread.isAlive():
+      if self.writer_thread.is_alive():
         log.warn("Writer thread failed to shutdown within timeout")
 
 class Requester:
@@ -452,13 +452,13 @@ class Future:
 
   def get_response(self, timeout=None):
     self.completed.wait(timeout)
-    if self.completed.isSet():
+    if self.completed.is_set():
       return self.response
     else:
       return None
 
   def is_complete(self):
-    return self.completed.isSet()
+    return self.completed.is_set()
 
 class OutgoingCompletion:
   """

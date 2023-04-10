@@ -64,7 +64,7 @@ class Connection(Framer):
     self.close_code = (None, "connection aborted")
 
     self.thread = Thread(target=self.run)
-    self.thread.setDaemon(True)
+    self.thread.daemon = True
 
     self.channel_max = 65535
     self.user_id = None

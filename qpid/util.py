@@ -120,7 +120,7 @@ def notify(condition, action=lambda: None):
   condition.acquire()
   try:
     action()
-    condition.notifyAll()
+    condition.notify_all()
   finally:
     condition.release()
 

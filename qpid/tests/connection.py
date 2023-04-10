@@ -85,11 +85,11 @@ class ConnectionTest(TestCase):
           pass
 
     self.server = Thread(target=run)
-    self.server.setDaemon(True)
+    self.server.daemon = True
     self.server.start()
 
     started.wait(3)
-    assert started.isSet()
+    assert started.is_set()
 
   def tearDown(self):
     self.running = False
