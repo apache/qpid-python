@@ -23,7 +23,7 @@ def synchronized(meth):
   args, vargs, kwargs, defs = inspect.getargspec(meth)
   scope = {}
   scope["meth"] = meth
-  exec """
+  exec("""
 def %s%s:
   %s
   %s._lock.acquire()
@@ -35,7 +35,7 @@ def %s%s:
        repr(inspect.getdoc(meth)), args[0],
        inspect.formatargspec(args, vargs, kwargs, defs,
                              formatvalue=lambda x: ""),
-       args[0]) in scope
+       args[0]), scope)
   return scope[meth.__name__]
 
 class Waiter(object):
