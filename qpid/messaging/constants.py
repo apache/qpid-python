@@ -17,8 +17,12 @@
 # under the License.
 #
 
+from __future__ import absolute_import
+import qpid.py3compat
+
 __SELF__ = object()
 
+@qpid.py3compat.PY3__cmp__
 class Constant:
 
   def __init__(self, name, value=__SELF__):
@@ -30,6 +34,11 @@ class Constant:
 
   def __repr__(self):
     return self.name
+
+  # NOTE: this method was not implemented in the Python 2 version,
+  #  filling in the default Python 2 __cmp__ to preserve behavior
+  def __cmp__(self, other):
+    return qpid.py3compat.cmp(id(self), id(other))
 
 AMQP_PORT = 5672
 AMQPS_PORT = 5671

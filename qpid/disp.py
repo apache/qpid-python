@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from time import strftime, gmtime
+from qpid.py3compat import PY3__cmp__
 
 class Header:
   """ """
@@ -195,6 +196,7 @@ class Display:
     result += "%ds" % (sec % 60)
     return result
 
+@PY3__cmp__
 class Sortable:
   """ """
   def __init__(self, row, sortIndex):
