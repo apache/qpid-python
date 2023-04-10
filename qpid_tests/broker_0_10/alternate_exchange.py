@@ -41,16 +41,16 @@ class AlternateExchangeTests(TestBase010):
         session.queue_declare(queue="returns", exclusive=True, auto_delete=True)
         session.exchange_bind(queue="returns", exchange="secondary")
         session.message_subscribe(destination="a", queue="returns")
-        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         returned = session.incoming("a")
 
         #declare, bind (to the primary exchange) and consume from a queue for 'processed' messages
         session.queue_declare(queue="processed", exclusive=True, auto_delete=True)
         session.exchange_bind(queue="processed", exchange="primary", binding_key="my-key")
         session.message_subscribe(destination="b", queue="processed")
-        session.message_flow(destination="b", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="b", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="b", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="b", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         processed = session.incoming("b")
 
         #publish to the primary exchange
@@ -202,8 +202,8 @@ class AlternateExchangeTests(TestBase010):
         session.queue_declare(queue="deleted", exclusive=True, auto_delete=True)
         session.exchange_bind(exchange="dlq", queue="deleted")
         session.message_subscribe(destination="dlq", queue="deleted")
-        session.message_flow(destination="dlq", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="dlq", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="dlq", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="dlq", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         dlq = session.incoming("dlq")
 
         #on a separate session, create an auto-deleted queue using the
@@ -220,7 +220,7 @@ class AlternateExchangeTests(TestBase010):
             session2.message_transfer(message=Message(dp, "Three"))
             session2.message_subscribe(destination="incoming", queue="my-queue")
             session2.message_flow(destination="incoming", unit=session.credit_unit.message, value=1)
-            session2.message_flow(destination="incoming", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+            session2.message_flow(destination="incoming", unit=session.credit_unit.byte, value=0xFFFFFFFF)
             self.assertEqual("One", session2.incoming("incoming").get(timeout=1).body)
             session2.close()
 
@@ -315,8 +315,8 @@ class AlternateExchangeTests(TestBase010):
 
         #get and reject those messages:
         session.message_subscribe(destination="a", queue="delivery-queue")
-        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="a", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="a", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         incoming = session.incoming("a")
         for m in ["One", "Two", "Three"]:
             msg = incoming.get(timeout=1)
@@ -339,8 +339,8 @@ class AlternateExchangeTests(TestBase010):
         session.queue_declare(queue="deleted", exclusive=True, auto_delete=True)
         session.exchange_bind(exchange="dlq", queue="deleted")
         session.message_subscribe(destination="dlq", queue="deleted")
-        session.message_flow(destination="dlq", unit=session.credit_unit.message, value=0xFFFFFFFFL)
-        session.message_flow(destination="dlq", unit=session.credit_unit.byte, value=0xFFFFFFFFL)
+        session.message_flow(destination="dlq", unit=session.credit_unit.message, value=0xFFFFFFFF)
+        session.message_flow(destination="dlq", unit=session.credit_unit.byte, value=0xFFFFFFFF)
         dlq = session.incoming("dlq")
         return dlq
 

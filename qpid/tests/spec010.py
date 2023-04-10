@@ -40,7 +40,7 @@ class SpecTest(TestCase):
     return decoded
 
   def testMessageProperties(self):
-    props = MessageProperties(content_length=3735928559L,
+    props = MessageProperties(content_length=3735928559,
                               reply_to=ReplyTo(exchange="the exchange name",
                                                routing_key="the routing key"))
     dec = self.encdec(props)
