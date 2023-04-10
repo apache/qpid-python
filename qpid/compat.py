@@ -158,7 +158,7 @@ if sys.platform in ('win32', 'cygwin'):
       self.write_sock = write_sock
 
     def _do_write(self):
-      self.write_sock.send("\0")
+      self.write_sock.send(b"\0")
 
     def _do_read(self):
       self.read_sock.recv(65536)
@@ -198,7 +198,7 @@ else:
       self.read_fd, self.write_fd = os.pipe()
 
     def _do_write(self):
-      os.write(self.write_fd, "\0")
+      os.write(self.write_fd, b"\0")
 
     def _do_read(self):
       os.read(self.read_fd, 65536)

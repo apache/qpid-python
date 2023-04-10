@@ -103,42 +103,42 @@ class FrameTest(Base):
       self.cmp_frames(f, df)
 
   def testEmpty(self):
-    self.enc_dec([Frame(0, 0, 0, 0, "")],
-                 "\x00\x00\x00\x0c\x00\x00\x00\x00\x00\x00\x00\x00")
+    self.enc_dec([Frame(0, 0, 0, 0, b"")],
+                 b"\x00\x00\x00\x0c\x00\x00\x00\x00\x00\x00\x00\x00")
 
   def testSingle(self):
-    self.enc_dec([Frame(0, 0, 0, 1, "payload")],
-                 "\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00payload")
+    self.enc_dec([Frame(0, 0, 0, 1, b"payload")],
+                 b"\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00payload")
 
   def testMaxChannel(self):
-    self.enc_dec([Frame(0, 0, 0, 65535, "max-channel")],
-                 "\x00\x00\x00\x17\x00\x00\xff\xff\x00\x00\x00\x00max-channel")
+    self.enc_dec([Frame(0, 0, 0, 65535, b"max-channel")],
+                 b"\x00\x00\x00\x17\x00\x00\xff\xff\x00\x00\x00\x00max-channel")
 
   def testMaxType(self):
-    self.enc_dec([Frame(0, 255, 0, 0, "max-type")],
-                 "\x00\xff\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00max-type")
+    self.enc_dec([Frame(0, 255, 0, 0, b"max-type")],
+                 b"\x00\xff\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00max-type")
 
   def testMaxTrack(self):
-    self.enc_dec([Frame(0, 0, 15, 0, "max-track")],
-                 "\x00\x00\x00\x15\x00\x0f\x00\x00\x00\x00\x00\x00max-track")
+    self.enc_dec([Frame(0, 0, 15, 0, b"max-track")],
+                 b"\x00\x00\x00\x15\x00\x0f\x00\x00\x00\x00\x00\x00max-track")
 
   def testSequence(self):
-    self.enc_dec([Frame(0, 0, 0, 0, "zero"),
-                  Frame(0, 0, 0, 1, "one"),
-                  Frame(0, 0, 1, 0, "two"),
-                  Frame(0, 0, 1, 1, "three"),
-                  Frame(0, 1, 0, 0, "four"),
-                  Frame(0, 1, 0, 1, "five"),
-                  Frame(0, 1, 1, 0, "six"),
-                  Frame(0, 1, 1, 1, "seven"),
-                  Frame(1, 0, 0, 0, "eight"),
-                  Frame(1, 0, 0, 1, "nine"),
-                  Frame(1, 0, 1, 0, "ten"),
-                  Frame(1, 0, 1, 1, "eleven"),
-                  Frame(1, 1, 0, 0, "twelve"),
-                  Frame(1, 1, 0, 1, "thirteen"),
-                  Frame(1, 1, 1, 0, "fourteen"),
-                  Frame(1, 1, 1, 1, "fifteen")])
+    self.enc_dec([Frame(0, 0, 0, 0, b"zero"),
+                  Frame(0, 0, 0, 1, b"one"),
+                  Frame(0, 0, 1, 0, b"two"),
+                  Frame(0, 0, 1, 1, b"three"),
+                  Frame(0, 1, 0, 0, b"four"),
+                  Frame(0, 1, 0, 1, b"five"),
+                  Frame(0, 1, 1, 0, b"six"),
+                  Frame(0, 1, 1, 1, b"seven"),
+                  Frame(1, 0, 0, 0, b"eight"),
+                  Frame(1, 0, 0, 1, b"nine"),
+                  Frame(1, 0, 1, 0, b"ten"),
+                  Frame(1, 0, 1, 1, b"eleven"),
+                  Frame(1, 1, 0, 0, b"twelve"),
+                  Frame(1, 1, 0, 1, b"thirteen"),
+                  Frame(1, 1, 1, 0, b"fourteen"),
+                  Frame(1, 1, 1, 1, b"fifteen")])
 
 class SegmentTest(Base):
 
@@ -168,54 +168,54 @@ class SegmentTest(Base):
       self.cmp_segments(s1, s2)
 
   def testEmpty(self):
-    self.enc_dec([Segment(True, True, 0, 0, 0, "")],
+    self.enc_dec([Segment(True, True, 0, 0, 0, b"")],
                  [Frame(FIRST_FRM | LAST_FRM | FIRST_SEG | LAST_SEG, 0, 0, 0,
-                        "")])
+                        b"")])
 
   def testSingle(self):
-    self.enc_dec([Segment(True, True, 0, 0, 0, "payload")],
+    self.enc_dec([Segment(True, True, 0, 0, 0, b"payload")],
                  [Frame(FIRST_FRM | LAST_FRM | FIRST_SEG | LAST_SEG, 0, 0, 0,
-                        "payload")])
+                        b"payload")])
 
   def testMaxChannel(self):
-    self.enc_dec([Segment(False, False, 0, 0, 65535, "max-channel")],
-                 [Frame(FIRST_FRM | LAST_FRM, 0, 0, 65535, "max-channel")])
+    self.enc_dec([Segment(False, False, 0, 0, 65535, b"max-channel")],
+                 [Frame(FIRST_FRM | LAST_FRM, 0, 0, 65535, b"max-channel")])
 
   def testMaxType(self):
-    self.enc_dec([Segment(False, False, 255, 0, 0, "max-type")],
-                 [Frame(FIRST_FRM | LAST_FRM, 255, 0, 0, "max-type")])
+    self.enc_dec([Segment(False, False, 255, 0, 0, b"max-type")],
+                 [Frame(FIRST_FRM | LAST_FRM, 255, 0, 0, b"max-type")])
 
   def testMaxTrack(self):
-    self.enc_dec([Segment(False, False, 0, 15, 0, "max-track")],
-                 [Frame(FIRST_FRM | LAST_FRM, 0, 15, 0, "max-track")])
+    self.enc_dec([Segment(False, False, 0, 15, 0, b"max-track")],
+                 [Frame(FIRST_FRM | LAST_FRM, 0, 15, 0, b"max-track")])
 
   def testSequence(self):
-    self.enc_dec([Segment(True, False, 0, 0, 0, "one"),
-                  Segment(False, False, 0, 0, 0, "two"),
-                  Segment(False, True, 0, 0, 0, "three")],
-                 [Frame(FIRST_FRM | LAST_FRM | FIRST_SEG, 0, 0, 0, "one"),
-                  Frame(FIRST_FRM | LAST_FRM, 0, 0, 0, "two"),
-                  Frame(FIRST_FRM | LAST_FRM | LAST_SEG, 0, 0, 0, "three")])
+    self.enc_dec([Segment(True, False, 0, 0, 0, b"one"),
+                  Segment(False, False, 0, 0, 0, b"two"),
+                  Segment(False, True, 0, 0, 0, b"three")],
+                 [Frame(FIRST_FRM | LAST_FRM | FIRST_SEG, 0, 0, 0, b"one"),
+                  Frame(FIRST_FRM | LAST_FRM, 0, 0, 0, b"two"),
+                  Frame(FIRST_FRM | LAST_FRM | LAST_SEG, 0, 0, 0, b"three")])
 
   def testInterleaveChannel(self):
-    frames = [Frame(0, 0, 0, 0, chr(ord("a") + i)) for i in range(7)]
+    frames = [Frame(0, 0, 0, 0, b'%c' % (ord("a") + i,)) for i in range(7)]
     frames[0].flags |= FIRST_FRM
     frames[-1].flags |= LAST_FRM
 
-    ilvd = [Frame(0, 0, 0, 1, chr(ord("a") + i)) for i in range(7)]
+    ilvd = [Frame(0, 0, 0, 1, b'%c' % (ord("a") + i,)) for i in range(7)]
 
-    self.enc_dec([Segment(False, False, 0, 0, 0, "abcdefg")], frames, ilvd, max_payload=1)
+    self.enc_dec([Segment(False, False, 0, 0, 0, b"abcdefg")], frames, ilvd, max_payload=1)
 
   def testInterleaveTrack(self):
-    frames = [Frame(0, 0, 0, 0, "%c%c" % (ord("a") + i, ord("a") + i + 1))
+    frames = [Frame(0, 0, 0, 0, b"%c%c" % (ord("a") + i, ord("a") + i + 1))
               for i in range(0, 8, 2)]
     frames[0].flags |= FIRST_FRM
     frames[-1].flags |= LAST_FRM
 
-    ilvd = [Frame(0, 0, 1, 0, "%c%c" % (ord("a") + i, ord("a") + i + 1))
+    ilvd = [Frame(0, 0, 1, 0, b"%c%c" % (ord("a") + i, ord("a") + i + 1))
             for i in range(0, 8, 2)]
 
-    self.enc_dec([Segment(False, False, 0, 0, 0, "abcdefgh")], frames, ilvd, max_payload=2)
+    self.enc_dec([Segment(False, False, 0, 0, 0, b"abcdefgh")], frames, ilvd, max_payload=2)
 
 from qpid.ops import *
 
@@ -245,46 +245,46 @@ class OpTest(Base):
     self.enc_dec([MessageTransfer(destination="asdf", sync=True)])
 
   def testEmptyPayloadMT(self):
-    self.enc_dec([MessageTransfer(payload="")])
+    self.enc_dec([MessageTransfer(payload=b"")])
 
   def testPayloadMT(self):
-    self.enc_dec([MessageTransfer(payload="test payload")])
+    self.enc_dec([MessageTransfer(payload=b"test payload")])
 
   def testHeadersEmptyPayloadMT(self):
     self.enc_dec([MessageTransfer(headers=[DeliveryProperties()])])
 
   def testHeadersPayloadMT(self):
-    self.enc_dec([MessageTransfer(headers=[DeliveryProperties()], payload="test payload")])
+    self.enc_dec([MessageTransfer(headers=[DeliveryProperties()], payload=b"test payload")])
 
   def testMultiHeadersEmptyPayloadMT(self):
     self.enc_dec([MessageTransfer(headers=[DeliveryProperties(), MessageProperties()])])
 
   def testMultiHeadersPayloadMT(self):
-    self.enc_dec([MessageTransfer(headers=[MessageProperties(), DeliveryProperties()], payload="test payload")])
+    self.enc_dec([MessageTransfer(headers=[MessageProperties(), DeliveryProperties()], payload=b"test payload")])
 
   def testContentTypeHeadersPayloadMT(self):
-    self.enc_dec([MessageTransfer(headers=[MessageProperties(content_type="text/plain")], payload="test payload")])
+    self.enc_dec([MessageTransfer(headers=[MessageProperties(content_type="text/plain")], payload=b"test payload")])
 
   def testMulti(self):
     self.enc_dec([MessageTransfer(),
                   MessageTransfer(sync=True),
                   MessageTransfer(destination="one"),
                   MessageTransfer(destination="two", sync=True),
-                  MessageTransfer(destination="three", payload="test payload")])
+                  MessageTransfer(destination="three", payload=b"test payload")])
 
   def testControl(self):
-    self.enc_dec([SessionAttach(name="asdf")])
+    self.enc_dec([SessionAttach(name=b"asdf")])
 
   def testMixed(self):
-    self.enc_dec([SessionAttach(name="fdsa"), MessageTransfer(destination="test")])
+    self.enc_dec([SessionAttach(name=b"fdsa"), MessageTransfer(destination="test")])
 
   def testChannel(self):
-    self.enc_dec([SessionAttach(name="asdf", channel=3), MessageTransfer(destination="test", channel=1)])
+    self.enc_dec([SessionAttach(name=b"asdf", channel=3), MessageTransfer(destination="test", channel=1)])
 
   def testCompound(self):
     self.enc_dec([MessageTransfer(headers=[MessageProperties(reply_to=ReplyTo(exchange="exch", routing_key="rk"))])])
 
   def testListCompound(self):
-    self.enc_dec([ExecutionResult(value=RecoverResult(in_doubt=[Xid(global_id="one"),
-                                                                Xid(global_id="two"),
-                                                                Xid(global_id="three")]))])
+    self.enc_dec([ExecutionResult(value=RecoverResult(in_doubt=[Xid(global_id=b"one"),
+                                                                Xid(global_id=b"two"),
+                                                                Xid(global_id=b"three")]))])

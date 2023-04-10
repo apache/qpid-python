@@ -33,7 +33,7 @@ class EchoTests(TestBase):
     self.assertTrue(self.frame_max_size >= self.client.conn.FRAME_MIN_SIZE)
 
   def test_empty_message(self):
-    body = ''
+    body = b''
     self.echo_message(body)
 
   def test_small_message(self):

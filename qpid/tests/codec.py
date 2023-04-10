@@ -121,10 +121,10 @@ class IntegerTestCase(BaseDataTypes):
 
         BaseDataTypes.__init__(self, *args)
         self.const_integer = 2
-        self.const_integer_octet_encoded = '\x02'
-        self.const_integer_short_encoded = '\x00\x02'
-        self.const_integer_long_encoded = '\x00\x00\x00\x02'
-        self.const_integer_long_long_encoded = '\x00\x00\x00\x00\x00\x00\x00\x02'
+        self.const_integer_octet_encoded = b'\x02'
+        self.const_integer_short_encoded = b'\x00\x02'
+        self.const_integer_long_encoded = b'\x00\x00\x00\x02'
+        self.const_integer_long_long_encoded = b'\x00\x00\x00\x00\x00\x00\x00\x02'
 
     # -------------------------- #
     # Unsigned Octect - 8 bits   #
@@ -308,35 +308,35 @@ class BitTestCase(BaseDataTypes):
         """
         sends in 11
         """
-        self.failUnlessEqual(self.callFunc('encode_bit', 1, 1), '\x03', '11 bit encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_bit', 1, 1), b'\x03', '11 bit encoding FAILED...')
 
     # -------------------
     def test_bit2(self):
         """
         sends in 10011
         """
-        self.failUnlessEqual(self.callFunc('encode_bit', 1, 1, 0, 0, 1), '\x13', '10011 bit encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_bit', 1, 1, 0, 0, 1), b'\x13', '10011 bit encoding FAILED...')
 
     # -------------------
     def test_bit3(self):
         """
         sends in 1110100111 [10 bits(right to left), should be compressed into two octets]
         """
-        self.failUnlessEqual(self.callFunc('encode_bit', 1,1,1,0,0,1,0,1,1,1), '\xa7\x03', '1110100111(right to left) bit encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_bit', 1,1,1,0,0,1,0,1,1,1), b'\xa7\x03', '1110100111(right to left) bit encoding FAILED...')
 
     # ------------------------------------
     def test_bit_decode_1(self):
         """
         decode bit 1
         """
-        self.failUnlessEqual(self.readFunc('decode_bit', '\x01'), 1, 'decode bit 1 FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_bit', b'\x01'), 1, 'decode bit 1 FAILED...')
 
     # ------------------------------------
     def test_bit_decode_0(self):
         """
         decode bit 0
         """
-        self.failUnlessEqual(self.readFunc('decode_bit', '\x00'), 0, 'decode bit 0 FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_bit', b'\x00'), 0, 'decode bit 0 FAILED...')
 
 # -----------------------------------
 # -----------------------------------
@@ -355,28 +355,28 @@ class StringTestCase(BaseDataTypes):
         """
         0 length short string
         """
-        self.failUnlessEqual(self.callFunc('encode_shortstr', ''), '\x00', '0 length short string encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_shortstr', b''), b'\x00', '0 length short string encoding FAILED...')
 
     # -------------------------------------------
     def test_short_string_positive_length(self):
         """
         positive length short string
         """
-        self.failUnlessEqual(self.callFunc('encode_shortstr', 'hello world'), '\x0bhello world', 'positive length short string encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_shortstr', b'hello world'), b'\x0bhello world', 'positive length short string encoding FAILED...')
 
     # -------------------------------------------
     def test_short_string_out_of_upper_range(self):
         """
         string length > 255
         """
-        self.failUnlessRaises(Exception, self.codec.encode_shortstr, 'x'*256)
+        self.failUnlessRaises(Exception, self.codec.encode_shortstr, b'x'*256)
 
     # ------------------------------------
     def test_short_string_decode(self):
         """
         short string decode
         """
-        self.failUnlessEqual(self.readFunc('decode_shortstr', '\x0bhello world'), 'hello world', 'short string decode FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_shortstr', b'\x0bhello world'), b'hello world', 'short string decode FAILED...')
 
 
     # ------------------------------------------------------------- #
@@ -388,21 +388,21 @@ class StringTestCase(BaseDataTypes):
         """
         0 length long string
         """
-        self.failUnlessEqual(self.callFunc('encode_longstr', ''), '\x00\x00\x00\x00', '0 length long string encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_longstr', b''), b'\x00\x00\x00\x00', '0 length long string encoding FAILED...')
 
     # -------------------------------------------
     def test_long_string_positive_length(self):
         """
         positive length long string
         """
-        self.failUnlessEqual(self.callFunc('encode_longstr', 'hello world'), '\x00\x00\x00\x0bhello world', 'positive length long string encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_longstr', b'hello world'), b'\x00\x00\x00\x0bhello world', 'positive length long string encoding FAILED...')
 
     # ------------------------------------
     def test_long_string_decode(self):
         """
         long string decode
         """
-        self.failUnlessEqual(self.readFunc('decode_longstr', '\x00\x00\x00\x0bhello world'), 'hello world', 'long string decode FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_longstr', b'\x00\x00\x00\x0bhello world'), b'hello world', 'long string decode FAILED...')
 
 
 # --------------------------------------
@@ -431,15 +431,15 @@ class FieldTableTestCase(BaseDataTypes):
         """
 
         BaseDataTypes.__init__(self, *args)
-        self.const_field_table_dummy_dict = {'$key1':'value1','$key2':'value2'}
-        self.const_field_table_dummy_dict_encoded = '\x00\x00\x00\x22\x05$key2S\x00\x00\x00\x06value2\x05$key1S\x00\x00\x00\x06value1'
+        self.const_field_table_dummy_dict = {b'$key2':b'value2',b'$key1':b'value1'}
+        self.const_field_table_dummy_dict_encoded = b'\x00\x00\x00\x22\x05$key2S\x00\x00\x00\x06value2\x05$key1S\x00\x00\x00\x06value1'
 
     # -------------------------------------------
     def test_field_table_name_value_pair(self):
         """
         valid name value pair
         """
-        self.failUnlessEqual(self.callFunc('encode_table', {'$key1':'value1'}), '\x00\x00\x00\x11\x05$key1S\x00\x00\x00\x06value1', 'valid name value pair encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_table', {'$key1':'value1'}), b'\x00\x00\x00\x11\x05$key1S\x00\x00\x00\x06value1', 'valid name value pair encoding FAILED...')
 
     # ---------------------------------------------------
     def test_field_table_multiple_name_value_pair(self):
@@ -469,28 +469,28 @@ class ContentTestCase(BaseDataTypes):
         """
         inline content
         """
-        self.failUnlessEqual(self.callFunc('encode_content', 'hello inline message'), '\x00\x00\x00\x00\x14hello inline message', 'inline content encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_content', 'hello inline message'), b'\x00\x00\x00\x00\x14hello inline message', 'inline content encoding FAILED...')
 
     # --------------------------------
     def test_content_reference(self):
         """
         reference content
         """
-        self.failUnlessEqual(self.callFunc('encode_content', ReferenceId('dummyId')), '\x01\x00\x00\x00\x07dummyId', 'reference content encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_content', ReferenceId('dummyId')), b'\x01\x00\x00\x00\x07dummyId', 'reference content encoding FAILED...')
 
     # ------------------------------------
     def test_content_inline_decode(self):
         """
         inline content decode
         """
-        self.failUnlessEqual(self.readFunc('decode_content', '\x00\x00\x00\x00\x14hello inline message'), 'hello inline message', 'inline content decode FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_content', b'\x00\x00\x00\x00\x14hello inline message'), b'hello inline message', 'inline content decode FAILED...')
 
     # ------------------------------------
     def test_content_reference_decode(self):
         """
         reference content decode
         """
-        self.failUnlessEqual(self.readFunc('decode_content', '\x01\x00\x00\x00\x07dummyId').id, 'dummyId', 'reference content decode FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_content', b'\x01\x00\x00\x00\x07dummyId').id, b'dummyId', 'reference content decode FAILED...')
 
 # -----------------------------------
 # -----------------------------------
@@ -498,21 +498,21 @@ class BooleanTestCase(BaseDataTypes):
 
     # -------------------
     def test_true_encode(self):
-        self.failUnlessEqual(self.callFunc('encode_boolean', True), '\x01', 'True encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_boolean', True), b'\x01', 'True encoding FAILED...')
 
     # -------------------
     def test_true_decode(self):
-        self.failUnlessEqual(self.readFunc('decode_boolean', '\x01'), True, 'True decoding FAILED...')
-        self.failUnlessEqual(self.readFunc('decode_boolean', '\x02'), True, 'True decoding FAILED...')
-        self.failUnlessEqual(self.readFunc('decode_boolean', '\xFF'), True, 'True decoding FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_boolean', b'\x01'), True, 'True decoding FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_boolean', b'\x02'), True, 'True decoding FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_boolean', b'\xFF'), True, 'True decoding FAILED...')
 
     # -------------------
     def test_false_encode(self):
-        self.failUnlessEqual(self.callFunc('encode_boolean', False), '\x00', 'False encoding FAILED...')
+        self.failUnlessEqual(self.callFunc('encode_boolean', False), b'\x00', 'False encoding FAILED...')
 
     # -------------------
     def test_false_decode(self):
-        self.failUnlessEqual(self.readFunc('decode_boolean', '\x00'), False, 'False decoding FAILED...')
+        self.failUnlessEqual(self.readFunc('decode_boolean', b'\x00'), False, 'False decoding FAILED...')
 
 # -----------------------------------
 # -----------------------------------
@@ -663,7 +663,7 @@ def oldtests():
       for i in range(10):
         dotest("bit", [x == "1" for x in value*i])
 
-    for value in ({}, {"asdf": "fdsa", "fdsa": 1, "three": 3}, {"one": 1}):
+    for value in ({}, {b"asdf": b"fdsa", b"fdsa": 1, b"three": 3}, {b"one": 1}):
       dotest("table", value)
 
     for type in ("octet", "short", "long", "longlong"):
@@ -671,7 +671,7 @@ def oldtests():
         dotest(type, value)
 
     for type in ("shortstr", "longstr"):
-      for value in ("", "a", "asdf"):
+      for value in (b"", b"a", b"asdf"):
         dotest(type, value)
 
 # -----------------------------------------

@@ -37,8 +37,8 @@ class Framer(Packer):
   def __init__(self, sock):
     self.sock = sock
     self.sock_lock = RLock()
-    self.tx_buf = ""
-    self.rx_buf = ""
+    self.tx_buf = b""
+    self.rx_buf = b""
     self.security_layer_tx = None
     self.security_layer_rx = None
     self.maxbufsize = 65535
@@ -60,7 +60,7 @@ class Framer(Packer):
         self._write(cipher_buf)
       else:
         self._write(self.tx_buf)
-      self.tx_buf = ""
+      self.tx_buf = b""
       frm.debug("FLUSHED")
     finally:
       self.sock_lock.release()
@@ -106,7 +106,7 @@ class Framer(Packer):
         else:
           continue
       except socket.error as e:
-        if self.rx_buf != "":
+        if self.rx_buf != b"":
           raise e
         else:
           raise Closed()
@@ -124,7 +124,7 @@ class Framer(Packer):
   def write_header(self, major, minor):
     self.sock_lock.acquire()
     try:
-      self.pack(Framer.HEADER, "AMQP", 1, 1, major, minor)
+      self.pack(Framer.HEADER, b"AMQP", 1, 1, major, minor)
       self.flush()
     finally:
       self.sock_lock.release()

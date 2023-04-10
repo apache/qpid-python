@@ -667,13 +667,13 @@ class Codec:
 
   def encode_boolean(self, s):
     if (s):
-      self.pack("!c", "\x01")
+      self.pack("!c", b"\x01")
     else:
-      self.pack("!c", "\x00")
+      self.pack("!c", b"\x00")
 
   def decode_boolean(self):
     b = self.unpack("!c")
-    if b == "\x00":
+    if b == b"\x00":
       return False
     else:
       # AMQP spec says anything else is True

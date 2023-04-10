@@ -240,7 +240,7 @@ class Codec(Packer):
     return self.read(self.read_uint32())
   def write_vbin32(self, b):
     if isinstance(b, buffer):
-      b = str(b)
+      b = bytes(b)
     # Allow unicode values in connection 'response' field
     if isinstance(b, unicode):
       b = b.encode('utf8')
@@ -408,7 +408,7 @@ class Codec(Packer):
 
 class StringCodec(Codec):
 
-  def __init__(self, encoded = ""):
+  def __init__(self, encoded = b""):
     self.encoded = encoded
 
   def read(self, n):

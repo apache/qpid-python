@@ -81,7 +81,7 @@ class Segment:
 class FrameDecoder:
 
   def __init__(self):
-    self.input = ""
+    self.input = b""
     self.output = []
     self.parse = self.__frame_header
 
@@ -122,7 +122,7 @@ class FrameDecoder:
 class FrameEncoder:
 
   def __init__(self):
-    self.output = ""
+    self.output = b""
 
   def write(self, *frames):
     for frame in frames:
@@ -134,7 +134,7 @@ class FrameEncoder:
 
   def read(self):
     result = self.output
-    self.output = ""
+    self.output = b""
     return result
 
 class SegmentDecoder:
@@ -150,7 +150,7 @@ class SegmentDecoder:
 
       if seg == None:
         seg = Segment(frm.isFirstSegment(), frm.isLastSegment(),
-                      frm.type, frm.track, frm.channel, "")
+                      frm.type, frm.track, frm.channel, b"")
         self.fragments[key] = seg
 
       seg.payload += frm.payload
@@ -222,7 +222,7 @@ class OpEncoder:
       seg = Segment(True, False, seg_type, seg_track, op.channel, enc)
       self.segments.append(seg)
       if hasattr(op, "headers") and op.headers is not None:
-        hdrs = ""
+        hdrs = b""
         for h in op.headers:
           hdrs += self.encode_compound(h)
         seg = Segment(False, False, segment_type.header, seg_track, op.channel,

@@ -25,8 +25,8 @@ from qpid.tests.messaging import Base
 class MessageTests(Base):
 
   def testCreateString(self):
-    m = Message("string")
-    assert m.content == "string"
+    m = Message(b"string")
+    assert m.content == b"string"
     assert m.content_type is None
 
   def testCreateUnicode(self):
@@ -79,7 +79,7 @@ class MessageEchoTests(Base):
     self.check(Message(u"unicode"))
 
 
-  TEST_MAP = {"key1": "string",
+  TEST_MAP = {"key1": b"string",
               "key2": u"unicode",
               "key3": 3,
               "key4": -3,
@@ -90,7 +90,7 @@ class MessageEchoTests(Base):
               "key9": {"sub-key0": 3},
               "key10": True,
               "key11": False,
-              "x-amqp-0-10.app-id": "test-app-id",
+              "x-amqp-0-10.app-id": b"test-app-id",
               "x-amqp-0-10.content-encoding": "test-content-encoding"}
 
   def testMapContent(self):
@@ -104,7 +104,7 @@ class MessageEchoTests(Base):
   def testProperties(self):
     msg = Message()
     msg.subject = "subject"
-    msg.correlation_id = str(self.test_id)
+    msg.correlation_id = str(self.test_id).encode()
     msg.durable = True
     msg.priority = 7
     msg.ttl = 60

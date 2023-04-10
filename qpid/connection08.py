@@ -48,7 +48,7 @@ class SockIO:
     self.sock.sendall(buf)
 
   def read(self, n):
-    data = ""
+    data = b""
     while len(data) < n:
       try:
         s = self.sock.recv(n - len(data))
@@ -179,7 +179,7 @@ class Connection:
   INIT="!4s4B"
 
   def init(self):
-    self.codec.pack(Connection.INIT, "AMQP", 1, 1, self.spec.major,
+    self.codec.pack(Connection.INIT, b"AMQP", 1, 1, self.spec.major,
                     self.spec.minor)
 
   def tini(self):
@@ -216,7 +216,7 @@ class Connection:
       frame.channel = channel
       end = c.decode_octet()
       if end != self.FRAME_END:
-	      garbage = ""
+	      garbage = b""
 	      while end != self.FRAME_END:
 	        garbage += chr(end)
 	        end = c.decode_octet()
@@ -291,7 +291,7 @@ class Connection:
     frame.subchannel = subchannel
     end = c.decode_octet()
     if end != self.FRAME_END:
-      garbage = ""
+      garbage = b""
       while end != self.FRAME_END:
         garbage += chr(end)
         end = c.decode_octet()

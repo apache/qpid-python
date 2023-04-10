@@ -103,11 +103,11 @@ class ConnectionTest(TestCase):
     c = self.connect()
     c.start(10)
 
-    ssn1 = c.session("test1", timeout=10)
-    ssn2 = c.session("test2", timeout=10)
+    ssn1 = c.session(b"test1", timeout=10)
+    ssn2 = c.session(b"test2", timeout=10)
 
-    assert ssn1 == c.sessions["test1"]
-    assert ssn2 == c.sessions["test2"]
+    assert ssn1 == c.sessions[b"test1"]
+    assert ssn2 == c.sessions[b"test2"]
     assert ssn1.channel != None
     assert ssn2.channel != None
     assert ssn1 in c.attached.values()
@@ -125,7 +125,7 @@ class ConnectionTest(TestCase):
     assert ssn2 not in c.attached.values()
     assert ssn2 not in c.sessions.values()
 
-    ssn = c.session("session", timeout=10)
+    ssn = c.session(b"session", timeout=10)
 
     assert ssn.channel != None
     assert ssn in c.sessions.values()
@@ -141,7 +141,7 @@ class ConnectionTest(TestCase):
       assert cmd.headers == None
       assert cmd.payload == None
 
-    msg = Message("this is a test")
+    msg = Message(b"this is a test")
     ssn.message_transfer("four", message=msg)
     cmd = self.queue.get(10)
     assert cmd.destination == "four"
@@ -159,14 +159,14 @@ class ConnectionTest(TestCase):
     echos = ssn.incoming("echo")
 
     for i in range(10):
-      ssn.message_transfer("echo", message=Message("test%d" % i))
+      ssn.message_transfer("echo", message=Message(b"test%d" % i))
 
     ssn.auto_sync=False
     ssn.message_transfer("abort")
 
     for i in range(10):
       m = echos.get(timeout=10)
-      assert m.body == "test%d" % i
+      assert m.body == b"test%d" % i
 
     try:
       m = echos.get(timeout=10)
@@ -193,7 +193,7 @@ class ConnectionTest(TestCase):
     echos.listen(listener, exc_listener)
 
     for i in range(10):
-      ssn.message_transfer("echo", message=Message("test%d" % i))
+      ssn.message_transfer("echo", message=Message(b"test%d" % i))
 
     ssn.auto_sync=False
     ssn.message_transfer("abort")
@@ -208,7 +208,7 @@ class ConnectionTest(TestCase):
 
     for i in range(10):
       m = messages.pop(0)
-      assert m.body == "test%d" % i
+      assert m.body == b"test%d" % i
 
     assert len(exceptions) == 1
 
@@ -217,7 +217,7 @@ class ConnectionTest(TestCase):
     c.start(10)
     s = c.session("test")
     s.auto_sync = False
-    s.message_transfer("echo", message=Message("test"))
+    s.message_transfer("echo", message=Message(b"test"))
     s.sync(10)
 
   def testHeartbeat(self):
