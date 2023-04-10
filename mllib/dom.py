@@ -25,7 +25,7 @@ from __future__ import division
 from __future__ import generators
 from __future__ import nested_scopes
 
-import transforms
+import mllib.transforms
 
 class Container:
 
@@ -109,7 +109,7 @@ class Node(Container, Component, Dispatcher):
       return nd
 
   def text(self):
-    return self.dispatch(transforms.Text())
+    return self.dispatch(mllib.transforms.Text())
 
   def tag(self, name, *attrs, **kwargs):
     t = Tag(name, *attrs, **kwargs)

@@ -21,7 +21,7 @@
 Useful transforms for dom objects.
 """
 
-import dom
+import mllib.dom
 from cStringIO import StringIO
 
 class Visitor:
@@ -45,12 +45,12 @@ class Identity:
     return result
 
   def default(self, tag):
-    result = dom.Tag(tag.name, *tag.attrs)
+    result = mllib.dom.Tag(tag.name, *tag.attrs)
     result.extend(self.descend(tag))
     return result
 
   def tree(self, tree):
-    result = dom.Tree()
+    result = mllib.dom.Tree()
     result.extend(self.descend(tree))
     return result
 
