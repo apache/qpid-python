@@ -19,4 +19,5 @@
 # under the License.
 #
 
-import broker_1_0, broker_0_10, broker_0_9, broker_0_8
+from __future__ import absolute_import
+from . import broker_1_0, broker_0_10, broker_0_9, broker_0_8

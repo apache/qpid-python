@@ -19,8 +19,9 @@
 # under the License.
 #
 
-from general import *
-from legacy_exchanges import *
-from selector import *
-from translation import *
-from tx import *
+from __future__ import absolute_import
+from .general import *
+from .legacy_exchanges import *
+from .selector import *
+from .translation import *
+from .tx import *
