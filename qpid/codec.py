@@ -29,10 +29,7 @@ The unit test for this module is located in tests/codec.py
 from __future__ import absolute_import
 import re, qpid, os
 from . import spec08
-try:
-  from cStringIO import StringIO
-except ImportError:
-  from io import StringIO
+from io import BytesIO
 from struct import *
 from .reference import ReferenceId
 from logging import getLogger
@@ -438,7 +435,7 @@ class Codec:
     """
     encodes a table data structure in network byte order
     """
-    enc = StringIO()
+    enc = BytesIO()
     codec = Codec(enc, self.spec)
     if tbl:
       for key, value in tbl.items():
@@ -573,7 +570,7 @@ class Codec:
 
   def encode_struct(self, type, s):
     if type.size:
-      enc = StringIO()
+      enc = BytesIO()
       codec = Codec(enc, self.spec)
       codec.encode_struct_body(type, s)
       codec.flush()
@@ -636,7 +633,7 @@ class Codec:
     return s
 
   def encode_long_struct(self, s):
-    enc = StringIO()
+    enc = BytesIO()
     codec = Codec(enc, self.spec)
     type = s.type
     codec.encode_short(type.type)
@@ -644,7 +641,7 @@ class Codec:
     self.encode_longstr(enc.getvalue())
 
   def decode_long_struct(self):
-    codec = Codec(StringIO(self.decode_longstr()), self.spec)
+    codec = Codec(BytesIO(self.decode_longstr()), self.spec)
     type = self.spec.structs[codec.decode_short()]
     return codec.decode_struct_body(type)
 
