@@ -61,18 +61,21 @@ class preprocessor:
       else:
         try:
           fsrc = open(src, 'rb')
-        except os.error as (errno, errstr):
+        except os.error as e:
+          errno, errstr = e.args
           raise DistutilsFileError("could not open '%s': %s" % (src, errstr))
 
         if os.path.exists(dst):
           try:
             os.unlink(dst)
-          except os.error as (errno, errstr):
+          except os.error as e:
+            errno, errstr = e.args
             raise DistutilsFileError("could not delete '%s': %s" % (dst, errstr))
 
         try:
           fdst = open(dst, 'wb')
-        except os.error as (errno, errstr):
+        except os.error as e:
+          errno, errstr = e.args
           raise DistutilsFileError("could not create '%s': %s" % (dst, errstr))
 
         try:
