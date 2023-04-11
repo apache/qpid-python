@@ -23,10 +23,7 @@ from __future__ import print_function
 import unittest
 from qpid.codec import Codec
 from qpid.spec08 import load
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import BytesIO
 from qpid.reference import ReferenceId
 
 __doc__ = """
@@ -75,7 +72,7 @@ class BaseDataTypes(unittest.TestCase):
         """
         standard setUp for unitetest (refer unittest documentation for details)
         """
-        self.codec = Codec(StringIO(), SPEC)
+        self.codec = Codec(BytesIO(), SPEC)
 
     # ------------------
     def tearDown(self):
@@ -100,7 +97,7 @@ class BaseDataTypes(unittest.TestCase):
         helper function - creates a input stream and then calls the function with arguments as have been
         supplied
         """
-        self.codec.stream = StringIO(args[0])
+        self.codec.stream = BytesIO(args[0])
         return getattr(self.codec, functionName)()
 
 
@@ -212,7 +209,7 @@ class IntegerTestCase(BaseDataTypes):
     # -----------------------
     def test_ulong_int(self):
         """
-        testing unsigned long iteger
+        testing unsigned long integer
         """
         self.failUnlessEqual(self.callFunc('encode_long', self.const_integer), self.const_integer_long_encoded, 'long encoding FAILED...')
 
@@ -633,18 +630,20 @@ def test(type, value):
       values = value
     else:
       values = [value]
-    stream = StringIO()
+    stream = BytesIO()
     codec = Codec(stream, SPEC)
     for v in values:
       codec.encode(type, v)
     codec.flush()
     enc = stream.getvalue()
-    stream.reset()
+    stream.seek(0)
     dup = []
     for i in range(len(values)):
       dup.append(codec.decode(type))
     if values != dup:
       raise AssertionError("%r --> %r --> %r" % (values, enc, dup))
+
+test.__test__ = False  # tells pytest to not try run this as a test function
 
 # -----------------------
 def dotest(type, value):

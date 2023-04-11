@@ -26,10 +26,7 @@ server, or even a proxy implementation.
 from __future__ import absolute_import
 import socket, errno, qpid
 from . import codec
-try:
-  from cStringIO import StringIO
-except ImportError:
-  from io import StringIO
+from io import BytesIO
 from .codec import EOF
 from .compat import SHUT_RDWR
 from .exceptions import VersionError
@@ -189,7 +186,7 @@ class Connection:
     c = self.codec
     c.encode_octet(self.spec.constants.byname[frame.type].id)
     c.encode_short(frame.channel)
-    body = StringIO()
+    body = BytesIO()
     enc = codec.Codec(body, self.spec)
     frame.encode(enc)
     enc.flush()
@@ -211,7 +208,7 @@ class Connection:
     try:
       channel = c.decode_short()
       body = c.decode_longstr()
-      dec = codec.Codec(StringIO(body), self.spec)
+      dec = codec.Codec(BytesIO(body), self.spec)
       frame = Frame.DECODERS[type].decode(self.spec, dec, len(body))
       frame.channel = channel
       end = c.decode_octet()
@@ -250,7 +247,7 @@ class Connection:
 
     c.encode_octet(flags) # TODO: currently fixed at ver=0, B=E=b=e=1
     c.encode_octet(self.spec.constants.byname[frame.type].id)
-    body = StringIO()
+    body = BytesIO()
     enc = codec.Codec(body, self.spec)
     frame.encode(enc)
     enc.flush()
@@ -282,7 +279,7 @@ class Connection:
       raise FramingError("frame error: reserved bits not all zero")
     body_size = frame_size - 12 # TODO: Magic number (frame header size)
     body = c.read(body_size)
-    dec = codec.Codec(StringIO(body), self.spec)
+    dec = codec.Codec(BytesIO(body), self.spec)
     try:
       frame = Frame.DECODERS[type].decode(self.spec, dec, len(body))
     except EOF:
