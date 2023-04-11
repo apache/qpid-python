@@ -137,7 +137,7 @@ class Connection(Framer):
     self.lock.acquire()
     self.failed = True
     try:
-      for ssn in self.attached.values():
+      for ssn in list(self.attached.values()):
         if self.close_code[0] != 200:
           ssn.exceptions.append(self.close_code)
         self.detach(ssn.name, ssn.channel)

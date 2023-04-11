@@ -382,7 +382,7 @@ class Connection(Endpoint):
     Close the connection and all sessions.
     """
     try:
-      for ssn in self.sessions.values():
+      for ssn in list(self.sessions.values()):
         ssn.close(timeout=timeout)
     finally:
       self.detach(timeout=timeout)
