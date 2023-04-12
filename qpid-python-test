@@ -22,6 +22,8 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
+
+import importlib
 import logging, optparse, os, struct, sys, time, traceback, types
 from fnmatch import fnmatchcase as match
 from getopt import GetoptError
@@ -532,7 +534,19 @@ class ModuleScanner:
     names = dir(obj)
     names.sort()
     for name in names:
-      yield getattr(obj, name)
+      child = getattr(obj, name)
+      if type(child) is not types.ModuleType:
+        yield child
+      else:
+        # import the submodule of the given name afresh
+        absname = "%s.%s" % (obj.__name__, name)
+        try:
+          yield importlib.import_module(absname)
+        except ImportError:
+          # if module m imports module n, then we end up trying to import module m.n, which does not exist
+          # therefore fail only if the import we tried looks very reasonable but it still did not succeed
+          if absname == child.__name__:
+            raise
 
   def extract(self, obj):
     # the None is required for older versions of python
