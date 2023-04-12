@@ -1,0 +1,93 @@
+{
+  "name": "${broker.name}",
+  "modelVersion": "7.1",
+  "authenticationproviders" : [ {
+    "name" : "plain",
+    "type" : "Plain",
+    "secureOnlyMechanisms": "",
+    "users" : [ {
+      "name" : "guest",
+      "type" : "managed",
+      "password" : "guest"
+    } ]
+  } ],
+    "brokerloggers" : [ {
+    "name" : "console",
+    "type" : "Console",
+    "brokerloginclusionrules" : [ {
+      "name" : "Root",
+      "type" : "NameAndLevel",
+      "level" : "WARN",
+      "loggerName" : "ROOT"
+    }, {
+      "name" : "Qpid",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "org.apache.qpid.*"
+    }, {
+      "name" : "Operational",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "qpid.message.*"
+    }, {
+      "name" : "Statistics",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "qpid.statistics.*"
+    } ]
+  }, {
+    "name" : "memory",
+    "type" : "Memory",
+    "brokerloginclusionrules" : [ {
+      "name" : "Root",
+      "type" : "NameAndLevel",
+      "level" : "WARN",
+      "loggerName" : "ROOT"
+    }, {
+      "name" : "Qpid",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "org.apache.qpid.*"
+    }, {
+      "name" : "Operational",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "qpid.message.*"
+    }, {
+      "name" : "Statistics",
+      "type" : "NameAndLevel",
+      "level" : "INFO",
+      "loggerName" : "qpid.statistics.*"
+    } ]
+  } ],
+  "ports" : [  {
+    "name" : "AMQP",
+    "port" : "${qpid.amqp_port}",
+    "authenticationProvider" : "plain",
+    "virtualhostaliases" : [ {
+       "name" : "nameAlias",
+       "type" : "nameAlias"
+    }, {
+        "name" : "defaultAlias",
+        "type" : "defaultAlias"
+    }, {
+        "name" : "hostnameAlias",
+        "type" : "hostnameAlias"
+    } ]
+  }, {
+    "name" : "HTTP",
+    "port" : "${qpid.http_port}",
+    "authenticationProvider" : "plain",
+    "protocols" : [ "HTTP" ]
+  }],
+  "virtualhostnodes" : [ {
+    "name" : "default",
+    "type" : "JSON",
+    "defaultVirtualHostNode" : "true",
+    "virtualHostInitialConfiguration" : "${qpid.initial_config_virtualhost_config}"
+  }],
+  "plugins" : [ {
+    "type" : "MANAGEMENT-HTTP",
+    "name" : "httpManagement"
+  } ]
+}
