@@ -107,7 +107,7 @@ jobs:
           done
 
       - name: Client tests with our bespoke test runner
-        continue-on-error: matrix.python-version != '2.7'
+        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ env.pythonLocation }}/bin/python ./qpid-python-test
 
@@ -154,7 +154,7 @@ jobs:
           done
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-8)
-        continue-on-error: matrix.python-version != '2.7'
+        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ env.pythonLocation }}/bin/python qpid-python-test \
             -m qpid_tests.broker_0_8 \
@@ -168,7 +168,7 @@ jobs:
             -i qpid_tests.broker_0_8.tx.TxTests.test_rollback
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-9)
-        continue-on-error: matrix.python-version != '2.7'
+        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ env.pythonLocation }}/bin/python qpid-python-test \
             -m qpid_tests.broker_0_9 \
@@ -180,7 +180,7 @@ jobs:
             -i qpid_tests.broker_0_9.query.QueryTests.test_exchange_query
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-10)
-        continue-on-error: matrix.python-version != '2.7'
+        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ env.pythonLocation }}/bin/python qpid-python-test \
             -m qpid_tests.broker_0_10 \
@@ -272,7 +272,7 @@ jobs:
             -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_hysteresis
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 1.0, or whatever this actually happens to test)
-        continue-on-error: matrix.python-version != '2.7'
+        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ env.pythonLocation }}/bin/python qpid-python-test \
             -m qpid_tests.broker_1_0 \
