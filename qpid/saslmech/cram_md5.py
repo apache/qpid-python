@@ -18,11 +18,14 @@
 #
 
 from __future__ import absolute_import
+
+import hashlib
+
 from .sasl import Sasl
 from hmac import HMAC
 
 class CRAM_MD5(Sasl):
 
   def response(self, challenge):
-    digest = HMAC( self.password, challenge).hexdigest()
+    digest = HMAC(self.password.encode(), challenge, digestmod=hashlib.md5).hexdigest()
     return "%s %s" % (self.user, digest)
