@@ -28,6 +28,11 @@ from __future__ import nested_scopes
 
 import mllib.transforms
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 class Container:
 
   def __init__(self):

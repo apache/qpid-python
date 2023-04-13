@@ -22,6 +22,11 @@ import sys
 
 from .ops import *
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
 def METHOD(module, op):
   method = lambda self, *args, **kwargs: self.invoke(op, args, kwargs)
   if sys.version_info[:2] > (2, 3):
