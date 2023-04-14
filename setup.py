@@ -300,7 +300,7 @@ class install_lib(_install_lib):
 scripts = ["qpid-python-test", "qpid-python-test.bat"]
 
 setup(name="qpid-python",
-      version="1.38.0-SNAPSHOT",
+      version="1.38.0.dev0+SNAPSHOT",
       author="Apache Qpid",
       author_email="users@qpid.apache.org",
       packages=["mllib", "qpid", "qpid.messaging", "qpid.tests",
