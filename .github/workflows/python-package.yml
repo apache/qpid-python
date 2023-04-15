@@ -318,6 +318,21 @@ jobs:
           # the qpid-python dependency is the current package
           ${{ steps.python.outputs.python-path }} -m pip install --user qpid-tools qpid-qmf --no-deps
 
+      - name: Clone qpid-cpp main
+        if: matrix.python-version != '2.7'
+        uses:  actions/checkout@v3
+        with:
+          repository: apache/qpid-cpp
+          ref: main
+          path: qpid-cpp
+
+      - name: Install test dependencies from qpid-cpp main (for Python 3)
+        if: matrix.python-version != '2.7'
+        run: |
+          for d in $(find $PWD/qpid-cpp/management/python/lib/* -type d); do
+            ln -s $d ./
+          done
+
       - name: C++ Broker tests with the 🛞 runner we ❤️
         run: |
           ${{ steps.python.outputs.python-path }} qpid-python-test -m qpid_tests
@@ -361,10 +376,26 @@ jobs:
         run: |
           ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
 
-      - name: Install test dependencies from pip
+      - name: Install test dependencies from pip (for Python 2)
+        if: matrix.python-version == '2.7'
         run: |
           # the qpid-python dependency is the current package
           ${{ steps.python.outputs.python-path }} -m pip install --user qpid-tools qpid-qmf --no-deps
+
+      - name: Clone qpid-cpp main
+        if: matrix.python-version != '2.7'
+        uses:  actions/checkout@v3
+        with:
+          repository: apache/qpid-cpp
+          ref: main
+          path: qpid-cpp
+
+      - name: Install test dependencies from qpid-cpp main (for Python 3)
+        if: matrix.python-version != '2.7'
+        run: |
+          for d in $(find $PWD/qpid-cpp/management/python/lib/* -type d); do
+            ln -s $d ./
+          done
 
       # https://github.com/chrisob/qpid-broker-j-docker
       - name: Start qpidj
