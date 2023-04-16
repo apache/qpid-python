@@ -819,7 +819,7 @@ class ReceiverTests(Base):
     self.sleep()
     self.assertAvailable(self.rcv)
 
-    first = capacity/2
+    first = capacity//2
     second = capacity - first
     self.drain(self.rcv, limit = first)
     self.sleep()

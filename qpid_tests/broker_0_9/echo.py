@@ -46,7 +46,7 @@ class EchoTests(TestBase):
     self.echo_message(body)
 
   def test_multiple_frame_message(self):
-    size = self.frame_max_size * 2 - (self.client.conn.FRAME_MIN_SIZE / 2)
+    size = self.frame_max_size * 2 - (self.client.conn.FRAME_MIN_SIZE // 2)
     body = self.randomLongString(size)
     self.echo_message(body)
 
