@@ -48,7 +48,7 @@ by default run the Python unit tests and the 0-10 conformance tests:
 
         $ ./qpid-python-test
 
-If you wish to run the 0-8 or 0-9 conformence tests, they may be
+If you wish to run the 0-8 or 0-9 conformance tests, they may be
 selected as follows:
 
 1. Run a broker on the default port.

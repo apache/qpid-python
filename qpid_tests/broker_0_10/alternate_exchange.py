@@ -180,7 +180,7 @@ class AlternateExchangeTests(TestBase010):
 
     def test_del_alternate_to_exchange(self):
         """
-        Ensure that attempting to modify an exhange by declaring
+        Ensure that attempting to modify an exchange by declaring
         it again without an alternate does nothing
         """
         session = self.session
