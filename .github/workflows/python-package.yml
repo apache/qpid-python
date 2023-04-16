@@ -30,27 +30,28 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
 
+  lint:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
-        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+        python-version: ["2.7", "3.8", "3.11"]
 
     steps:
       - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
+        id: python
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install --user poetry
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
+          ${{ steps.python.outputs.python-path }} -m pip install --user poetry
 
       - name: Cache Poetry virtualenv
         uses: actions/cache@v3
@@ -75,7 +76,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          poetry env use ${{ env.pythonLocation }}/bin/python
+          poetry env use ${{ steps.python.outputs.python-path }}
           poetry install --no-root
         if: steps.cache.outputs.cache-hit != 'true'
 
@@ -92,7 +93,37 @@ jobs:
         run: |
           poetry run ruff check .
 
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+        exclude:
+          - os: windows-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.12.0-alpha.7"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        id: python
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
+
       - name: Start qpidd in docker
+        if: matrix.os == 'ubuntu-latest'
         run: |
           docker run --name qpid-cpp --rm -d -p 5672:5672 irinabov/docker-qpid-cpp-broker
 
@@ -107,28 +138,112 @@ jobs:
           done
 
       - name: Client tests with our bespoke test runner
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
-          ${{ env.pythonLocation }}/bin/python ./qpid-python-test
+          ${{ steps.python.outputs.python-path }} ./qpid-python-test
+
+  test-install:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+        exclude:
+          - os: windows-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.12.0-alpha.7"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        id: python
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Test setup.py install
         run: |
-          ${{ env.pythonLocation }}/bin/python setup.py install --user
+          ${{ steps.python.outputs.python-path }} setup.py install --user
 
-      # https://qpid.apache.org/releases/qpid-cpp-1.39.0/cpp-broker/book/AMQP-Compatibility.html
-      # we need qpid-cpp broker to test amqp0-10 and qpid-j broker to test amqp0-8 and amqp0-9
+  # https://qpid.apache.org/releases/qpid-cpp-1.39.0/cpp-broker/book/AMQP-Compatibility.html
+  # we need qpid-cpp broker to test amqp0-10 and qpid-j broker to test amqp0-8 and amqp0-9
+
+  test-qpid-cpp:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest ]
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        id: python
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
+
+      - name: Start qpidd in docker
+        run: |
+          docker run --name qpid-cpp --rm -d -p 5672:5672 irinabov/docker-qpid-cpp-broker
+
+          attempts=0
+          while ! nc -zv localhost 5672; do
+            attempts=$((attempts+1))
+            if [ $attempts -ge 10 ]; then
+              echo >&2 "qpidd not reachable, giving up"
+              exit 1
+            fi
+            sleep 3
+          done
+        shell: bash
 
       - name: Install test dependencies from pip
         run: |
-          # qpid-python dependency is the current package, it was installed in the prior step
-          ${{ env.pythonLocation }}/bin/python -m pip install --user qpid-tools qpid-qmf --no-deps
+          # the qpid-python dependency is the current package
+          ${{ steps.python.outputs.python-path }} -m pip install --user qpid-tools qpid-qmf --no-deps
 
       - name: C++ Broker tests with the 🛞 runner we ❤️
         run: |
-          ${{ env.pythonLocation }}/bin/python qpid-python-test -m qpid_tests
+          ${{ steps.python.outputs.python-path }} qpid-python-test -m qpid_tests
 
-      - name: Kill qpidd
-        run: docker stop qpid-cpp
+  test-qpid-j:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
+        python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        id: python
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
+
+      - name: Install test dependencies from pip
+        run: |
+          # the qpid-python dependency is the current package
+          ${{ steps.python.outputs.python-path }} -m pip install --user qpid-tools qpid-qmf --no-deps
 
       # https://github.com/chrisob/qpid-broker-j-docker
       - name: Start qpidj
@@ -154,9 +269,9 @@ jobs:
           done
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-8)
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
+        if: ${{ ! cancelled() }}
         run: |
-          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+          ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_8 \
             --broker amqp://guest/guest@localhost:5672 \
             -i qpid_tests.broker_0_8.basic.BasicTests.test_consume_exclusive \
@@ -168,9 +283,9 @@ jobs:
             -i qpid_tests.broker_0_8.tx.TxTests.test_rollback
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-9)
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
+        if: ${{ ! cancelled() }}
         run: |
-          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+          ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_9 \
             --broker amqp://guest/guest@localhost:5672 \
             -i qpid_tests.broker_0_9.query.QueryTests.test_binding_query_direct \
@@ -180,9 +295,9 @@ jobs:
             -i qpid_tests.broker_0_9.query.QueryTests.test_exchange_query
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-10)
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
+        if: ${{ ! cancelled() }}
         run: |
-          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+          ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_10 \
             --broker amqp://guest/guest@localhost:5672 \
             -i qpid_tests.broker_0_10.dtx.DtxTests.test_forget_xid_on_completion \
@@ -272,8 +387,8 @@ jobs:
             -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_hysteresis
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 1.0, or whatever this actually happens to test)
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
+        if: ${{ ! cancelled() }}
         run: |
-          ${{ env.pythonLocation }}/bin/python qpid-python-test \
+          ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_1_0 \
             --broker amqp://guest/guest@localhost:5672
