@@ -50,8 +50,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install --user poetry
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
+          ${{ steps.python.outputs.python-path }} -m pip install --user poetry
 
       - name: Cache Poetry virtualenv
         uses: actions/cache@v3
@@ -120,7 +120,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
 
       - name: Start qpidd in docker
         if: matrix.os == 'ubuntu-latest'
@@ -200,7 +200,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
 
       - name: Start qpidd in docker
         run: |
@@ -245,7 +245,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          ${{ steps.python.outputs.python-path }} -m pip install --upgrade pip
 
       - name: Install test dependencies from pip
         run: |
