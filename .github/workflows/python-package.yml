@@ -269,7 +269,7 @@ jobs:
           done
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-8)
-        if: ${{ ! canceled() }}
+        if: !cancelled()
         run: |
           ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_8 \
@@ -283,7 +283,7 @@ jobs:
             -i qpid_tests.broker_0_8.tx.TxTests.test_rollback
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-9)
-        if: ${{ ! canceled() }}
+        if: !cancelled()
         run: |
           ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_9 \
@@ -295,7 +295,7 @@ jobs:
             -i qpid_tests.broker_0_9.query.QueryTests.test_exchange_query
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 0-10)
-        if: ${{ ! canceled() }}
+        if: !cancelled()
         run: |
           ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_0_10 \
@@ -387,7 +387,7 @@ jobs:
             -i qpid_tests.broker_0_10.threshold.ThresholdTests.test_hysteresis
 
       - name: Qpid-☕ Broker tests with the 🛞 runner we ❤️ (AMQP 1.0, or whatever this actually happens to test)
-        if: ${{ ! canceled() }}
+        if: !cancelled()
         run: |
           ${{ steps.python.outputs.python-path }} qpid-python-test \
             -m qpid_tests.broker_1_0 \
