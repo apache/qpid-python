@@ -79,9 +79,10 @@ def connect(host, port):
       break
     except socket.error as msg:
       sock.close()
+      last_msg = msg  # https://portingguide.readthedocs.io/en/latest/exceptions.html#caught-exception-scope
   else:
     # If we got here then we couldn't connect (yet)
-    raise
+    raise last_msg
   return sock
 
 def listen(host, port, predicate = lambda: True, bound = lambda: None):
