@@ -324,7 +324,7 @@ class Connection(Endpoint):
     if self._open:
       raise ConnectionError("already open")
     self._open = True
-    if self.reconnect and self.reconnect_timeout > 0:
+    if self.reconnect and self.reconnect_timeout is not None and self.reconnect_timeout > 0:
         timeout = self.reconnect_timeout
     self.attach(timeout=timeout)
 
