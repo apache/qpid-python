@@ -93,12 +93,20 @@ jobs:
           poetry run ruff check .
 
   test-qpid-cpp:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ ubuntu-latest, windows-latest ]
         # https://raw.githubusercontent.com/actions/python-versions/main/versions-manifest.json
         python-version: ["2.7", "3.8", "3.9", "3.10", "3.11", "3.12.0-alpha.7"]
+        exclude:
+          - os: windows-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"
+          - os: windows-latest
+            python-version: "3.12.0-alpha.7"
 
     steps:
       - uses: actions/checkout@v3
@@ -125,6 +133,7 @@ jobs:
             fi
             sleep 3
           done
+        shell: bash
 
       - name: Client tests with our bespoke test runner
         continue-on-error: ${{ matrix.python-version != '2.7' }}
