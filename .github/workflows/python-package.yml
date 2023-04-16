@@ -138,7 +138,6 @@ jobs:
           done
 
       - name: Client tests with our bespoke test runner
-        continue-on-error: ${{ matrix.python-version != '2.7' }}
         run: |
           ${{ steps.python.outputs.python-path }} ./qpid-python-test
 
