@@ -71,13 +71,13 @@ class Resolver:
     return InputSource(systemId)
 
 def xml_parse(filename, path=()):
-  source = "file://%s" % os.path.abspath(filename)
   h = parsers.XMLParser()
   p = xml.sax.make_parser()
   p.setContentHandler(h)
   p.setErrorHandler(ErrorHandler())
   p.setEntityResolver(Resolver(path))
-  p.parse(source)
+  with open(filename, mode='rt') as source:
+    p.parse(source)
   return h.parser.tree
 
 def sexp(node):
