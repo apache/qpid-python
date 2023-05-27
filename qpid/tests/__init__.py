@@ -61,4 +61,4 @@ class TestTestsXXX(Test):
   def testQuxFail(self):
     import sys
     sys.stdout.write("this test has output with no newline")
-    fdsa
+    fdsa  # pylint: disable=F821

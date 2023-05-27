@@ -341,9 +341,9 @@ class Frame:
     self.bof = True
     self.eof = True
 
-  def encode(self, enc): abstract
+  def encode(self, enc): abstract  # pylint: disable=F821
 
-  def decode(spec, dec, size): abstract
+  def decode(spec, dec, size): abstract  # pylint: disable=F821
 
 class Method(Frame):
 
