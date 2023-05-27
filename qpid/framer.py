@@ -21,6 +21,7 @@ from __future__ import absolute_import
 import struct, socket
 from .exceptions import Closed
 from .packer import Packer
+from .sasl import SASLError
 from threading import RLock
 from logging import getLogger
 

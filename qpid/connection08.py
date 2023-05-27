@@ -341,9 +341,9 @@ class Frame:
     self.bof = True
     self.eof = True
 
-  def encode(self, enc): abstract
+  def encode(self, enc): abstract  # noqa: F821
 
-  def decode(spec, dec, size): abstract
+  def decode(spec, dec, size): abstract  # noqa: F821
 
 class Method(Frame):
 
