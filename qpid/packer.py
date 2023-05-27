@@ -22,9 +22,9 @@ import struct
 
 class Packer:
 
-  def read(self, n): abstract  # pylint: disable=F821
+  def read(self, n): abstract  # noqa: F821
 
-  def write(self, s): abstract  # pylint: disable=F821
+  def write(self, s): abstract  # noqa: F821
 
   def unpack(self, fmt):
     values = struct.unpack(fmt, self.read(struct.calcsize(fmt)))
