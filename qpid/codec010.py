@@ -22,6 +22,7 @@ import datetime
 from .packer import Packer
 from .datatypes import serial, timestamp, RangedSet, Struct, UUID
 from .ops import Compound, PRIMITIVE, COMPOUND
+from qpid.py3compat import PY2
 
 try:
   buffer
@@ -49,9 +50,9 @@ def map_str(s):
       return "vbin16"
   return "str16"
 
-class Codec(Packer):
 
-  ENCODINGS = {
+if PY2:
+  _ENCODINGS = {
     bool: direct("boolean"),
     unicode: direct("str16"),
     str: map_str,
@@ -68,6 +69,28 @@ class Codec(Packer):
     UUID: direct("uuid"),
     Compound: direct("struct32")
     }
+else:
+  _ENCODINGS = {
+    bool: direct("boolean"),
+    int: direct("int64"),
+    float: direct("double"),
+    None.__class__: direct("void"),
+    list: direct("list"),
+    tuple: direct("list"),
+    dict: direct("map"),
+    timestamp: direct("datetime"),
+    datetime.datetime: direct("datetime"),
+    UUID: direct("uuid"),
+    Compound: direct("struct32"),
+
+    str: direct("str16"),
+    bytes: direct("vbin16"),
+    memoryview: direct("vbin32"),
+  }
+
+class Codec(Packer):
+
+  ENCODINGS = _ENCODINGS
 
   def encoding(self, obj):
     enc = self._encoding(obj.__class__, obj)
@@ -180,6 +203,9 @@ class Codec(Packer):
   def write_datetime(self, t):
     if isinstance(t, datetime.datetime):
       t = timestamp(t)
+    # python2 does this conversion implicitly in struct.pack("!Q", ...)
+    if isinstance(t, timestamp):
+      t = int(t)
     self.write_uint64(t)
 
   def read_double(self):
@@ -191,7 +217,9 @@ class Codec(Packer):
     return self.read(self.read_uint8())
   def write_vbin8(self, b):
     if isinstance(b, buffer):
-      b = str(b)
+      b = bytes(b)
+    if not isinstance(b, bytes):
+      b = b.encode()
     self.write_uint8(len(b))
     self.write(b)
 
@@ -215,7 +243,9 @@ class Codec(Packer):
     return self.read(self.read_uint16())
   def write_vbin16(self, b):
     if isinstance(b, buffer):
-      b = str(b)
+      b = bytes(b)
+    if not isinstance(b, bytes):
+      b = b.encode()
     self.write_uint16(len(b))
     self.write(b)
 
