@@ -35,11 +35,6 @@ from .reference import ReferenceId
 from logging import getLogger
 
 try:
-  basestring
-except:
-  basestring = bytes
-
-try:
   unicode
 except NameError:
   unicode = str
@@ -92,7 +87,8 @@ class Codec:
     self.integertypes = [int, long]
     self.encodings = {
       float: "double", # python uses 64bit floats, send them as doubles
-      basestring: "longstr",
+      bytes: "longstr",
+      unicode: "longstr",
       None.__class__:"void",
       list: "sequence",
       tuple: "sequence",
@@ -403,6 +399,8 @@ class Codec:
     """
     encodes a string 's' in network byte order as per format 'fmt'
     """
+    if not isinstance(s, bytes):
+      s = s.encode()
     size = len(s)
     self.pack(fmt, size)
     self.write(s)
@@ -418,6 +416,8 @@ class Codec:
     """
     encodes a short string 's' in network byte order
     """
+    if not isinstance(s, bytes):
+      s.encode()
 
     # short strings are limited to 255 octets
     if len(s) > 255:
