@@ -354,7 +354,7 @@ class Codec:
     encodes an UNSIGNED long long (64 bits) data 'o' in network byte order
     AMQP 0-9-1 type: long-long-uint
     """
-    self.pack("!Q", o)
+    self.pack("!Q", long(o))
 
   def decode_longlong(self):
     """
